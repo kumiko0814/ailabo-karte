@@ -242,6 +242,11 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
       </div>
     </div>
 
+    <div class="inboxwrap" id="sec-members">
+      <div class="ihead"><h2>参加者一覧</h2><span class="cnt" id="memcnt"></span></div>
+      <div class="ilist" style="padding:8px 22px 16px;" id="memlist"><div class="empty2">まだ登録がありません。参加者が入口ページで専用URLを作ると、ここに並びます。</div></div>
+    </div>
+
     <div class="inboxwrap" id="sec-trend">
       <div class="ihead">
         <h2>みんなの傾向</h2><span class="cnt" id="tnote"></span>
@@ -333,6 +338,11 @@ var demoNotes=[
 {member_id:"shiho03",member_name:"しほ",mood:"いそがしい",worry:"リサーチに毎回20〜30分かかっています。子どもが寝たあとの時間しかないので、ここを短くしたいです。",want:"リサーチの時短",created_at:new Date(Date.now()-86400000).toISOString()},
 {member_id:"kanako04",member_name:"かなこ",mood:"ワクワク",worry:"自分の講座を販売するためにSNS発信を始めたいです。投稿づくりにAIを使ってみたいのですが、自分に合うやり方が知りたいです。",want:"SNS投稿づくりの仕組み化",created_at:new Date(Date.now()-172800000).toISOString()}
 ];
+var demoRegs=[
+{member_id:"moe05",member_name:"もえ",mood:"登録",created_at:new Date(Date.now()-3600000).toISOString()},
+{member_id:"rina06",member_name:"りな",mood:"登録",created_at:new Date(Date.now()-5400000).toISOString()},
+{member_id:"yuki01",member_name:"ゆき",mood:"登録",created_at:new Date(Date.now()-90000000).toISOString()}
+];
 var demoAdv={yuki01:[{message:"ゆきさん、まずは説明文だけAIに渡しましょう。特典テンプレ②に商品情報を貼るだけ。今夜1本だけ試してみてください。",created_at:new Date(Date.now()-3600000).toISOString()}]};
 
 var CATS=[
@@ -347,6 +357,43 @@ var CATS=[
 var HABITS=[["ブレーキ先行タイプ",["できない","無理","苦手","難しい","私には"]],["時間圧迫タイプ",["時間がな","忙し","追われ","バタバタ","焦"]],["完璧準備タイプ",["わからない","分からない","調べて","ちゃんと","全部","何から"]],["前向き挑戦タイプ",["やってみたい","楽しみ","挑戦","ワクワク","知りたい"]]];
 function countHits(text,words){ var n=0; words.forEach(function(w){ var i=-1; while((i=text.indexOf(w,i+1))>=0){ n++; } }); return n; }
 var lastNotesA=[];
+var regIds=[];
+function renderMembers(regs,karte,advMap){
+  var box=document.getElementById("memlist");
+  var m={};
+  regs.forEach(function(r){
+    if(!m[r.member_id]) m[r.member_id]={name:r.member_name||r.member_id, at:r.created_at, k:0};
+    else if(new Date(r.created_at)<new Date(m[r.member_id].at)) m[r.member_id].at=r.created_at;
+  });
+  karte.forEach(function(n){
+    if(!m[n.member_id]) m[n.member_id]={name:n.member_name||n.member_id, at:n.created_at, k:0};
+    m[n.member_id].k++;
+    m[n.member_id].name=n.member_name||m[n.member_id].name;
+  });
+  var ids=Object.keys(m);
+  regIds=ids;
+  var zero=ids.filter(function(id){return m[id].k===0;}).length;
+  document.getElementById("memcnt").textContent=ids.length?("全"+ids.length+"人"+(zero?("／カルテ未提出 "+zero+"人"):"")):"";
+  if(!ids.length){ box.innerHTML='<div class="empty2">まだ登録がありません。参加者が入口ページで専用URLを作ると、ここに並びます。</div>'; return; }
+  ids.sort(function(a,b){
+    if((m[a].k===0)!==(m[b].k===0)) return m[a].k===0?-1:1;
+    return new Date(m[b].at)-new Date(m[a].at);
+  });
+  box.innerHTML="";
+  ids.forEach(function(id,idx){
+    var v=m[id];
+    var advs=(advMap[id]||[]).length;
+    var e=document.createElement("div"); e.className="item";
+    e.innerHTML='<span class="ava a'+(idx%4+1)+'"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c1-4 4.2-6 8-6s7 2 8 6z"/></svg></span>'+
+      '<div class="icol"><div class="nm">'+esc(v.name)+'</div><div class="id">'+esc(id)+'</div></div>'+
+      '<div class="ibody" style="align-self:center;"><div class="wt">登録：'+fmt(v.at)+'</div></div>'+
+      '<div class="iright">'+
+        (v.k===0?'<span class="mood" style="background:var(--pinkbg); color:var(--pink3);">カルテ未提出</span>':'<span class="advpill">カルテ'+v.k+'件</span>')+
+        (advs?'<span class="advpill" style="background:#e8f3ee; color:#3f7d63;">返信'+advs+'件</span>':'')+
+      '</div>';
+    box.appendChild(e);
+  });
+}
 function renderTrend(notes,advMap){
   var t=document.getElementById("trend");
   document.getElementById("tnote").textContent=notes.length?("カルテ"+notes.length+"件から自動集計"):"";
@@ -354,10 +401,12 @@ function renderTrend(notes,advMap){
   var members={};
   notes.forEach(function(n){ (members[n.member_id]=members[n.member_id]||[]).push(n); });
   var ids=Object.keys(members);
+  var allP={}; ids.forEach(function(i){allP[i]=1;}); regIds.forEach(function(i){allP[i]=1;});
+  var totalP=Object.keys(allP).length;
   var week=notes.filter(function(n){ return (Date.now()-new Date(n.created_at).getTime())<7*86400000; }).length;
   var noreply=ids.filter(function(id){ return !(advMap[id]&&advMap[id].length); }).length;
   var h='<div class="kpis">'+
-    '<div class="kpi"><div class="v">'+ids.length+'<small>人</small></div><div class="l">参加者</div></div>'+
+    '<div class="kpi"><div class="v">'+totalP+'<small>人</small></div><div class="l">参加者</div></div>'+
     '<div class="kpi"><div class="v">'+notes.length+'<small>件</small></div><div class="l">カルテ総数</div></div>'+
     '<div class="kpi"><div class="v">'+week+'<small>件</small></div><div class="l">直近7日</div></div>'+
     '<div class="kpi warn"><div class="v">'+noreply+'<small>人</small></div><div class="l">未返信の方</div></div>'+
@@ -423,7 +472,7 @@ function downloadCSV(){
 }
 function renderInbox(notes,advMap){
   var box=document.getElementById("ilist"); box.innerHTML="";
-  document.querySelector(".ihead .cnt").textContent="全"+notes.length+"件";
+  document.querySelector("#sec-inbox .ihead .cnt").textContent="全"+notes.length+"件";
   var b1=document.querySelector('.ni .bdg'); if(b1) b1.textContent=notes.length;
   var b2=document.querySelector('.mn .b'); if(b2) b2.textContent=notes.length;
   if(!notes.length){ box.innerHTML='<div class="empty2">まだカルテは届いていません。参加者が送信すると、ここに並びます。</div>'; return; }
@@ -451,17 +500,19 @@ function renderInbox(notes,advMap){
   });
 }
 function loadInbox(){
-  if(DEMO){ lastNotesA=demoNotes.slice(); renderInbox(demoNotes,demoAdv); renderTrend(demoNotes,demoAdv); renderBugs([{id:0,member_name:"マイページ｜demo",mood:"バグ報告",worry:"（デモ）送信ボタンの反応が遅い気がします",want:"https://…／iPhone Safari",created_at:new Date().toISOString()}]); return; }
+  if(DEMO){ lastNotesA=demoNotes.slice(); renderMembers(demoRegs,demoNotes,demoAdv); renderInbox(demoNotes,demoAdv); renderTrend(demoNotes,demoAdv); renderBugs([{id:0,member_name:"マイページ｜demo",mood:"バグ報告",worry:"（デモ）送信ボタンの反応が遅い気がします",want:"https://…／iPhone Safari",created_at:new Date().toISOString()}]); return; }
   Promise.all([
     sb("ailab_notes?order=created_at.desc&limit=1000").then(function(r){return r.json();}),
     sb("ailab_advice?order=created_at.desc&limit=1000").then(function(r){return r.json();})
   ]).then(function(res){
     var all=Array.isArray(res[0])?res[0]:[];
-    var notes=all.filter(function(n){ return (n.member_id||"").indexOf("bug_")!==0; });
+    var rest=all.filter(function(n){ return (n.member_id||"").indexOf("bug_")!==0; });
     var bugs=all.filter(function(n){ return (n.member_id||"").indexOf("bug_")===0; });
+    var regs=rest.filter(function(n){ return n.mood==="登録"; });
+    var notes=rest.filter(function(n){ return n.mood!=="登録"; });
     var advMap={};
     (Array.isArray(res[1])?res[1]:[]).forEach(function(a){ (advMap[a.target_id]=advMap[a.target_id]||[]).push(a); });
-    lastNotesA=notes; renderInbox(notes,advMap); renderTrend(notes,advMap); renderBugs(bugs);
+    lastNotesA=notes; renderMembers(regs,notes,advMap); renderInbox(notes,advMap); renderTrend(notes,advMap); renderBugs(bugs);
   }).catch(function(){
     document.getElementById("ilist").innerHTML='<div class="empty2">読み込めませんでした。初期設定（setup.html）がまだの可能性があります。</div>';
   });
@@ -474,7 +525,7 @@ var NAVMAP={
   "受信ボックス":function(){ scrollToSec("sec-inbox"); },
   "アドバイス管理":function(){ scrollToSec("sec-inbox"); },
   "テンプレート管理":function(){ window.open("https://kumiko0814.github.io/ailabo-tokuten/","_blank"); },
-  "ユーザー管理":function(){ scrollToSec("sec-invite"); },
+  "ユーザー管理":function(){ scrollToSec("sec-members"); },
   "分析レポート":function(){ scrollToSec("sec-trend"); },
   "設定":function(){ window.open("setup.html","_blank"); }
 };
