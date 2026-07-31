@@ -343,6 +343,11 @@ var demoRegs=[
 {member_id:"rina06",member_name:"りな",mood:"登録",created_at:new Date(Date.now()-5400000).toISOString()},
 {member_id:"yuki01",member_name:"ゆき",mood:"登録",created_at:new Date(Date.now()-90000000).toISOString()}
 ];
+var demoApps=[
+{member_id:"aya07",member_name:"あや",mood:"申込",want:"申込サイトで決済確認（受付番号 M12345678）",created_at:new Date(Date.now()-1800000).toISOString()},
+{member_id:"rina06",member_name:"りな",mood:"申込",want:"申込サイトで決済確認（受付番号 M12345679）",created_at:new Date(Date.now()-7200000).toISOString()},
+{member_id:"yuki01",member_name:"ゆき",mood:"申込",want:"申込サイトで決済確認（受付番号 M12345680）",created_at:new Date(Date.now()-100000000).toISOString()}
+];
 var demoAdv={yuki01:[{message:"ゆきさん、まずは説明文だけAIに渡しましょう。特典テンプレ②に商品情報を貼るだけ。今夜1本だけ試してみてください。",created_at:new Date(Date.now()-3600000).toISOString()}]};
 
 var CATS=[
@@ -358,25 +363,34 @@ var HABITS=[["ブレーキ先行タイプ",["できない","無理","苦手","�
 function countHits(text,words){ var n=0; words.forEach(function(w){ var i=-1; while((i=text.indexOf(w,i+1))>=0){ n++; } }); return n; }
 var lastNotesA=[];
 var regIds=[];
-function renderMembers(regs,karte,advMap){
+function renderMembers(apps,regs,karte,advMap){
   var box=document.getElementById("memlist");
   var m={};
-  regs.forEach(function(r){
-    if(!m[r.member_id]) m[r.member_id]={name:r.member_name||r.member_id, at:r.created_at, k:0};
-    else if(new Date(r.created_at)<new Date(m[r.member_id].at)) m[r.member_id].at=r.created_at;
-  });
-  karte.forEach(function(n){
-    if(!m[n.member_id]) m[n.member_id]={name:n.member_name||n.member_id, at:n.created_at, k:0};
-    m[n.member_id].k++;
-    m[n.member_id].name=n.member_name||m[n.member_id].name;
-  });
+  function touch(n,kind){
+    if(!m[n.member_id]) m[n.member_id]={name:n.member_name||n.member_id, at:n.created_at, k:0, app:false, reg:false, rno:""};
+    var v=m[n.member_id];
+    if(n.member_name) v.name=n.member_name;
+    if(new Date(n.created_at)<new Date(v.at)) v.at=n.created_at;
+    if(kind==="app"){ v.app=true; var mt=(n.want||"").match(/受付番号\s*([A-Za-z0-9]+)/); if(mt) v.rno=mt[1]; }
+    if(kind==="reg") v.reg=true;
+    if(kind==="karte") v.k++;
+  }
+  apps.forEach(function(n){ touch(n,"app"); });
+  regs.forEach(function(n){ touch(n,"reg"); });
+  karte.forEach(function(n){ touch(n,"karte"); });
   var ids=Object.keys(m);
   regIds=ids;
-  var zero=ids.filter(function(id){return m[id].k===0;}).length;
-  document.getElementById("memcnt").textContent=ids.length?("全"+ids.length+"人"+(zero?("／カルテ未提出 "+zero+"人"):"")):"";
-  if(!ids.length){ box.innerHTML='<div class="empty2">まだ登録がありません。参加者が入口ページで専用URLを作ると、ここに並びます。</div>'; return; }
+  var noPage=ids.filter(function(id){ return m[id].app && !m[id].reg && m[id].k===0; }).length;
+  var noKarte=ids.filter(function(id){ return (m[id].reg||m[id].k>0) && m[id].k===0; }).length;
+  var parts=[];
+  if(ids.length){ parts.push("全"+ids.length+"人");
+    if(noPage) parts.push("カルテ未開設 "+noPage+"人");
+    if(noKarte) parts.push("カルテ未提出 "+noKarte+"人"); }
+  document.getElementById("memcnt").textContent=parts.join("／");
+  if(!ids.length){ box.innerHTML='<div class="empty2">まだ登録がありません。申込またはカルテ入口の利用があると、ここに並びます。</div>'; return; }
+  function rank(id){ var v=m[id]; if(v.app&&!v.reg&&v.k===0) return 0; if(v.k===0) return 1; return 2; }
   ids.sort(function(a,b){
-    if((m[a].k===0)!==(m[b].k===0)) return m[a].k===0?-1:1;
+    if(rank(a)!==rank(b)) return rank(a)-rank(b);
     return new Date(m[b].at)-new Date(m[a].at);
   });
   box.innerHTML="";
@@ -384,13 +398,16 @@ function renderMembers(regs,karte,advMap){
     var v=m[id];
     var advs=(advMap[id]||[]).length;
     var e=document.createElement("div"); e.className="item";
+    var right="";
+    if(v.app) right+='<span class="advpill" style="background:#e8f0e9; color:#3f7d63;">申込✓'+(v.rno?(" "+v.rno):"")+'</span>';
+    if(v.app&&!v.reg&&v.k===0) right+='<span class="mood" style="background:var(--pinkbg); color:var(--pink3); font-weight:800;">カルテ未開設</span>';
+    else if(v.k===0) right+='<span class="mood" style="background:var(--pinkbg); color:var(--pink3);">カルテ未提出</span>';
+    else right+='<span class="advpill">カルテ'+v.k+'件</span>';
+    if(advs) right+='<span class="advpill" style="background:#e8f3ee; color:#3f7d63;">返信'+advs+'件</span>';
     e.innerHTML='<span class="ava a'+(idx%4+1)+'"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c1-4 4.2-6 8-6s7 2 8 6z"/></svg></span>'+
       '<div class="icol"><div class="nm">'+esc(v.name)+'</div><div class="id">'+esc(id)+'</div></div>'+
-      '<div class="ibody" style="align-self:center;"><div class="wt">登録：'+fmt(v.at)+'</div></div>'+
-      '<div class="iright">'+
-        (v.k===0?'<span class="mood" style="background:var(--pinkbg); color:var(--pink3);">カルテ未提出</span>':'<span class="advpill">カルテ'+v.k+'件</span>')+
-        (advs?'<span class="advpill" style="background:#e8f3ee; color:#3f7d63;">返信'+advs+'件</span>':'')+
-      '</div>';
+      '<div class="ibody" style="align-self:center;"><div class="wt">'+(v.app?"申込":"登録")+'：'+fmt(v.at)+'</div></div>'+
+      '<div class="iright" style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">'+right+'</div>';
     box.appendChild(e);
   });
 }
@@ -500,7 +517,7 @@ function renderInbox(notes,advMap){
   });
 }
 function loadInbox(){
-  if(DEMO){ lastNotesA=demoNotes.slice(); renderMembers(demoRegs,demoNotes,demoAdv); renderInbox(demoNotes,demoAdv); renderTrend(demoNotes,demoAdv); renderBugs([{id:0,member_name:"マイページ｜demo",mood:"バグ報告",worry:"（デモ）送信ボタンの反応が遅い気がします",want:"https://…／iPhone Safari",created_at:new Date().toISOString()}]); return; }
+  if(DEMO){ lastNotesA=demoNotes.slice(); renderMembers(demoApps,demoRegs,demoNotes,demoAdv); renderInbox(demoNotes,demoAdv); renderTrend(demoNotes,demoAdv); renderBugs([{id:0,member_name:"マイページ｜demo",mood:"バグ報告",worry:"（デモ）送信ボタンの反応が遅い気がします",want:"https://…／iPhone Safari",created_at:new Date().toISOString()}]); return; }
   Promise.all([
     sb("ailab_notes?order=created_at.desc&limit=1000").then(function(r){return r.json();}),
     sb("ailab_advice?order=created_at.desc&limit=1000").then(function(r){return r.json();})
@@ -508,11 +525,12 @@ function loadInbox(){
     var all=Array.isArray(res[0])?res[0]:[];
     var rest=all.filter(function(n){ return (n.member_id||"").indexOf("bug_")!==0; });
     var bugs=all.filter(function(n){ return (n.member_id||"").indexOf("bug_")===0; });
+    var apps=rest.filter(function(n){ return n.mood==="申込"; });
     var regs=rest.filter(function(n){ return n.mood==="登録"; });
-    var notes=rest.filter(function(n){ return n.mood!=="登録"; });
+    var notes=rest.filter(function(n){ return n.mood!=="登録" && n.mood!=="申込"; });
     var advMap={};
     (Array.isArray(res[1])?res[1]:[]).forEach(function(a){ (advMap[a.target_id]=advMap[a.target_id]||[]).push(a); });
-    lastNotesA=notes; renderMembers(regs,notes,advMap); renderInbox(notes,advMap); renderTrend(notes,advMap); renderBugs(bugs);
+    lastNotesA=notes; renderMembers(apps,regs,notes,advMap); renderInbox(notes,advMap); renderTrend(notes,advMap); renderBugs(bugs);
   }).catch(function(){
     document.getElementById("ilist").innerHTML='<div class="empty2">読み込めませんでした。初期設定（setup.html）がまだの可能性があります。</div>';
   });
