@@ -257,7 +257,7 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
     <div class="inboxwrap" id="sec-inbox">
       <div class="ihead">
         <h2>カルテ受信ボックス</h2><span class="cnt">全4件</span>
-        <button class="rl" id="csvbtn" style="margin-left:auto;">CSVでダウンロード</button><button class="rl" style="margin-left:8px;">⟳ 最新に更新</button>
+        <button class="rl" id="csvbtn" style="margin-left:auto;">CSVでダウンロード</button><button class="rl" id="bakbtn" style="margin-left:8px;">全データを保存</button><button class="rl" style="margin-left:8px;">⟳ 最新に更新</button>
       </div>
       <div class="ilist" id="ilist"><div class="empty2">読み込み中…</div></div>
     </div>
@@ -545,6 +545,22 @@ document.querySelectorAll(".ni,.mn").forEach(function(n){
 });
 
 document.getElementById("csvbtn").onclick=downloadCSV;
+document.getElementById("bakbtn").onclick=function(){
+  var b=this;
+  if(DEMO){ alert("デモ表示中です。本番ボードで押すと、カルテ・登録・アドバイス・バグ報告の全データが1ファイルで保存されます。"); return; }
+  b.disabled=true; b.textContent="保存中…";
+  Promise.all([
+    sb("ailab_notes?order=id.asc&limit=100000").then(function(r){return r.json();}),
+    sb("ailab_advice?order=id.asc&limit=100000").then(function(r){return r.json();})
+  ]).then(function(res){
+    var data={backed_up_at:new Date().toISOString(), ailab_notes:res[0]||[], ailab_advice:res[1]||[]};
+    var blob=new Blob([JSON.stringify(data,null,1)],{type:"application/json"});
+    var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    var d=new Date(), p=function(n){return (n<10?"0":"")+n;};
+    a.download="ailabo_backup_"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+".json"; a.click();
+    b.disabled=false; b.textContent="全データを保存";
+  }).catch(function(){ b.disabled=false; b.textContent="全データを保存"; alert("読み込めませんでした。通信環境をご確認ください。"); });
+};
 document.querySelectorAll(".ihead .rl").forEach(function(b){ if(b.id!=="csvbtn") b.onclick=loadInbox; });
 loadInbox();
 })();

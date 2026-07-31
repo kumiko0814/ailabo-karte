@@ -70,6 +70,29 @@ create policy ailab_advice_all on ailab_advice
   </div>
 
   <div class="step">
+    <h3><b>STEP 4</b>　データ保護（削除ブロック・1回だけ／おすすめ）</h3>
+    <p>このSQLを実行すると、サイトで使っている公開キーからは<b>データを消すことが不可能</b>になります（書く・読む・返信はこれまで通り）。消せるのはSupabase管理画面を開けるくみこだけになります。</p>
+    <pre id="sql2">drop policy if exists ailab_notes_all on ailab_notes;
+drop policy if exists ailab_advice_all on ailab_advice;
+drop policy if exists ailab_notes_sel on ailab_notes;
+drop policy if exists ailab_notes_ins on ailab_notes;
+drop policy if exists ailab_notes_upd on ailab_notes;
+drop policy if exists ailab_advice_sel on ailab_advice;
+drop policy if exists ailab_advice_ins on ailab_advice;
+create policy ailab_notes_sel on ailab_notes
+  for select to anon using (true);
+create policy ailab_notes_ins on ailab_notes
+  for insert to anon with check (true);
+create policy ailab_notes_upd on ailab_notes
+  for update to anon using (true) with check (true);
+create policy ailab_advice_sel on ailab_advice
+  for select to anon using (true);
+create policy ailab_advice_ins on ailab_advice
+  for insert to anon with check (true);</pre>
+    <button class="btn" id="copysql2">保護SQLをコピー</button>
+  </div>
+
+  <div class="step">
     <h3>完了後</h3>
     <p><a href="kanri.html">管理者ボード</a>からURLを発行して、参加者に送るだけで運用開始です。</p>
   </div>
@@ -79,6 +102,12 @@ create policy ailab_advice_all on ailab_advice
 document.getElementById("copysql").onclick=function(){
   var t=document.getElementById("sql").textContent, b=this;
   function ok(){ b.textContent="コピーしました"; setTimeout(function(){b.textContent="SQLをコピー";},1600); }
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok); }
+  else{ var ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); ok(); }
+};
+document.getElementById("copysql2").onclick=function(){
+  var t=document.getElementById("sql2").textContent, b=this;
+  function ok(){ b.textContent="コピーしました"; setTimeout(function(){b.textContent="保護SQLをコピー";},1600); }
   if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok); }
   else{ var ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); ok(); }
 };
