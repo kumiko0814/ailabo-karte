@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>初期設定｜AIカルテ</title>
+<style>
+:root{ --bg:#f1f7fb; --navy:#26405f; --navy2:#1d3149; --pink2:#bd7886; --pinkbg:#fbeef1; --text:#4a4446; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN",sans-serif; background:var(--bg); color:var(--text); line-height:1.9;}
+.wrap{max-width:640px; margin:0 auto; padding:30px 18px 60px;}
+h1{font-size:20px; color:var(--navy2);}
+p.lead{font-size:13.5px; margin-top:8px;}
+.step{background:#fff; border-radius:16px; padding:16px 18px; margin-top:14px; box-shadow:0 6px 18px rgba(38,64,95,.08);}
+.step b{color:var(--pink2);}
+.step h3{font-size:14px; color:var(--navy2); margin-bottom:6px;}
+.step p{font-size:13px;}
+pre{background:#1d3149; color:#dce8f2; border-radius:12px; padding:14px; font-size:11.5px; line-height:1.7; overflow-x:auto; margin-top:10px;}
+.btn{border:none; background:var(--pink2); color:#fff; border-radius:999px; padding:11px 24px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:10px;}
+.btn.navy{background:var(--navy);}
+#result{margin-top:10px; font-size:13px; font-weight:800;}
+a{color:var(--navy);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AIカルテ 初期設定（1回だけ）</h1>
+  <p class="lead">Re:alizeと同じSupabaseに、カルテ用の入れ物を2つ作ります。作業は「SQLを貼って実行」の1回だけです。</p>
+
+  <div class="step">
+    <h3><b>STEP 1</b>　SupabaseのSQL Editorを開く</h3>
+    <p><a href="https://supabase.com/dashboard/project/inrvprlyobghviklulcv/sql/new" target="_blank">こちらをタップして開く</a>（Re:alizeで使っているプロジェクトです）</p>
+  </div>
+
+  <div class="step">
+    <h3><b>STEP 2</b>　下のSQLをコピーして貼り付け、「Run」を押す</h3>
+    <pre id="sql">create table if not exists ailab_notes (
+  id bigserial primary key,
+  member_id text not null,
+  member_name text,
+  mood text,
+  worry text,
+  want text,
+  created_at timestamptz default now()
+);
+create table if not exists ailab_advice (
+  id bigserial primary key,
+  target_id text not null,
+  author_name text default 'くみこ',
+  message text,
+  created_at timestamptz default now()
+);
+alter table ailab_notes enable row level security;
+alter table ailab_advice enable row level security;
+drop policy if exists ailab_notes_all on ailab_notes;
+create policy ailab_notes_all on ailab_notes
+  for all to anon using (true) with check (true);
+drop policy if exists ailab_advice_all on ailab_advice;
+create policy ailab_advice_all on ailab_advice
+  for all to anon using (true) with check (true);</pre>
+    <button class="btn" id="copysql">SQLをコピー</button>
+  </div>
+
+  <div class="step">
+    <h3><b>STEP 3</b>　接続テスト</h3>
+    <p>Runが終わったら、このボタンを押してください。</p>
+    <button class="btn navy" id="test">接続テストを実行</button>
+    <div id="result"></div>
+  </div>
+
+  <div class="step">
+    <h3>完了後</h3>
+    <p><a href="admin.html">管理者ボード</a>からURLを発行して、参加者に送るだけで運用開始です。</p>
+  </div>
+</div>
+<script src="supabase_config.js"></script>
+<script>
+document.getElementById("copysql").onclick=function(){
+  var t=document.getElementById("sql").textContent, b=this;
+  function ok(){ b.textContent="コピーしました"; setTimeout(function(){b.textContent="SQLをコピー";},1600); }
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok); }
+  else{ var ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); ok(); }
+};
+document.getElementById("test").onclick=function(){
+  var r=document.getElementById("result");
+  r.style.color="#8a97a5"; r.textContent="確認中…";
+  fetch(SUPABASE_CONFIG.url+"/rest/v1/ailab_notes?limit=1",{headers:{apikey:SUPABASE_CONFIG.anonKey,Authorization:"Bearer "+SUPABASE_CONFIG.anonKey}})
+    .then(function(res){
+      if(res.ok){ r.style.color="#bd7886"; r.textContent="接続OKです。運用を始められます。"; }
+      else{ r.style.color="#26405f"; r.textContent="まだ設定が済んでいないようです（STEP2のSQLを実行してください）。"; }
+    })
+    .catch(function(){ r.style.color="#26405f"; r.textContent="通信できませんでした。電波を確認してもう一度どうぞ。"; });
+};
+</script>
+</body>
+</html>

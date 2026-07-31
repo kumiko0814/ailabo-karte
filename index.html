@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>AIカルテ｜Merone AI活用ラボ</title>
+<style>
+:root{
+  --bg:#f1f7fb; --navy:#26405f; --navy2:#1d3149;
+  --pink:#cf8f9c; --pink2:#bd7886; --pinkbg:#fbeef1; --blue:#7fb0d2; --text:#4a4446;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.9; -webkit-font-smoothing:antialiased;
+}
+.app{max-width:430px; margin:0 auto; padding:0 16px 70px;}
+.demoband{background:var(--navy2); color:#cfdcea; text-align:center; font-size:11px; padding:6px 10px; letter-spacing:.08em;}
+.top{
+  background:linear-gradient(150deg,#eaf3fa,#fbeef1);
+  margin:0 -16px; padding:26px 22px 20px; border-radius:0 0 26px 26px; text-align:center;
+}
+.top .lab{font-size:10px; color:var(--pink2); font-weight:800; letter-spacing:.22em;}
+.top h1{font-size:22px; color:var(--navy2); letter-spacing:.04em; margin-top:2px;}
+.top .who{margin-top:8px; display:inline-block; background:#fff; border-radius:999px; padding:6px 18px; font-size:12.5px; font-weight:800; color:var(--navy); box-shadow:0 4px 14px rgba(38,64,95,.1);}
+.tabs{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px;}
+.tab{border:none; background:#fff; border-radius:999px; padding:11px; font-size:13px; font-weight:800; color:#8a97a5; cursor:pointer; font-family:inherit; box-shadow:0 4px 12px rgba(38,64,95,.07);}
+.tab.on{background:linear-gradient(135deg,var(--pink2),var(--pink)); color:#fff; box-shadow:0 6px 16px rgba(189,120,134,.3);}
+.view{display:none;}
+.view.on{display:block;}
+h2{font-size:14px; color:var(--navy2); margin:18px 2px 8px;}
+h2 span{color:var(--pink2);}
+.card{background:#fff; border-radius:18px; padding:16px; box-shadow:0 6px 20px rgba(38,64,95,.08);}
+label{display:block; font-size:12.5px; font-weight:800; color:var(--navy); margin:12px 0 6px;}
+label:first-child{margin-top:0;}
+textarea{
+  width:100%; border:2px solid #e3edf5; border-radius:14px; padding:12px 14px;
+  font-size:14px; line-height:1.8; color:var(--navy2); background:#fbfdfe; font-family:inherit;
+  min-height:96px; resize:vertical;
+}
+.chips{display:flex; flex-wrap:wrap; gap:8px;}
+.chip{border:2px solid #e3edf5; background:#fbfdfe; color:var(--navy); border-radius:999px; padding:7px 14px; font-size:12.5px; font-weight:700; cursor:pointer; user-select:none;}
+.chip.on{background:var(--pinkbg); border-color:var(--pink); color:var(--pink2);}
+.btn{
+  display:block; width:100%; border:none; margin-top:14px;
+  background:linear-gradient(135deg,var(--pink2),var(--pink)); color:#fff;
+  border-radius:999px; padding:14px; font-size:15px; font-weight:800; letter-spacing:.06em;
+  box-shadow:0 8px 20px rgba(189,120,134,.35); cursor:pointer; font-family:inherit;
+}
+.btn:disabled{background:#c9d6e2; box-shadow:none;}
+.note{font-size:11px; color:#9aa7b4; margin-top:8px; text-align:center;}
+.ok{
+  display:none; background:var(--pinkbg); border-radius:14px; padding:14px 16px; margin-top:12px;
+  font-size:13px; font-weight:700; color:var(--navy2); text-align:center;
+}
+.hist{margin-top:8px;}
+.hitem{background:#fff; border-radius:14px; padding:12px 14px; margin-top:10px; box-shadow:0 4px 14px rgba(38,64,95,.06); font-size:12.5px;}
+.hitem .d{font-size:10.5px; color:#8a97a5; font-weight:800;}
+.hitem .mood{display:inline-block; background:var(--pinkbg); color:var(--pink2); border-radius:8px; padding:1px 9px; font-size:10.5px; font-weight:800; margin-left:6px;}
+.adv{background:#fff; border-radius:16px; padding:14px 16px; margin-top:12px; box-shadow:0 6px 18px rgba(38,64,95,.08);}
+.adv .head{display:flex; gap:10px; align-items:center; margin-bottom:6px;}
+.adv .av{width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#f78ac0,var(--pink2)); color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:15px; flex:none;}
+.adv .nm{font-size:13px; font-weight:800; color:var(--navy2);}
+.adv .dt{font-size:10.5px; color:#8a97a5; font-weight:700;}
+.adv .body{font-size:13.5px; white-space:pre-line;}
+.empty{text-align:center; font-size:12.5px; color:#9aa7b4; padding:20px 0;}
+.refresh{display:block; margin:14px auto 0; border:none; background:#fff; color:var(--navy); border-radius:999px; padding:9px 26px; font-size:12px; font-weight:800; cursor:pointer; font-family:inherit; box-shadow:0 4px 12px rgba(38,64,95,.1);}
+footer{text-align:center; font-size:10px; color:#9aa7b4; margin-top:26px; letter-spacing:.08em; line-height:2;}
+</style>
+</head>
+<body>
+<div id="demoband" class="demoband" style="display:none;">デモ画面です（実際の画面イメージ）</div>
+<div class="app">
+
+  <div class="top">
+    <div class="lab">MERONE AI活用ラボ</div>
+    <h1>AIカルテ</h1>
+    <div class="who" id="who"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-v="v_write">きろくを送る</button>
+    <button class="tab" data-v="v_adv">くみこからのアドバイス</button>
+  </div>
+
+  <!-- write -->
+  <div class="view on" id="v_write">
+    <h2>いまの気持ちを、<span>そのまま</span>どうぞ。</h2>
+    <div class="card">
+      <label>いま困っていること・感じていること</label>
+      <textarea id="worry" placeholder="例）出品の説明文に毎回30分かかって、夜にはぐったりしています。AIを使いたいけれど、何から始めればいいのか…"></textarea>
+      <label>いまの気分</label>
+      <div class="chips" id="moods"></div>
+      <label>AIでやってみたいこと（あれば）</label>
+      <textarea id="want" style="min-height:70px;" placeholder="例）説明文づくりの時短、献立づくり、在庫の管理…"></textarea>
+      <button class="btn" id="send">くみこに送る</button>
+      <div class="ok" id="okmsg">届きました。くみこが読んで、アドバイスをお返ししますね。</div>
+      <p class="note">書いた内容は、くみこだけが見られます。うまくまとまっていなくて大丈夫です。</p>
+    </div>
+    <h2>これまでの<span>きろく</span></h2>
+    <div class="hist" id="hist"><div class="empty">送ったきろくが、ここに残ります。</div></div>
+  </div>
+
+  <!-- advice -->
+  <div class="view" id="v_adv">
+    <h2>くみこからの<span>アドバイス</span></h2>
+    <div id="advlist"><div class="empty">カルテを送ると、ここにくみこからのアドバイスが届きます。</div></div>
+    <button class="refresh" id="refresh">更新する</button>
+  </div>
+
+  <footer>Merone AI活用ラボ｜AIの相棒を育成しよう</footer>
+</div>
+
+<script src="supabase_config.js"></script>
+<script>
+(function(){
+var P=new URLSearchParams(location.search);
+var UID=(P.get("u")||"").replace(/[^a-zA-Z0-9_\-]/g,"").slice(0,40);
+var NAME=(P.get("name")||"").slice(0,20);
+var DEMO=P.get("demo")==="1"||!UID||!(typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.enabled);
+var MOODS=["ワクワク","ちょっと不安","迷子ぎみ","いそがしい","たのしい"];
+var mood=null;
+
+document.getElementById("who").textContent=(NAME||"あなた")+"さんの専用ページ";
+if(DEMO) document.getElementById("demoband").style.display="block";
+
+var mbox=document.getElementById("moods");
+MOODS.forEach(function(t){
+  var c=document.createElement("span"); c.className="chip"; c.textContent=t;
+  c.onclick=function(){
+    mood=t;
+    [].forEach.call(mbox.children,function(x){x.classList.remove("on");});
+    c.classList.add("on");
+  };
+  mbox.appendChild(c);
+});
+
+function sb(path,opts){
+  return fetch(SUPABASE_CONFIG.url+"/rest/v1/"+path,Object.assign({
+    headers:{apikey:SUPABASE_CONFIG.anonKey,Authorization:"Bearer "+SUPABASE_CONFIG.anonKey,
+    "Content-Type":"application/json",Prefer:"return=representation"}},opts||{}));
+}
+function fmt(d){ var x=new Date(d); return (x.getMonth()+1)+"/"+x.getDate()+" "+("0"+x.getHours()).slice(-2)+":"+("0"+x.getMinutes()).slice(-2); }
+function esc(s){ var d=document.createElement("div"); d.textContent=s||""; return d.innerHTML; }
+
+var demoNotes=[{mood:"ちょっと不安",worry:"AIが気になるのに、何から始めればいいのかわからないままです。",want:"説明文づくりの時短",created_at:new Date(Date.now()-86400000).toISOString()}];
+var demoAdv=[
+{author_name:"くみこ",message:"カルテ、読みました。\n何から始めるか迷っているなら、答えはひとつです。今夜、特典テンプレ②に商品情報を入れて、説明文を1本だけ作ってみてください。5分で終わります。\nあなたの場合、最初の相棒はChatGPTよりClaudeが合っています。長い文章の下書きが得意だからです。",created_at:new Date(Date.now()-43200000).toISOString()},
+{author_name:"くみこ",message:"AIとの付き合い方について、ひとつだけ。\n全部覚えようとしなくて大丈夫です。まずは「説明文」と「献立」の2つだけAIに渡してみてください。それだけで週2時間は浮きます。浮いた時間は、お子さんとどうぞ。",created_at:new Date(Date.now()-3600000).toISOString()}
+];
+
+function renderHist(list){
+  var h=document.getElementById("hist");
+  if(!list.length){ h.innerHTML='<div class="empty">送ったきろくが、ここに残ります。</div>'; return; }
+  h.innerHTML="";
+  list.forEach(function(n){
+    var e=document.createElement("div"); e.className="hitem";
+    e.innerHTML='<span class="d">'+fmt(n.created_at)+'</span>'+(n.mood?'<span class="mood">'+esc(n.mood)+'</span>':'')+
+      '<div>'+esc(n.worry)+'</div>'+(n.want?'<div style="color:#8a97a5;">やってみたい：'+esc(n.want)+'</div>':'');
+    h.appendChild(e);
+  });
+}
+function renderAdv(list){
+  var a=document.getElementById("advlist");
+  if(!list.length){ a.innerHTML='<div class="empty">カルテを送ると、ここにくみこからのアドバイスが届きます。</div>'; return; }
+  a.innerHTML="";
+  list.forEach(function(m){
+    var e=document.createElement("div"); e.className="adv";
+    e.innerHTML='<div class="head"><span class="av">く</span><div><div class="nm">'+esc(m.author_name||"くみこ")+'</div><div class="dt">'+fmt(m.created_at)+'</div></div></div>'+
+      '<div class="body">'+esc(m.message)+'</div>';
+    a.appendChild(e);
+  });
+}
+
+function loadAll(){
+  if(DEMO){ renderHist(demoNotes); renderAdv(demoAdv); return; }
+  sb("ailab_notes?member_id=eq."+UID+"&order=created_at.desc&limit=20").then(function(r){return r.json();})
+    .then(function(j){ if(Array.isArray(j)) renderHist(j); }).catch(function(){});
+  sb("ailab_advice?target_id=eq."+UID+"&order=created_at.desc&limit=50").then(function(r){return r.json();})
+    .then(function(j){ if(Array.isArray(j)) renderAdv(j); }).catch(function(){});
+}
+
+document.getElementById("send").onclick=function(){
+  var w=document.getElementById("worry").value.trim();
+  if(!w){ document.getElementById("worry").focus(); return; }
+  var btn=this; btn.disabled=true;
+  var rec={member_id:UID||"demo",member_name:NAME,mood:mood,worry:w,want:document.getElementById("want").value.trim()};
+  function done(){
+    document.getElementById("okmsg").style.display="block";
+    document.getElementById("worry").value=""; document.getElementById("want").value="";
+    btn.disabled=false;
+    setTimeout(function(){ document.getElementById("okmsg").style.display="none"; },4000);
+    loadAll();
+  }
+  if(DEMO){ demoNotes.unshift({mood:rec.mood,worry:rec.worry,want:rec.want,created_at:new Date().toISOString()}); done(); return; }
+  sb("ailab_notes",{method:"POST",body:JSON.stringify(rec)}).then(function(){ done(); })
+    .catch(function(){ btn.disabled=false; alert("送信できませんでした。電波のよいところでもう一度お試しください。"); });
+};
+document.getElementById("refresh").onclick=loadAll;
+document.querySelectorAll(".tab").forEach(function(t){
+  t.onclick=function(){
+    document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("on");});
+    document.querySelectorAll(".view").forEach(function(x){x.classList.remove("on");});
+    t.classList.add("on");
+    document.getElementById(t.getAttribute("data-v")).classList.add("on");
+    if(t.getAttribute("data-v")==="v_adv") loadAll();
+  };
+});
+loadAll();
+})();
+</script>
+</body>
+</html>
