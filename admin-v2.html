@@ -91,6 +91,14 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
 .icol .nm{font-size:14.5px; font-weight:800; color:var(--navy2);}
 .icol .id{font-size:10px; color:#9aa7b4; font-weight:700;}
 .mood{display:inline-block; background:var(--pinkbg); color:var(--pink2); border-radius:8px; padding:1px 9px; font-size:10px; font-weight:800; margin-top:4px;}
+.reply{margin-top:10px; width:100%;}
+.reply textarea{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; padding:10px 12px; font-size:13px; line-height:1.8; color:var(--navy2); background:#fbfcfe; font-family:inherit; min-height:76px; resize:vertical;}
+.reply .sbtn{border:none; background:linear-gradient(135deg,var(--pink3),var(--pink)); color:#fff; border-radius:999px; padding:9px 22px; font-size:12px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:8px;}
+.reply .sentok{display:none; font-size:11.5px; color:var(--pink2); font-weight:800; margin-top:6px;}
+.advsent{margin-top:8px; background:var(--bg2); border-radius:12px; padding:9px 12px; font-size:11.5px; white-space:pre-line; width:100%;}
+.advsent b{color:var(--pink2);}
+.subbtn{border:1.5px solid #e3e9f0; background:#fff; color:var(--navy); border-radius:999px; padding:9px 18px; font-size:12px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:10px; margin-right:8px;}
+.empty2{text-align:center; font-size:12.5px; color:#9aa7b4; padding:26px 0;}
 .ibody{flex:1; min-width:0;}
 .ibody .tx{font-size:13.5px; color:var(--text);}
 .ibody .wt{font-size:11.5px; color:#9aa7b4; margin-top:2px;}
@@ -128,7 +136,7 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
 </style>
 </head>
 <body>
-<div class="mockband">ニュービジュアル版モック（デザイン確認用・データはダミー）</div>
+<div id="demoband" class="mockband" style="display:none;">デモ表示（ダミーデータ）</div>
 
 <div class="mtop">
   <div class="t">
@@ -194,7 +202,13 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
         </div>
         <button class="gbtn" id="gen"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>URLを発行</button>
         <div class="urlbox" id="genurl"></div>
-        <p class="note">発行したURLをLINEで本人に送るだけで、専用ページが使えるようになります。</p>
+        <div id="genbtns" style="display:none;">
+          <button class="subbtn" id="copyurl">URLをコピー</button>
+          <button class="subbtn" id="copyline">LINE送付文をコピー</button>
+          <a class="subbtn" id="openurl" target="_blank" style="text-decoration:none; display:inline-block;">動作確認で開く</a>
+        </div>
+        <p class="note">個別発行は例外対応用です。ふだんは下の「全員向け案内文」を一斉送信すれば、参加者が自分で専用ページを作れます（あなたの作業ゼロ）。</p>
+        <button class="subbtn" id="copystart" style="background:var(--pinkbg); border-color:var(--pink); color:var(--pink2);">全員向け：自己発行の案内文をコピー</button>
       </div>
 
       <div class="hito">
@@ -209,32 +223,7 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
         <h2>カルテ受信ボックス</h2><span class="cnt">全4件</span>
         <button class="rl">⟳ 最新に更新</button>
       </div>
-      <div class="ilist">
-        <div class="item">
-          <span class="ava a1"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c1-4 4.2-6 8-6s7 2 8 6z"/></svg></span>
-          <div class="icol"><div class="nm">ゆき</div><div class="id">yuki01</div><span class="mood">ちょっと不安</span></div>
-          <div class="ibody"><div class="tx">出品までに時間がかかりすぎて、心も体も疲れてしまいました。AIで楽になるなら使いたいのですが、何から始めればいいのか…</div><div class="wt">やってみたい：説明文づくりの時短、在庫の管理</div></div>
-          <div class="iright"><span class="dt">7/31 14:15</span><span class="advpill">1件のアドバイス</span></div>
-        </div>
-        <div class="item">
-          <span class="ava a2"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c1-4 4.2-6 8-6s7 2 8 6z"/></svg></span>
-          <div class="icol"><div class="nm">まりこ</div><div class="id">mariko02</div><span class="mood">迷子ぎみ</span></div>
-          <div class="ibody"><div class="tx">ChatGPTとGeminiを入れてはみたものの、答えがふわっとしていて結局使わなくなりました。頼み方が悪いのだと思います。</div><div class="wt">やってみたい：1週間の献立と買い物リストづくり</div></div>
-          <div class="iright"><span class="dt">7/31 13:15</span><span class="advpill">1件のアドバイス</span></div>
-        </div>
-        <div class="item">
-          <span class="ava a3"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c1-4 4.2-6 8-6s7 2 8 6z"/></svg></span>
-          <div class="icol"><div class="nm">しほ</div><div class="id">shiho03</div><span class="mood">いそがしい</span></div>
-          <div class="ibody"><div class="tx">リサーチに毎回20〜30分かかっています。子どもが寝たあとの時間しかないので、ここを短くしたいです。</div><div class="wt">やってみたい：リサーチの時短</div></div>
-          <div class="iright"><span class="dt">7/30 16:15</span><span class="advpill">1件のアドバイス</span></div>
-        </div>
-        <div class="item">
-          <span class="ava a4"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c1-4 4.2-6 8-6s7 2 8 6z"/></svg></span>
-          <div class="icol"><div class="nm">かなこ</div><div class="id">kanako04</div><span class="mood">ワクワク</span></div>
-          <div class="ibody"><div class="tx">自分の講座を販売するためにSNS発信を始めたいです。投稿づくりにAIを使ってみたいのですが、自分に合うやり方が知りたいです。</div><div class="wt">やってみたい：SNS投稿づくりの仕組み化</div></div>
-          <div class="iright"><span class="dt">7/29 16:15</span><span class="advpill">1件のアドバイス</span></div>
-        </div>
-      </div>
+      <div class="ilist" id="ilist"><div class="empty2">読み込み中…</div></div>
     </div>
   </main>
 </div>
@@ -246,21 +235,112 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
   <div class="mn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.5 5.5l2.1 2.1M16.4 16.4l2.1 2.1M18.5 5.5l-2.1 2.1M7.6 16.4l-2.1 2.1"/></svg>設定</div>
 </div>
 
+<script src="supabase_config.js"></script>
 <script>
+(function(){
+var P=new URLSearchParams(location.search);
+var DEMO=P.get("demo")==="1"||!(typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.enabled);
+if(DEMO) document.getElementById("demoband").style.display="block";
+
+function sb(path,opts){
+  return fetch(SUPABASE_CONFIG.url+"/rest/v1/"+path,Object.assign({
+    headers:{apikey:SUPABASE_CONFIG.anonKey,Authorization:"Bearer "+SUPABASE_CONFIG.anonKey,
+    "Content-Type":"application/json",Prefer:"return=representation"}},opts||{}));
+}
+function fmt(d){ var x=new Date(d); return (x.getMonth()+1)+"/"+x.getDate()+" "+("0"+x.getHours()).slice(-2)+":"+("0"+x.getMinutes()).slice(-2); }
+function esc(s){ var d=document.createElement("div"); d.textContent=s||""; return d.innerHTML; }
+function copy(t,btn,label){
+  function ok(){ btn.textContent="コピーしました"; setTimeout(function(){btn.textContent=label;},1600); }
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok,fb); }else fb();
+  function fb(){ var ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");}catch(e){} ta.remove(); ok(); }
+}
+function base(){ return location.href.replace(/[^/]*(\?.*)?$/,""); }
+
+/* mode chips */
+var gmode="live";
 document.querySelectorAll(".chips .chip").forEach(function(c){
   c.onclick=function(){
+    gmode=(c.textContent.indexOf("デモ")>=0)?"demo":"live";
     c.parentNode.querySelectorAll(".chip").forEach(function(x){x.classList.remove("on");});
     c.classList.add("on");
   };
 });
+
+/* URL発行（例外対応用） */
 document.getElementById("gen").onclick=function(){
-  var id=(document.getElementById("gid").value||"yuki01").replace(/[^a-zA-Z0-9_\-]/g,"");
-  var nm=(document.getElementById("gname").value||"ゆき").trim();
-  var base=location.href.replace(/[^/]*(\?.*)?$/,"");
-  var box=document.getElementById("genurl");
-  box.style.display="block";
-  box.textContent=base+"index.html?u="+id+"&name="+encodeURIComponent(nm);
+  var id=(document.getElementById("gid").value||"").replace(/[^a-zA-Z0-9_\-]/g,"");
+  var nm=(document.getElementById("gname").value||"").trim();
+  if(!id||!nm){ alert("IDと表示名を入れてください"); return; }
+  var url=base()+"index.html?u="+id+"&name="+encodeURIComponent(nm)+(gmode==="demo"?"&demo=1":"");
+  var box=document.getElementById("genurl"); box.style.display="block"; box.textContent=url;
+  document.getElementById("genbtns").style.display="block";
+  document.getElementById("openurl").href=url;
+  document.getElementById("copyurl").onclick=function(){ copy(url,this,"URLをコピー"); };
+  document.getElementById("copyline").onclick=function(){
+    copy(nm+"さん\nMerone AI活用ラボの「AIカルテ」、"+nm+"さん専用ページができました☺️\n\n▼専用URL\n"+url+"\n\nいま困っていること・感じていることを、そのまま書いて送ってください。くみこが読んで、アドバイスをお返しします。",this,"LINE送付文をコピー");
+  };
 };
+
+/* 全員向け案内文 */
+document.getElementById("copystart").onclick=function(){
+  copy("【AI活用ラボ】あなた専用の「AIカルテ」ページができました☺️\n\n▼こちらから30秒で作れます\n"+base()+"start.html\n\nお名前と、お申込みのメールアドレスを入れるだけです。\n困ったこと・感じていることを書いて送ってもらえたら、\nくみこが読んで、あなたに合うAIの使い方をお返しします。",this,"全員向け：自己発行の案内文をコピー");
+};
+
+/* inbox */
+var demoNotes=[
+{member_id:"yuki01",member_name:"ゆき",mood:"ちょっと不安",worry:"出品までに時間がかかりすぎて、心も体も疲れてしまいました。AIで楽になるなら使いたいのですが、何から始めればいいのか…",want:"説明文づくりの時短、在庫の管理",created_at:new Date(Date.now()-7200000).toISOString()},
+{member_id:"mariko02",member_name:"まりこ",mood:"迷子ぎみ",worry:"ChatGPTとGeminiを入れてはみたものの、答えがふわっとしていて結局使わなくなりました。頼み方が悪いのだと思います。",want:"1週間の献立と買い物リストづくり",created_at:new Date(Date.now()-10800000).toISOString()},
+{member_id:"shiho03",member_name:"しほ",mood:"いそがしい",worry:"リサーチに毎回20〜30分かかっています。子どもが寝たあとの時間しかないので、ここを短くしたいです。",want:"リサーチの時短",created_at:new Date(Date.now()-86400000).toISOString()},
+{member_id:"kanako04",member_name:"かなこ",mood:"ワクワク",worry:"自分の講座を販売するためにSNS発信を始めたいです。投稿づくりにAIを使ってみたいのですが、自分に合うやり方が知りたいです。",want:"SNS投稿づくりの仕組み化",created_at:new Date(Date.now()-172800000).toISOString()}
+];
+var demoAdv={yuki01:[{message:"ゆきさん、まずは説明文だけAIに渡しましょう。特典テンプレ②に商品情報を貼るだけ。今夜1本だけ試してみてください。",created_at:new Date(Date.now()-3600000).toISOString()}]};
+
+function renderInbox(notes,advMap){
+  var box=document.getElementById("ilist"); box.innerHTML="";
+  document.querySelector(".ihead .cnt").textContent="全"+notes.length+"件";
+  var b1=document.querySelector('.ni .bdg'); if(b1) b1.textContent=notes.length;
+  var b2=document.querySelector('.mn .b'); if(b2) b2.textContent=notes.length;
+  if(!notes.length){ box.innerHTML='<div class="empty2">まだカルテは届いていません。参加者が送信すると、ここに並びます。</div>'; return; }
+  notes.forEach(function(n,idx){
+    var e=document.createElement("div"); e.className="item"; e.style.flexWrap="wrap";
+    var advs=(advMap[n.member_id]||[]);
+    e.innerHTML='<span class="ava a'+(idx%4+1)+'"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c1-4 4.2-6 8-6s7 2 8 6z"/></svg></span>'+
+      '<div class="icol"><div class="nm">'+esc(n.member_name||n.member_id)+'</div><div class="id">'+esc(n.member_id)+'</div>'+(n.mood?'<span class="mood">'+esc(n.mood)+'</span>':'')+'</div>'+
+      '<div class="ibody"><div class="tx">'+esc(n.worry)+'</div>'+(n.want?'<div class="wt">やってみたい：'+esc(n.want)+'</div>':'')+'</div>'+
+      '<div class="iright"><span class="dt">'+fmt(n.created_at)+'</span>'+(advs.length?'<span class="advpill">'+advs.length+'件のアドバイス</span>':'')+'</div>'+
+      (advs.length?'<div class="advsent"><b>直近のアドバイス</b>\n'+esc(advs[0].message)+'</div>':'')+
+      '<div class="reply"><textarea placeholder="'+esc(n.member_name||"")+'さんへのアドバイス（どんなAIとの付き合い方がよいか・どのAIが合うか・最初の一歩）"></textarea>'+
+      '<button class="sbtn">アドバイスを送る</button><div class="sentok">送信しました。本人のページと分析に反映されます。</div></div>';
+    var ta=e.querySelector("textarea"), sbtn=e.querySelector(".sbtn"), okm=e.querySelector(".sentok");
+    sbtn.onclick=function(){
+      var msg=ta.value.trim(); if(!msg){ ta.focus(); return; }
+      sbtn.disabled=true;
+      function done(){ okm.style.display="block"; ta.value=""; sbtn.disabled=false; setTimeout(function(){okm.style.display="none";},3000); }
+      if(DEMO){ done(); return; }
+      sb("ailab_advice",{method:"POST",body:JSON.stringify({target_id:n.member_id,author_name:"くみこ",message:msg})})
+        .then(function(){ done(); })
+        .catch(function(){ sbtn.disabled=false; alert("送信できませんでした。通信環境を確認してください。"); });
+    };
+    box.appendChild(e);
+  });
+}
+function loadInbox(){
+  if(DEMO){ renderInbox(demoNotes,demoAdv); return; }
+  Promise.all([
+    sb("ailab_notes?order=created_at.desc&limit=1000").then(function(r){return r.json();}),
+    sb("ailab_advice?order=created_at.desc&limit=1000").then(function(r){return r.json();})
+  ]).then(function(res){
+    var notes=Array.isArray(res[0])?res[0]:[];
+    var advMap={};
+    (Array.isArray(res[1])?res[1]:[]).forEach(function(a){ (advMap[a.target_id]=advMap[a.target_id]||[]).push(a); });
+    renderInbox(notes,advMap);
+  }).catch(function(){
+    document.getElementById("ilist").innerHTML='<div class="empty2">読み込めませんでした。初期設定（setup.html）がまだの可能性があります。</div>';
+  });
+}
+var rl=document.querySelector(".ihead .rl"); if(rl) rl.onclick=loadInbox;
+loadInbox();
+})();
 </script>
 </body>
 </html>
