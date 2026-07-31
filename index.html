@@ -300,6 +300,7 @@ var DEMO=P.get("demo")==="1"||!UID||!(typeof SUPABASE_CONFIG!=="undefined"&&SUPA
 document.getElementById("who").textContent=(NAME||"あなた")+"さんの専用ページ";
 document.getElementById("who2").textContent=(NAME||"あなた")+"さんの専用ページ";
 if(DEMO) document.getElementById("demoband").style.display="block";
+if(UID&&P.get("demo")!=="1"){ try{ localStorage.setItem("ailab_my",JSON.stringify({id:UID,name:NAME,url:location.href.split("#")[0],t:Date.now()})); }catch(e){} }
 
 function sb(path,opts){
   return fetch(SUPABASE_CONFIG.url+"/rest/v1/"+path,Object.assign({

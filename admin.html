@@ -172,8 +172,8 @@ function renderInbox(notes,advMap){
 function loadInbox(){
   if(DEMO){ renderInbox(demoNotes,demoAdv); return; }
   Promise.all([
-    sb("ailab_notes?order=created_at.desc&limit=200").then(function(r){return r.json();}),
-    sb("ailab_advice?order=created_at.desc&limit=500").then(function(r){return r.json();})
+    sb("ailab_notes?order=created_at.desc&limit=1000").then(function(r){return r.json();}),
+    sb("ailab_advice?order=created_at.desc&limit=1000").then(function(r){return r.json();})
   ]).then(function(res){
     var notes=Array.isArray(res[0])?res[0]:[];
     var advMap={};
