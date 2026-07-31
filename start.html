@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>専用ページを作る｜MERONE AI活用ラボ</title>
+<title>専用ページを作る｜Merone AI活用ラボ</title>
 <style>
 :root{
   --bg:#fdf5f7; --navy:#26405f; --navy2:#1d3149;
@@ -54,7 +54,7 @@ footer{text-align:center; font-size:10.5px; color:#9aa7b4; margin-top:26px; lett
 </style>
 </head>
 <body>
-<div class="top"><span class="m">MERONE<small>AI活用ラボ</small></span></div>
+<div class="top"><span class="m">Merone<small>AI活用ラボ</small></span></div>
 
 <div class="wrap">
   <div class="hero">
@@ -194,6 +194,54 @@ document.getElementById("aikL").onclick=openP;
 document.getElementById("aikX").onclick=closeP;
 document.getElementById("aikBx").onclick=function(e){ e.stopPropagation(); hideB(); };
 try{ if(sessionStorage.getItem("aik_b")) hideB(); }catch(e){}
+})();
+</script>
+<!-- バグ報告ツール -->
+<style>
+#bugL{position:fixed; left:12px; bottom:16px; z-index:59; background:rgba(255,255,255,.92); border:1px solid #dfe7ee; color:#8a97a5; font-size:10.5px; font-weight:800; border-radius:999px; padding:5px 12px; cursor:pointer; letter-spacing:.04em;}
+#bugM{position:fixed; inset:0; background:rgba(29,49,73,.55); display:none; align-items:center; justify-content:center; z-index:70; padding:24px;}
+#bugM.on{display:flex;}
+#bugM .bx{background:#fff; border-radius:20px; padding:22px 20px; max-width:360px; width:100%;}
+#bugM h3{font-size:14.5px; color:#1d3149; margin-bottom:8px;}
+#bugM textarea{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; padding:11px 13px; font-size:14px; line-height:1.8; color:#1d3149; font-family:inherit; min-height:100px; resize:vertical;}
+#bugM .bb{display:flex; gap:8px; margin-top:12px;}
+#bugM button{flex:1; border:none; border-radius:999px; padding:11px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit;}
+#bugM .s{background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff;}
+#bugM .c{background:#eef2f6; color:#26405f;}
+#bugM .done{display:none; font-size:12.5px; color:#bd7886; font-weight:800; margin-top:8px; text-align:center;}
+@media(max-width:900px){ #bugL{bottom:84px;} }
+</style>
+<div id="bugL">不具合を報告</div>
+<div id="bugM"><div class="bx">
+  <h3>不具合・気になったことを教えてください</h3>
+  <textarea id="bugT" placeholder="例）送信ボタンを押しても反応しませんでした（iPhone/Safari）"></textarea>
+  <div class="bb"><button class="c" id="bugC">閉じる</button><button class="s" id="bugS">送信する</button></div>
+  <div class="done" id="bugD">届きました。ありがとうございます。すぐ確認します。</div>
+</div></div>
+<script>
+(function(){
+var U="https://inrvprlyobghviklulcv.supabase.co/rest/v1/ailab_notes";
+var K="sb_publishable_ZrCNcsRHMci-l7Fns8QtIA_X22XZGJp";
+var P=new URLSearchParams(location.search);
+var uid=(P.get("u")||"guest").replace(/[^a-zA-Z0-9_\-]/g,"");
+var demo=P.get("demo")==="1";
+var M=document.getElementById("bugM");
+document.getElementById("bugL").onclick=function(){ M.classList.add("on"); };
+document.getElementById("bugC").onclick=function(){ M.classList.remove("on"); document.getElementById("bugD").style.display="none"; };
+document.getElementById("bugS").onclick=function(){
+  var t=document.getElementById("bugT").value.trim();
+  if(!t){ document.getElementById("bugT").focus(); return; }
+  var btn=this; btn.disabled=true;
+  function done(){
+    document.getElementById("bugD").style.display="block";
+    document.getElementById("bugT").value=""; btn.disabled=false;
+    setTimeout(function(){ M.classList.remove("on"); document.getElementById("bugD").style.display="none"; },1800);
+  }
+  if(demo){ done(); return; }
+  fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+    body:JSON.stringify({member_id:"bug_入口ページ",member_name:"入口ページ｜"+uid,mood:"バグ報告",worry:t,want:location.href.slice(0,180)+" ／ "+navigator.userAgent.slice(0,140)})})
+    .then(function(){ done(); }).catch(function(){ btn.disabled=false; alert("送信できませんでした。通信環境をご確認ください。"); });
+};
 })();
 </script>
 </body>
