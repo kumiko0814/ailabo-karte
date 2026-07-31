@@ -99,6 +99,21 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
 .advsent b{color:var(--pink2);}
 .subbtn{border:1.5px solid #e3e9f0; background:#fff; color:var(--navy); border-radius:999px; padding:9px 18px; font-size:12px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:10px; margin-right:8px;}
 .empty2{text-align:center; font-size:12.5px; color:#9aa7b4; padding:26px 0;}
+.kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:16px;}
+.kpi{background:var(--bg2); border-radius:14px; padding:12px 8px; text-align:center;}
+.kpi .v{font-size:20px; font-weight:800; color:var(--navy2);}
+.kpi .v small{font-size:11px; font-weight:700;}
+.kpi .l{font-size:10px; color:#8a97a5; font-weight:800;}
+.kpi.warn{background:var(--pinkbg);}
+.kpi.warn .v{color:var(--pink3);}
+.th4{font-size:13px; color:var(--navy2); font-weight:800; margin:16px 0 6px;}
+.th4::before{content:"✦ "; color:#e8c48b;}
+.brow{display:grid; grid-template-columns:150px 1fr 40px; gap:10px; align-items:center; margin-top:8px; font-size:12px;}
+.brow .bl{font-weight:800; color:var(--navy); line-height:1.5;}
+.brow .btrack{display:block; background:#eef2f6; border-radius:999px; height:12px; overflow:hidden;}
+.brow .bfill{display:block; height:100%; border-radius:999px; background:linear-gradient(90deg,var(--blue),var(--pink));}
+.brow .bv{font-weight:800; color:#8a97a5; text-align:right; font-size:11px;}
+@media(max-width:900px){ .kpis{grid-template-columns:repeat(2,1fr);} .brow{grid-template-columns:104px 1fr 34px;} }
 .ibody{flex:1; min-width:0;}
 .ibody .tx{font-size:13.5px; color:var(--text);}
 .ibody .wt{font-size:11.5px; color:#9aa7b4; margin-top:2px;}
@@ -186,29 +201,38 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
     <div class="cols">
       <div class="card">
         <div class="chead">
-          <h2>専用URLを発行する</h2>
+          <h2>参加者の招待（自動発行）</h2>
           <div class="links"><a href="index.html?demo=1&name=%E3%83%87%E3%83%A2" target="_blank">マイページのデモ</a><a href="setup.html" target="_blank">初期設定</a></div>
         </div>
-        <div class="frow">
-          <div><label>ID（英数字）</label><input type="text" id="gid" placeholder="例）yuki01"></div>
-          <div><label>表示名</label><input type="text" id="gname" placeholder="例）ゆき"></div>
+        <p style="font-size:12.5px; margin-top:8px;">参加者は下の入口URLから<b>自分で専用ページを作ります</b>（名前＋申込メール）。くみこの作業は、案内文を一度オープンチャットに貼るだけです。</p>
+        <div class="urlbox" style="display:block;" id="starturl"></div>
+        <button class="gbtn" id="copystart" style="margin-top:12px;"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>全員向けの案内文をコピー</button>
+        <div style="margin-top:4px;">
+          <button class="subbtn" id="copystarturl">入口URLだけコピー</button>
+          <a class="subbtn" href="start.html" target="_blank" style="text-decoration:none; display:inline-block;">入口を開いて確認</a>
         </div>
-        <div class="mode">
-          <label>モード</label>
-          <div class="chips">
-            <span class="chip on">本番用</span>
-            <span class="chip">体験デモ用</span>
+        <details style="margin-top:14px; background:var(--bg2); border-radius:14px; padding:2px 14px 10px;">
+          <summary style="font-size:12.5px; font-weight:800; color:var(--navy); cursor:pointer; padding:10px 0 6px;">個別にURLを発行する（例外対応用）</summary>
+          <div class="frow">
+            <div><label>ID（英数字）</label><input type="text" id="gid" placeholder="例）yuki01"></div>
+            <div><label>表示名</label><input type="text" id="gname" placeholder="例）ゆき"></div>
           </div>
-        </div>
-        <button class="gbtn" id="gen"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>URLを発行</button>
-        <div class="urlbox" id="genurl"></div>
-        <div id="genbtns" style="display:none;">
-          <button class="subbtn" id="copyurl">URLをコピー</button>
-          <button class="subbtn" id="copyline">LINE送付文をコピー</button>
-          <a class="subbtn" id="openurl" target="_blank" style="text-decoration:none; display:inline-block;">動作確認で開く</a>
-        </div>
-        <p class="note">個別発行は例外対応用です。ふだんは下の「全員向け案内文」を一斉送信すれば、参加者が自分で専用ページを作れます（あなたの作業ゼロ）。</p>
-        <button class="subbtn" id="copystart" style="background:var(--pinkbg); border-color:var(--pink); color:var(--pink2);">全員向け：自己発行の案内文をコピー</button>
+          <div class="mode">
+            <label>モード</label>
+            <div class="chips">
+              <span class="chip on">本番用</span>
+              <span class="chip">体験デモ用</span>
+            </div>
+          </div>
+          <button class="gbtn" id="gen" style="margin-top:12px;"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>URLを発行</button>
+          <div class="urlbox" id="genurl"></div>
+          <div id="genbtns" style="display:none;">
+            <button class="subbtn" id="copyurl">URLをコピー</button>
+            <button class="subbtn" id="copyline">LINE送付文をコピー</button>
+            <a class="subbtn" id="openurl" target="_blank" style="text-decoration:none; display:inline-block;">動作確認で開く</a>
+          </div>
+          <p class="note">メールアドレスがわからない方など、例外時だけ使ってください。</p>
+        </details>
       </div>
 
       <div class="hito">
@@ -220,8 +244,15 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
 
     <div class="inboxwrap">
       <div class="ihead">
+        <h2>みんなの傾向</h2><span class="cnt" id="tnote"></span>
+      </div>
+      <div class="ilist" style="padding:20px 22px;" id="trend"><div class="empty2">カルテが届くと、ここに全体の傾向が表示されます。</div></div>
+    </div>
+
+    <div class="inboxwrap">
+      <div class="ihead">
         <h2>カルテ受信ボックス</h2><span class="cnt">全4件</span>
-        <button class="rl">⟳ 最新に更新</button>
+        <button class="rl" id="csvbtn" style="margin-left:auto;">CSVでダウンロード</button><button class="rl" style="margin-left:8px;">⟳ 最新に更新</button>
       </div>
       <div class="ilist" id="ilist"><div class="empty2">読み込み中…</div></div>
     </div>
@@ -281,9 +312,13 @@ document.getElementById("gen").onclick=function(){
   };
 };
 
+/* 入口URL表示・コピー */
+document.getElementById("starturl").textContent=base()+"start.html";
+document.getElementById("copystarturl").onclick=function(){ copy(base()+"start.html",this,"入口URLだけコピー"); };
+
 /* 全員向け案内文 */
 document.getElementById("copystart").onclick=function(){
-  copy("【AI活用ラボ】あなた専用の「AIカルテ」ページができました☺️\n\n▼こちらから30秒で作れます\n"+base()+"start.html\n\nお名前と、お申込みのメールアドレスを入れるだけです。\n困ったこと・感じていることを書いて送ってもらえたら、\nくみこが読んで、あなたに合うAIの使い方をお返しします。",this,"全員向け：自己発行の案内文をコピー");
+  copy("【AI活用ラボ】あなた専用の「AIカルテ」ページができました☺️\n\n▼こちらから30秒で作れます\n"+base()+"start.html\n\nお名前と、お申込みのメールアドレスを入れるだけです。\n困ったこと・感じていることを書いて送ってもらえたら、\nくみこが読んで、あなたに合うAIの使い方をお返しします。",this,"全員向けの案内文をコピー");
 };
 
 /* inbox */
@@ -295,6 +330,66 @@ var demoNotes=[
 ];
 var demoAdv={yuki01:[{message:"ゆきさん、まずは説明文だけAIに渡しましょう。特典テンプレ②に商品情報を貼るだけ。今夜1本だけ試してみてください。",created_at:new Date(Date.now()-3600000).toISOString()}]};
 
+var CATS=[
+["じかん・余裕",["時間","忙し","追われ","時短","間に合","バタバタ","焦"]],
+["やり方・入口",["わからない","分からない","何から","どうすれ","使い方","初めて","はじめて","迷"]],
+["質・仕上がり",["質","安定","ふわっと","うまくいか","完成度","精度","仕上"]],
+["くり返し作業",["自動","仕組み","毎回","繰り返","面倒","手間","めんど"]],
+["お仕事（出品・発信）",["出品","説明文","リサーチ","在庫","SNS","発信","投稿","販売","売上","仕事"]],
+["暮らし・家族",["献立","家事","子ど","育児","買い物","家族","ごはん","メニュー"]],
+["気持ち・自信",["自信","疲れ","私には","不安","苦手","無理","ぐったり","しんど"]]
+];
+var HABITS=[["ブレーキ先行タイプ",["できない","無理","苦手","難しい","私には"]],["時間圧迫タイプ",["時間がな","忙し","追われ","バタバタ","焦"]],["完璧準備タイプ",["わからない","分からない","調べて","ちゃんと","全部","何から"]],["前向き挑戦タイプ",["やってみたい","楽しみ","挑戦","ワクワク","知りたい"]]];
+function countHits(text,words){ var n=0; words.forEach(function(w){ var i=-1; while((i=text.indexOf(w,i+1))>=0){ n++; } }); return n; }
+var lastNotesA=[];
+function renderTrend(notes,advMap){
+  var t=document.getElementById("trend");
+  document.getElementById("tnote").textContent=notes.length?("カルテ"+notes.length+"件から自動集計"):"";
+  if(!notes.length){ t.innerHTML='<div class="empty2">カルテが届くと、ここに全体の傾向が表示されます。</div>'; return; }
+  var members={};
+  notes.forEach(function(n){ (members[n.member_id]=members[n.member_id]||[]).push(n); });
+  var ids=Object.keys(members);
+  var week=notes.filter(function(n){ return (Date.now()-new Date(n.created_at).getTime())<7*86400000; }).length;
+  var noreply=ids.filter(function(id){ return !(advMap[id]&&advMap[id].length); }).length;
+  var h='<div class="kpis">'+
+    '<div class="kpi"><div class="v">'+ids.length+'<small>人</small></div><div class="l">参加者</div></div>'+
+    '<div class="kpi"><div class="v">'+notes.length+'<small>件</small></div><div class="l">カルテ総数</div></div>'+
+    '<div class="kpi"><div class="v">'+week+'<small>件</small></div><div class="l">直近7日</div></div>'+
+    '<div class="kpi warn"><div class="v">'+noreply+'<small>人</small></div><div class="l">未返信の方</div></div>'+
+  '</div>';
+  var all=notes.map(function(n){ return (n.worry||"")+" "+(n.want||""); }).join(" ");
+  var scored=CATS.map(function(c){ return [c[0],countHits(all,c[1])]; }).filter(function(x){return x[1]>0;});
+  scored.sort(function(a,b){return b[1]-a[1];});
+  var top=scored.slice(0,5), max=top.length?top[0][1]:1;
+  h+='<div class="th4">みんなの悩みTOP</div>';
+  top.forEach(function(x){ h+='<div class="brow"><span class="bl">'+x[0]+'</span><span class="btrack"><span class="bfill" style="width:'+Math.round(x[1]/max*100)+'%"></span></span><span class="bv">'+x[1]+'</span></div>'; });
+  var dist={};
+  ids.forEach(function(id){
+    var txt=members[id].map(function(n){ return (n.worry||"")+" "+(n.want||""); }).join(" ");
+    var best=null,bs=0;
+    HABITS.forEach(function(hb){ var s=countHits(txt,hb[1]); if(s>bs){bs=s;best=hb[0];} });
+    if(best){ dist[best]=(dist[best]||0)+1; }
+  });
+  var dk=Object.keys(dist);
+  if(dk.length){
+    dk.sort(function(a,b){return dist[b]-dist[a];});
+    var dmax=dist[dk[0]];
+    h+='<div class="th4">思考のくせの分布（人数）</div>';
+    dk.forEach(function(k){ h+='<div class="brow"><span class="bl">'+k+'</span><span class="btrack"><span class="bfill" style="width:'+Math.round(dist[k]/dmax*100)+'%"></span></span><span class="bv">'+dist[k]+'人</span></div>'; });
+  }
+  t.innerHTML=h;
+}
+function downloadCSV(){
+  if(!lastNotesA.length){ alert("データがありません"); return; }
+  var rows=[["日時","ID","名前","気分","困りごと","AIでやりたいこと"]];
+  lastNotesA.forEach(function(n){
+    rows.push([n.created_at||"",n.member_id||"",n.member_name||"",n.mood||"",(n.worry||"").replace(/\n/g," "),(n.want||"").replace(/\n/g," ")]);
+  });
+  var csv=rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(","); }).join("\n");
+  var blob=new Blob(["\ufeff"+csv],{type:"text/csv"});
+  var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="ai-karte.csv"; a.click();
+}
 function renderInbox(notes,advMap){
   var box=document.getElementById("ilist"); box.innerHTML="";
   document.querySelector(".ihead .cnt").textContent="全"+notes.length+"件";
@@ -325,7 +420,7 @@ function renderInbox(notes,advMap){
   });
 }
 function loadInbox(){
-  if(DEMO){ renderInbox(demoNotes,demoAdv); return; }
+  if(DEMO){ lastNotesA=demoNotes.slice(); renderInbox(demoNotes,demoAdv); renderTrend(demoNotes,demoAdv); return; }
   Promise.all([
     sb("ailab_notes?order=created_at.desc&limit=1000").then(function(r){return r.json();}),
     sb("ailab_advice?order=created_at.desc&limit=1000").then(function(r){return r.json();})
@@ -333,12 +428,13 @@ function loadInbox(){
     var notes=Array.isArray(res[0])?res[0]:[];
     var advMap={};
     (Array.isArray(res[1])?res[1]:[]).forEach(function(a){ (advMap[a.target_id]=advMap[a.target_id]||[]).push(a); });
-    renderInbox(notes,advMap);
+    lastNotesA=notes; renderInbox(notes,advMap); renderTrend(notes,advMap);
   }).catch(function(){
     document.getElementById("ilist").innerHTML='<div class="empty2">読み込めませんでした。初期設定（setup.html）がまだの可能性があります。</div>';
   });
 }
-var rl=document.querySelector(".ihead .rl"); if(rl) rl.onclick=loadInbox;
+document.getElementById("csvbtn").onclick=downloadCSV;
+document.querySelectorAll(".ihead .rl").forEach(function(b){ if(b.id!=="csvbtn") b.onclick=loadInbox; });
 loadInbox();
 })();
 </script>
