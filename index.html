@@ -19,11 +19,14 @@ body{
 .demoband{background:var(--navy2); color:#cfdcea; text-align:center; font-size:11px; padding:6px 10px; letter-spacing:.08em;}
 .top{
   background:linear-gradient(150deg,#eaf3fa,#fbeef1);
-  margin:0 -16px; padding:26px 22px 20px; border-radius:0 0 26px 26px; text-align:center;
+  margin:0 -16px; padding:22px 22px 16px; border-radius:0 0 26px 26px;
 }
+.topin{display:flex; align-items:center; justify-content:space-between; gap:8px; max-width:430px; margin:0 auto;}
 .top .lab{font-size:10px; color:var(--pink2); font-weight:800; letter-spacing:.22em;}
-.top h1{font-size:22px; color:var(--navy2); letter-spacing:.04em; margin-top:2px;}
-.top .who{margin-top:8px; display:inline-block; background:#fff; border-radius:999px; padding:6px 18px; font-size:12.5px; font-weight:800; color:var(--navy); box-shadow:0 4px 14px rgba(38,64,95,.1);}
+.top h1{font-size:24px; color:var(--navy2); letter-spacing:.04em; margin-top:2px;}
+.top .who{margin-top:8px; display:inline-block; background:#fff; border-radius:999px; padding:6px 16px; font-size:12px; font-weight:800; color:var(--navy); box-shadow:0 4px 14px rgba(38,64,95,.1);}
+.top .script{margin-top:8px; color:#d9899d; font-weight:800; font-size:12px; letter-spacing:.12em;}
+.topchar{width:104px; flex:none; filter:drop-shadow(0 4px 10px rgba(189,120,134,.25));}
 .tabs{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px;}
 .tab{border:none; background:#fff; border-radius:999px; padding:11px; font-size:13px; font-weight:800; color:#8a97a5; cursor:pointer; font-family:inherit; box-shadow:0 4px 12px rgba(38,64,95,.07);}
 .tab.on{background:linear-gradient(135deg,var(--pink2),var(--pink)); color:#fff; box-shadow:0 6px 16px rgba(189,120,134,.3);}
@@ -60,7 +63,8 @@ textarea{
 .hitem .mood{display:inline-block; background:var(--pinkbg); color:var(--pink2); border-radius:8px; padding:1px 9px; font-size:10.5px; font-weight:800; margin-left:6px;}
 .adv{background:#fff; border-radius:16px; padding:14px 16px; margin-top:12px; box-shadow:0 6px 18px rgba(38,64,95,.08);}
 .adv .head{display:flex; gap:10px; align-items:center; margin-bottom:6px;}
-.adv .av{width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#f78ac0,var(--pink2)); color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:15px; flex:none;}
+.adv .av{width:38px; height:38px; border-radius:50%; background:#fde7ee; color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:15px; flex:none; overflow:hidden;}
+.adv img.av{object-fit:cover; object-position:50% 6%;}
 .adv .nm{font-size:13px; font-weight:800; color:var(--navy2);}
 .adv .dt{font-size:10.5px; color:#8a97a5; font-weight:700;}
 .adv .body{font-size:13.5px; white-space:pre-line;}
@@ -74,9 +78,15 @@ footer{text-align:center; font-size:10px; color:#9aa7b4; margin-top:26px; letter
 <div class="app">
 
   <div class="top">
-    <div class="lab">MERONE AI活用ラボ</div>
-    <h1>AIカルテ</h1>
-    <div class="who" id="who"></div>
+    <div class="topin">
+      <div>
+        <div class="lab">MERONE AI活用ラボ</div>
+        <h1>AIカルテ</h1>
+        <div class="who" id="who"></div>
+        <div class="script">今日も一緒にがんばろうね♪♡</div>
+      </div>
+      <img class="topchar" src="assets/char-peace.png" alt="" onerror="this.style.display='none'">
+    </div>
   </div>
 
   <div class="tabs">
@@ -105,7 +115,7 @@ footer{text-align:center; font-size:10px; color:#9aa7b4; margin-top:26px; letter
   <!-- advice -->
   <div class="view" id="v_adv">
     <h2>くみこからの<span>アドバイス</span></h2>
-    <div id="advlist"><div class="empty">カルテを送ると、ここにくみこからのアドバイスが届きます。</div></div>
+    <div id="advlist"><div class="empty"><img src="assets/char-think.png" alt="" style="width:88px; display:block; margin:0 auto 8px;" onerror="this.style.display='none'">カルテを送ると、ここにくみこからのアドバイスが届きます。</div></div>
     <button class="refresh" id="refresh">更新する</button>
   </div>
 
@@ -163,11 +173,11 @@ function renderHist(list){
 }
 function renderAdv(list){
   var a=document.getElementById("advlist");
-  if(!list.length){ a.innerHTML='<div class="empty">カルテを送ると、ここにくみこからのアドバイスが届きます。</div>'; return; }
+  if(!list.length){ a.innerHTML='<div class="empty"><img src="assets/char-think.png" alt="" style="width:88px; display:block; margin:0 auto 8px;" onerror="this.style.display=\'none\'">カルテを送ると、ここにくみこからのアドバイスが届きます。</div>'; return; }
   a.innerHTML="";
   list.forEach(function(m){
     var e=document.createElement("div"); e.className="adv";
-    e.innerHTML='<div class="head"><span class="av">く</span><div><div class="nm">'+esc(m.author_name||"くみこ")+'</div><div class="dt">'+fmt(m.created_at)+'</div></div></div>'+
+    e.innerHTML='<div class="head"><img class="av" src="assets/char-typing.png" alt="" onerror="this.outerHTML=\'<span class=&quot;av&quot; style=&quot;background:linear-gradient(135deg,#f78ac0,var(--pink2))&quot;>く</span>\'"><div><div class="nm">'+esc(m.author_name||"くみこ")+'</div><div class="dt">'+fmt(m.created_at)+'</div></div></div>'+
       '<div class="body">'+esc(m.message)+'</div>';
     a.appendChild(e);
   });

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>AIカルテ 管理者ボード｜MERONE AI活用ラボ</title>
+<style>
+:root{
+  --bg:#fdf5f7; --bg2:#f4f7fb; --navy:#26405f; --navy2:#1d3149; --side:#232f47;
+  --pink:#cf8f9c; --pink2:#bd7886; --pink3:#c76e85; --pinkbg:#fbeef1; --blue:#7fb0d2; --text:#4a4446;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif;
+  background:linear-gradient(160deg,#fdf3f6 0%,#f4f7fb 60%,#fdf3f6 100%); color:var(--text); line-height:1.9;
+  -webkit-font-smoothing:antialiased;
+}
+.layout{display:grid; grid-template-columns:236px 1fr; min-height:100vh;}
+
+/* ===== sidebar ===== */
+.side{background:var(--navy2); color:#cfdcea; padding:26px 0 18px; display:flex; flex-direction:column;}
+.slogo{padding:0 24px 22px;}
+.slogo .m{font-size:24px; font-weight:800; letter-spacing:.14em; color:#e79ab2;}
+.slogo .l{font-size:11px; color:#aebccb; letter-spacing:.18em; margin-top:2px;}
+.nav{flex:1;}
+.ni{display:flex; align-items:center; gap:12px; padding:13px 24px; font-size:13px; font-weight:700; color:#c3cfdc; cursor:pointer; position:relative;}
+.ni svg{width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex:none;}
+.ni.on{background:linear-gradient(90deg,#a86a7c,#8d5a6b); color:#fff;}
+.ni .bdg{margin-left:auto; background:var(--pink); color:#fff; font-size:10.5px; font-weight:800; border-radius:999px; padding:1px 8px;}
+.sprof{margin-top:14px; padding:16px 20px 0; border-top:1px solid rgba(255,255,255,.1); display:flex; gap:10px; align-items:flex-start;}
+.sprof img{width:44px; height:44px; border-radius:50%; object-fit:cover; object-position:50% 6%; background:#fde7ee; flex:none;}
+.sprof .nm{font-size:13px; font-weight:800; color:#fff;}
+.sprof .rl{font-size:9.5px; color:#aebccb; line-height:1.6;}
+.sprof .mt{font-size:9.5px; color:#e7b6c4; margin-top:4px; line-height:1.7;}
+
+/* ===== main ===== */
+.main{padding:0 0 60px;}
+.hero{position:relative; padding:34px 36px 8px; overflow:hidden;}
+.eyebrow{font-size:11px; color:var(--pink2); font-weight:800; letter-spacing:.28em;}
+.hero h1{font-size:clamp(26px,3.4vw,38px); color:var(--navy2); letter-spacing:.04em; margin-top:4px;}
+.hero .sub{font-size:13px; margin-top:6px; max-width:520px;}
+.hero .char{position:absolute; right:220px; top:10px; width:170px;}
+.hero .script{position:absolute; right:40px; top:44px; color:#d9899d; font-weight:800; font-size:15px; letter-spacing:.14em; line-height:2.1; transform:rotate(-3deg); text-align:center;}
+.hero .spark{position:absolute; color:#e8c48b; font-size:18px;}
+.cols{display:grid; grid-template-columns:1fr 300px; gap:20px; padding:18px 36px 0; align-items:start;}
+
+/* url card */
+.card{background:#fff; border-radius:20px; padding:22px 24px; box-shadow:0 10px 30px rgba(38,64,95,.08);}
+.card .chead{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;}
+.card h2{font-size:16px; color:var(--navy2);}
+.card .links a{font-size:11.5px; color:var(--navy); font-weight:800; margin-left:14px;}
+.frow{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px;}
+label{display:block; font-size:12px; font-weight:800; color:var(--navy); margin-bottom:6px;}
+input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; padding:11px 14px; font-size:14px; font-weight:700; color:var(--navy2); background:#fbfcfe; font-family:inherit;}
+.mode{margin-top:14px;}
+.chips{display:flex; gap:10px;}
+.chip{border:1.5px solid #e3e9f0; background:#fff; color:var(--navy); border-radius:999px; padding:8px 22px; font-size:12.5px; font-weight:800; cursor:pointer; user-select:none;}
+.chip.on{background:linear-gradient(135deg,var(--pink3),var(--pink)); border-color:transparent; color:#fff;}
+.gbtn{
+  display:flex; align-items:center; justify-content:center; gap:8px; width:100%; border:none; margin-top:16px;
+  background:linear-gradient(135deg,var(--pink3),var(--pink)); color:#fff;
+  border-radius:999px; padding:14px; font-size:15px; font-weight:800; letter-spacing:.08em;
+  box-shadow:0 8px 22px rgba(189,120,134,.35); cursor:pointer; font-family:inherit;
+}
+.gbtn svg{width:16px; height:16px; fill:#fff;}
+.note{font-size:11px; color:#9aa7b4; margin-top:10px;}
+.urlbox{display:none; margin-top:12px; background:var(--bg2); border-radius:12px; padding:11px 14px; font-size:12px; word-break:break-all; color:var(--navy2); font-weight:700;}
+
+/* hitokoto */
+.hito{background:linear-gradient(165deg,#fbe9ee,#f7dfe7); border-radius:20px; padding:20px 18px; text-align:center; box-shadow:0 10px 30px rgba(189,120,134,.14); position:relative;}
+.hito h3{font-size:14px; color:var(--pink3); letter-spacing:.06em;}
+.hito h3::before{content:"✦ "; color:#e8c48b;}
+.hito img{width:118px; margin:10px auto 8px; display:block;}
+.hito p{font-size:12.5px; font-weight:700; color:#7c5560; line-height:2; text-align:center;}
+
+/* inbox */
+.inboxwrap{padding:24px 36px 0;}
+.ihead{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+.ihead h2{font-size:17px; color:var(--navy2);}
+.ihead .cnt{font-size:12px; color:var(--pink2); font-weight:800;}
+.ihead .rl{margin-left:auto; border:1.5px solid #e3e9f0; background:#fff; border-radius:999px; padding:8px 20px; font-size:12px; font-weight:800; color:var(--navy); cursor:pointer; font-family:inherit;}
+.ilist{background:#fff; border-radius:20px; box-shadow:0 10px 30px rgba(38,64,95,.08); margin-top:12px; overflow:hidden;}
+.item{display:flex; gap:16px; padding:18px 22px; border-top:1px solid #f0f2f6; align-items:flex-start;}
+.item:first-child{border-top:none;}
+.ava{flex:none; width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center;}
+.ava svg{width:22px; height:22px; fill:#fff;}
+.a1{background:linear-gradient(135deg,#e9a0b4,#d67d95);} .a2{background:linear-gradient(135deg,#b39ddb,#9575cd);}
+.a3{background:linear-gradient(135deg,#90bfe0,#6d9fc7);} .a4{background:linear-gradient(135deg,#f0cc7f,#e0b25c);}
+.icol{flex:none; width:88px;}
+.icol .nm{font-size:14.5px; font-weight:800; color:var(--navy2);}
+.icol .id{font-size:10px; color:#9aa7b4; font-weight:700;}
+.mood{display:inline-block; background:var(--pinkbg); color:var(--pink2); border-radius:8px; padding:1px 9px; font-size:10px; font-weight:800; margin-top:4px;}
+.ibody{flex:1; min-width:0;}
+.ibody .tx{font-size:13.5px; color:var(--text);}
+.ibody .wt{font-size:11.5px; color:#9aa7b4; margin-top:2px;}
+.iright{flex:none; text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:10px;}
+.iright .dt{font-size:11px; color:#8a97a5; font-weight:700;}
+.advpill{background:var(--pinkbg); color:var(--pink2); border-radius:999px; padding:5px 14px; font-size:11px; font-weight:800; white-space:nowrap;}
+
+/* mobile */
+.mtop{display:none;}
+.mnav{display:none;}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;}
+  .side{display:none;}
+  .mtop{display:flex; background:var(--navy2); color:#fff; padding:14px 18px 10px; align-items:center; gap:10px; position:relative;}
+  .mtop .t .m{font-size:15px; font-weight:800; letter-spacing:.1em; color:#e79ab2;}
+  .mtop .t .m small{color:#cfdcea; font-size:10px; letter-spacing:.14em; margin-left:4px;}
+  .mtop .t .h{font-size:16px; font-weight:800;}
+  .mtop img{width:64px; margin-left:auto;}
+  .mtop .burger{position:absolute; right:14px; top:12px; color:#cfdcea; font-size:20px; font-weight:800;}
+  .hero{padding:22px 18px 4px;}
+  .hero .char,.hero .script{display:none;}
+  .cols{grid-template-columns:1fr; padding:14px 18px 0;}
+  .frow{grid-template-columns:1fr;}
+  .inboxwrap{padding:20px 18px 80px;}
+  .item{flex-wrap:wrap;}
+  .icol{width:auto;}
+  .iright{flex-direction:row; width:100%; justify-content:space-between; align-items:center;}
+  .mnav{display:flex; position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid #eee; justify-content:space-around; padding:8px 4px calc(8px + env(safe-area-inset-bottom)); z-index:30;}
+  .mn{text-align:center; font-size:9.5px; font-weight:800; color:#9aa7b4; position:relative;}
+  .mn svg{width:20px; height:20px; display:block; margin:0 auto 2px; fill:none; stroke:#9aa7b4; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+  .mn.on{color:var(--pink2);} .mn.on svg{stroke:var(--pink2);}
+  .mn .b{position:absolute; top:-4px; right:2px; background:var(--pink); color:#fff; border-radius:999px; font-size:8.5px; padding:0 5px; font-weight:800;}
+}
+.mockband{background:var(--navy2); color:#cfdcea; text-align:center; font-size:11px; padding:5px 10px; letter-spacing:.08em;}
+</style>
+</head>
+<body>
+<div class="mockband">ニュービジュアル版モック（デザイン確認用・データはダミー）</div>
+
+<div class="mtop">
+  <div class="t">
+    <div class="m">MERONE<small>AI活用ラボ</small></div>
+    <div class="h">AIカルテ 管理者ボード</div>
+  </div>
+  <img src="assets/char-peace.png" alt="" onerror="this.style.display='none'">
+  <span class="burger">≡</span>
+</div>
+
+<div class="layout">
+
+  <!-- sidebar -->
+  <aside class="side">
+    <div class="slogo"><div class="m">MERONE</div><div class="l">AI活用ラボ</div></div>
+    <nav class="nav">
+      <div class="ni on"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>ダッシュボード</div>
+      <div class="ni"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>カルテ受信ボックス<span class="bdg">4</span></div>
+      <div class="ni"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>アドバイス管理</div>
+      <div class="ni"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>テンプレート管理</div>
+      <div class="ni"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17.5" cy="9" r="2.5"/><path d="M15.5 14.7c2.9.2 5 1.9 5.6 4.8"/></svg>ユーザー管理</div>
+      <div class="ni"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M21 20H3"/></svg>分析レポート</div>
+      <div class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.5 5.5l2.1 2.1M16.4 16.4l2.1 2.1M18.5 5.5l-2.1 2.1M7.6 16.4l-2.1 2.1"/></svg>設定</div>
+    </nav>
+    <div class="sprof">
+      <img src="assets/char-typing.png" alt="" onerror="this.style.display='none'">
+      <div>
+        <div class="nm">くみこ</div>
+        <div class="rl">MERONE代表<br>ウェルビーイングプランナー</div>
+        <div class="mt">女性の可能性を信じて、<br>一緒に未来をつくろう♡</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- main -->
+  <main class="main">
+    <div class="hero">
+      <span class="spark" style="left:46%; top:26px;">✦</span>
+      <span class="spark" style="right:200px; top:120px; font-size:12px;">✦</span>
+      <div class="eyebrow">MERONE AI活用ラボ</div>
+      <h1>AIカルテ 管理者ボード</h1>
+      <p class="sub">AIがあなたの代わりに、相談者に寄り添いアドバイスをお届けします。</p>
+      <img class="char" src="assets/char-typing.png" alt="" onerror="this.style.display='none'">
+      <div class="script">今日も一緒に<br>がんばろうね♪♡</div>
+    </div>
+
+    <div class="cols">
+      <div class="card">
+        <div class="chead">
+          <h2>専用URLを発行する</h2>
+          <div class="links"><a href="index.html?demo=1&name=%E3%83%87%E3%83%A2" target="_blank">マイページのデモ</a><a href="setup.html" target="_blank">初期設定</a></div>
+        </div>
+        <div class="frow">
+          <div><label>ID（英数字）</label><input type="text" id="gid" placeholder="例）yuki01"></div>
+          <div><label>表示名</label><input type="text" id="gname" placeholder="例）ゆき"></div>
+        </div>
+        <div class="mode">
+          <label>モード</label>
+          <div class="chips">
+            <span class="chip on">本番用</span>
+            <span class="chip">体験デモ用</span>
+          </div>
+        </div>
+        <button class="gbtn" id="gen"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>URLを発行</button>
+        <div class="urlbox" id="genurl"></div>
+        <p class="note">発行したURLをLINEで本人に送るだけで、専用ページが使えるようになります。</p>
+      </div>
+
+      <div class="hito">
+        <h3>くみこからのひとこと</h3>
+        <img src="assets/char-peace.png" alt="" onerror="this.style.display='none'">
+        <p>AIが24時間<br>あなたの代わりに<br>寄り添ってくれるよ♡<br><br>相談者がもっと<br>安心できる環境を<br>一緒につくろう！</p>
+      </div>
+    </div>
+
+    <div class="inboxwrap">
+      <div class="ihead">
+        <h2>カルテ受信ボックス</h2><span class="cnt">全4件</span>
+        <button class="rl">⟳ 最新に更新</button>
+      </div>
+      <div class="ilist">
+        <div class="item">
+          <span class="ava a1"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c1-4 4.2-6 8-6s7 2 8 6z"/></svg></span>
+          <div class="icol"><div class="nm">ゆき</div><div class="id">yuki01</div><span class="mood">ちょっと不安</span></div>
+          <div class="ibody"><div class="tx">出品までに時間がかかりすぎて、心も体も疲れてしまいました。AIで楽になるなら使いたいのですが、何から始めればいいのか…</div><div class="wt">やってみたい：説明文づくりの時短、在庫の管理</div></div>
+          <div class="iright"><span class="dt">7/31 14:15</span><span class="advpill">1件のアドバイス</span></div>
+        </div>
+        <div class="item">
+          <span class="ava a2"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c1-4 4.2-6 8-6s7 2 8 6z"/></svg></span>
+          <div class="icol"><div class="nm">まりこ</div><div class="id">mariko02</div><span class="mood">迷子ぎみ</span></div>
+          <div class="ibody"><div class="tx">ChatGPTとGeminiを入れてはみたものの、答えがふわっとしていて結局使わなくなりました。頼み方が悪いのだと思います。</div><div class="wt">やってみたい：1週間の献立と買い物リストづくり</div></div>
+          <div class="iright"><span class="dt">7/31 13:15</span><span class="advpill">1件のアドバイス</span></div>
+        </div>
+        <div class="item">
+          <span class="ava a3"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c1-4 4.2-6 8-6s7 2 8 6z"/></svg></span>
+          <div class="icol"><div class="nm">しほ</div><div class="id">shiho03</div><span class="mood">いそがしい</span></div>
+          <div class="ibody"><div class="tx">リサーチに毎回20〜30分かかっています。子どもが寝たあとの時間しかないので、ここを短くしたいです。</div><div class="wt">やってみたい：リサーチの時短</div></div>
+          <div class="iright"><span class="dt">7/30 16:15</span><span class="advpill">1件のアドバイス</span></div>
+        </div>
+        <div class="item">
+          <span class="ava a4"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c1-4 4.2-6 8-6s7 2 8 6z"/></svg></span>
+          <div class="icol"><div class="nm">かなこ</div><div class="id">kanako04</div><span class="mood">ワクワク</span></div>
+          <div class="ibody"><div class="tx">自分の講座を販売するためにSNS発信を始めたいです。投稿づくりにAIを使ってみたいのですが、自分に合うやり方が知りたいです。</div><div class="wt">やってみたい：SNS投稿づくりの仕組み化</div></div>
+          <div class="iright"><span class="dt">7/29 16:15</span><span class="advpill">1件のアドバイス</span></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="mnav">
+  <div class="mn on"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>ダッシュボード</div>
+  <div class="mn"><span class="b">4</span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>受信ボックス</div>
+  <div class="mn"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>アドバイス管理</div>
+  <div class="mn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.5 5.5l2.1 2.1M16.4 16.4l2.1 2.1M18.5 5.5l-2.1 2.1M7.6 16.4l-2.1 2.1"/></svg>設定</div>
+</div>
+
+<script>
+document.querySelectorAll(".chips .chip").forEach(function(c){
+  c.onclick=function(){
+    c.parentNode.querySelectorAll(".chip").forEach(function(x){x.classList.remove("on");});
+    c.classList.add("on");
+  };
+});
+document.getElementById("gen").onclick=function(){
+  var id=(document.getElementById("gid").value||"yuki01").replace(/[^a-zA-Z0-9_\-]/g,"");
+  var nm=(document.getElementById("gname").value||"ゆき").trim();
+  var base=location.href.replace(/[^/]*(\?.*)?$/,"");
+  var box=document.getElementById("genurl");
+  box.style.display="block";
+  box.textContent=base+"index.html?u="+id+"&name="+encodeURIComponent(nm);
+};
+</script>
+</body>
+</html>
