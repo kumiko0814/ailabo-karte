@@ -198,7 +198,7 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
       <div class="script">今日も一緒に<br>がんばろうね♪♡</div>
     </div>
 
-    <div class="cols">
+    <div class="cols" id="sec-invite">
       <div class="card">
         <div class="chead">
           <h2>参加者の招待（自動発行）</h2>
@@ -242,14 +242,14 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
       </div>
     </div>
 
-    <div class="inboxwrap">
+    <div class="inboxwrap" id="sec-trend">
       <div class="ihead">
         <h2>みんなの傾向</h2><span class="cnt" id="tnote"></span>
       </div>
       <div class="ilist" style="padding:20px 22px;" id="trend"><div class="empty2">カルテが届くと、ここに全体の傾向が表示されます。</div></div>
     </div>
 
-    <div class="inboxwrap">
+    <div class="inboxwrap" id="sec-inbox">
       <div class="ihead">
         <h2>カルテ受信ボックス</h2><span class="cnt">全4件</span>
         <button class="rl" id="csvbtn" style="margin-left:auto;">CSVでダウンロード</button><button class="rl" style="margin-left:8px;">⟳ 最新に更新</button>
@@ -433,6 +433,33 @@ function loadInbox(){
     document.getElementById("ilist").innerHTML='<div class="empty2">読み込めませんでした。初期設定（setup.html）がまだの可能性があります。</div>';
   });
 }
+/* サイドバー・下部ナビを機能化 */
+function scrollToSec(id){ var el=document.getElementById(id); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); }
+var NAVMAP={
+  "ダッシュボード":function(){ window.scrollTo({top:0,behavior:"smooth"}); },
+  "カルテ受信ボックス":function(){ scrollToSec("sec-inbox"); },
+  "受信ボックス":function(){ scrollToSec("sec-inbox"); },
+  "アドバイス管理":function(){ scrollToSec("sec-inbox"); },
+  "テンプレート管理":function(){ window.open("https://kumiko0814.github.io/ailabo-tokuten/","_blank"); },
+  "ユーザー管理":function(){ scrollToSec("sec-invite"); },
+  "分析レポート":function(){ scrollToSec("sec-trend"); },
+  "設定":function(){ window.open("setup.html","_blank"); }
+};
+document.querySelectorAll(".ni,.mn").forEach(function(n){
+  var label=n.textContent.replace(/[0-9]/g,"").trim();
+  if(NAVMAP[label]){
+    n.style.cursor="pointer";
+    n.onclick=function(){
+      NAVMAP[label]();
+      var group=n.classList.contains("ni")?".ni":".mn";
+      if(label!=="テンプレート管理"&&label!=="設定"){
+        document.querySelectorAll(group).forEach(function(x){x.classList.remove("on");});
+        n.classList.add("on");
+      }
+    };
+  }
+});
+
 document.getElementById("csvbtn").onclick=downloadCSV;
 document.querySelectorAll(".ihead .rl").forEach(function(b){ if(b.id!=="csvbtn") b.onclick=loadInbox; });
 loadInbox();
