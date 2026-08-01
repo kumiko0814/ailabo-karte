@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>サポート対応マニュアル｜Merone AI活用ラボ</title>
+<style>
+:root{ --bg:#f6f1f9; --navy:#26405f; --navy2:#1d3149; --pink:#cf8f9c; --pink2:#bd7886; --pinkbg:#fbeef1; --text:#4a4446; --red:#c62828; --green:#3f7d63; --greenbg:#e8f3ee; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif; background:linear-gradient(168deg,#f1eaf7 0%,#faf7fb 46%,#fbeef1 100%); color:var(--text); line-height:2; -webkit-font-smoothing:antialiased; padding-bottom:60px;}
+.wrap{max-width:680px; margin:0 auto; padding:0 18px;}
+header{background:var(--navy2); color:#fff; padding:14px 18px; text-align:center;}
+header .lg{font-size:13px; font-weight:800; letter-spacing:.14em; color:#f3cdd7;}
+header .lg i{font-style:normal; color:#cfdcea; font-weight:700; margin-left:6px; letter-spacing:.08em;}
+.hero{text-align:center; padding:30px 0 8px;}
+.hero img{width:104px;}
+.hero h1{font-size:clamp(19px,5.4vw,25px); color:var(--navy2); margin-top:4px;}
+.hero p{font-size:12.5px; color:#8a97a5; margin-top:6px;}
+.toc{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:16px 0 8px;}
+.toc a{background:#fff; border:1px solid #e2d7ec; color:var(--navy); border-radius:999px; padding:7px 14px; font-size:12px; font-weight:700; text-decoration:none;}
+.card{background:#fff; border-radius:18px; padding:20px; margin-top:18px; box-shadow:0 6px 20px rgba(38,64,95,.07); scroll-margin-top:16px;}
+.card h2{font-size:16px; color:var(--navy2); margin-bottom:10px; padding-left:10px; border-left:5px solid var(--pink2); line-height:1.6;}
+.card h3{font-size:13.5px; color:var(--pink2); margin:14px 0 4px;}
+.card p, .card li{font-size:13.5px;}
+.card ol, .card ul{padding-left:22px;}
+.st{display:flex; gap:12px; margin-top:12px; font-size:13.5px; line-height:1.9;}
+.st i{flex:none; width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff; font-style:normal; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:13px; margin-top:4px;}
+.tpl{background:#fdf8fa; border:1.5px solid #f0d9df; border-radius:12px; padding:13px 14px; font-size:13px; line-height:1.9; white-space:pre-wrap; color:var(--navy2); margin-top:8px;}
+.cp{border:none; background:var(--pink2); color:#fff; border-radius:999px; padding:8px 20px; font-size:12px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:8px;}
+.ok{background:var(--greenbg); border-radius:12px; padding:10px 14px; font-size:13px; margin-top:10px;}
+.ok b{color:var(--green);}
+.ng{background:var(--pinkbg); border-radius:12px; padding:10px 14px; font-size:13px; margin-top:10px;}
+.ng b{color:var(--red);}
+.tag{display:inline-block; border-radius:999px; padding:2px 12px; font-size:11.5px; font-weight:800; margin:0 2px;}
+.tag.g{background:var(--greenbg); color:var(--green);}
+.tag.y{background:#fdf3e0; color:#9a6b1f;}
+.tag.r{background:var(--pinkbg); color:var(--red);}
+.note{font-size:12px; color:#8a97a5; margin-top:6px;}
+footer{text-align:center; font-size:11px; color:#9aa7b4; margin-top:40px; letter-spacing:.06em;}
+a{color:var(--navy); font-weight:700;}
+</style>
+</head>
+<body>
+
+<header><span class="lg">Merone<i>AI活用ラボ</i></span></header>
+
+<div class="wrap">
+  <div class="hero">
+    <img src="https://kumiko0814.github.io/kumiko-illust/lab-typing.png" alt="" style="width:104px; height:104px; border-radius:50%; object-fit:cover; object-position:50% 6%; background:#fde7ee;" onerror="this.style.display='none'">
+    <h1>サポート対応マニュアル</h1>
+    <p>困っている生徒さんを、安心させてあげるための手順書です</p>
+  </div>
+
+  <div class="toc">
+    <a href="#c0">はじめに</a>
+    <a href="#c1">決済できない</a>
+    <a href="#c2">スクショが通らない</a>
+    <a href="#c3">オプチャに入れない</a>
+    <a href="#c4">その他の質問</a>
+    <a href="#c5">対応の終わり方</a>
+    <a href="#c6">くみこに回すもの</a>
+  </div>
+
+  <div class="card" id="c0">
+    <h2>はじめに：あなたの役割と、最初に用意するもの</h2>
+    <p>あなたの役割は2つだけです。<b>①困っている生徒さんを安心させること</b>、<b>②決まった手順どおりに案内すること</b>。判断に迷ったら、自分で決めずにくみこに回してください。それが正解です。</p>
+    <h3>最初に、くみこから受け取っておくもの（4つ）</h3>
+    <ol>
+      <li><b>台帳スプレッドシートの閲覧権限</b>（<a href="https://docs.google.com/spreadsheets/d/1_OSOe-YfZ_zRgGJpBUClA-a6OguyIzGU5ynubOPZHOc/edit" target="_blank" rel="noopener">台帳を開く</a>。開けなければ権限をもらってください）</li>
+      <li><b>オープンチャットの招待リンク</b>（LINEで受け取り、自分のメモに保存。<b style="color:var(--red);">配信やSNSに載せるのは禁止</b>です）</li>
+      <li><b>プロラインの操作方法</b>（返信の送り方・タグの付け方）</li>
+      <li>ブックマーク2つ：<a href="https://kumiko0814.github.io/ailabo-faq/" target="_blank" rel="noopener">よくあるご質問</a>／<a href="https://kumiko0814.github.io/merone-ai-labo/" target="_blank" rel="noopener">申込ページ</a></li>
+    </ol>
+    <h3>台帳の見かた（これだけ覚えれば大丈夫）</h3>
+    <p>台帳の「申込」シートに、申込んだ人が1行ずつ並んでいます。見るのは<b>「状態」の列</b>だけです。</p>
+    <p>
+      <span class="tag g">verified</span>＝お支払い確認OK。案内して大丈夫<br>
+      <span class="tag y">review</span>＝機械が読めなかっただけ。スクショ列のリンクを開いて、金額（45,900円か43,500円）が写っていればOK扱い<br>
+      <span class="tag r">rejected</span>＝確認できていない。スクショを送り直してもらう
+    </p>
+    <p class="note">人を探すときは、台帳の「お名前」か「LINE名」の列を、LINEで表示されている名前と見比べてください。</p>
+  </div>
+
+  <div class="card" id="c1">
+    <h2>①「決済がうまくできません」と言われたら</h2>
+    <div class="st"><i>1</i>まずこの返信を送って、材料を集めます。</div>
+    <div class="tpl" id="t1">ご連絡ありがとうございます。ご不便をおかけしてすみません☺️
+確認いたしますので、次の2つをこのままLINEに送ってください。
+
+①出てきた画面のスクリーンショット
+②お申込みのお名前
+
+順番に確認して、必ずお返事いたします。</div>
+    <button class="cp" data-t="t1">この返信をコピー</button>
+    <div class="st"><i>2</i>スクショが届いたら、内容で分けます。</div>
+    <ul>
+      <li><b>クレジットカード（PayPal）のエラー画面</b> → 下の返信で銀行振込を案内します。</li>
+      <li><b>振込は終わっている画面</b> → そのスクショを申込ページでアップし直してもらいます（②の手順へ）。</li>
+    </ul>
+    <div class="tpl" id="t2">お調べしました。カード側で決済が止まってしまうことがあるため、<b>銀行振込</b>でのお手続きが確実です。
+
+▼申込ページの「銀行振込」タブに振込先が表示されます
+https://kumiko0814.github.io/merone-ai-labo/
+
+振込金額は43,500円（税込）です。お振込みのあと、完了画面のスクショを同じページでアップしてくださいね☺️</div>
+    <button class="cp" data-t="t2">この返信をコピー</button>
+    <div class="ng"><b>できないこと：</b>金額を変える・期限を延ばす・返金の約束。この話が出たら、そのままくみこに回してください。</div>
+  </div>
+
+  <div class="card" id="c2">
+    <h2>②「スクショが確認できませんでした、と出ます」と言われたら</h2>
+    <div class="st"><i>1</i>まずこの返信を送ります。</div>
+    <div class="tpl" id="t3">ご連絡ありがとうございます☺️
+自動チェックは「金額がはっきり写っている完了画面」だと、すっと通ります。
+
+・お支払い金額（45,900円または43,500円）が見える画面
+・またはお支払い完了メールの画面
+
+どちらかのスクリーンショットを、もう一度申込ページでアップしてみてください。
+
+▼申込ページ
+https://kumiko0814.github.io/merone-ai-labo/</div>
+    <button class="cp" data-t="t3">この返信をコピー</button>
+    <div class="st"><i>2</i>それでも通らない場合は、台帳でその方の行を探し、スクショ列のリンクを開いて目で確認します。金額が確認できたら、③の手順（オプチャ案内）に進んでください。</div>
+    <div class="ok"><b>安心材料：</b>本当に支払った方が締め出されることはありません。機械が読めない場合は「review（要確認）」として通る仕組みになっています。</div>
+  </div>
+
+  <div class="card" id="c3">
+    <h2>③「オープンチャットに入れません」と言われたら</h2>
+    <p>いちばん多いご相談です。順番にやれば2分で終わります。</p>
+    <div class="st"><i>1</i><b>台帳でその方を探して、お支払いを確認</b>します（お名前かLINE名で探す→状態がverified、またはreviewでスクショの金額OK）。</div>
+    <div class="st"><i>2</i>確認できたら、この返信に<b>くみこから受け取った招待リンク</b>を貼って送ります。</div>
+    <div class="tpl" id="t4">ご連絡ありがとうございます☺️
+お支払いの確認がとれていますので、ご安心ください。
+
+こちらから直接ご参加いただけます。
+
+▼Merone生限定🫶🏻 AI活用らぼ（オープンチャット）
+（ここに招待リンクを貼る）
+
+参加できたら、ひとことスタンプを送ってもらえるとうれしいです✨</div>
+    <button class="cp" data-t="t4">この返信をコピー</button>
+    <div class="st"><i>3</i>台帳でお支払いが見つからない場合は、この返信を送ります。</div>
+    <div class="tpl" id="t5">ご連絡ありがとうございます☺️
+お支払いの確認がまだとれていないようです。お手数ですが、お支払い完了画面のスクリーンショットを、このLINEに送っていただけますか？
+
+確認できしだい、すぐにご案内いたします。</div>
+    <button class="cp" data-t="t5">この返信をコピー</button>
+    <div class="ng"><b>ぜったいに守ること：</b>招待リンクは、台帳でお支払いを確認できた方に<b>1人ずつ</b>送ります。一斉配信・グループ・SNSには載せません（お支払い前の方が入れてしまうため）。</div>
+  </div>
+
+  <div class="card" id="c4">
+    <h2>④ その他の質問（勉強会いつ？・URL忘れた・など）</h2>
+    <p>内容の質問は、ほとんど「よくあるご質問」に答えがあります。探して答えてもよいですし、忙しいときはこの返信でも大丈夫です。</p>
+    <div class="tpl" id="t6">ご質問ありがとうございます☺️
+こちらのページに、わかりやすくまとまっています。
+
+▼よくあるご質問
+https://kumiko0814.github.io/ailabo-faq/
+
+見ても解決しないときは、遠慮なくまたご連絡くださいね✨</div>
+    <button class="cp" data-t="t6">この返信をコピー</button>
+    <p class="note">「専用ページのURLを忘れた」→ 入口ページでもう一度同じメールアドレスを入れると同じページに戻れます（FAQに載っています）。</p>
+  </div>
+
+  <div class="card" id="c5">
+    <h2>⑤ 対応が終わったら（毎回2つだけ）</h2>
+    <ol>
+      <li>プロラインで、その方に<b>タグ「完了」</b>を付ける（決済が確認できた方のみ）</li>
+      <li>台帳のその方の行の<b>「タグ付済」列</b>に「タグ済＋日付」と入力する</li>
+    </ol>
+    <p class="note">この2つをやっておくと、対応もれ・二重対応がなくなります。</p>
+  </div>
+
+  <div class="card" id="c6">
+    <h2>⑥ すぐにくみこへ回すもの（自分で答えない）</h2>
+    <ul>
+      <li>返金・キャンセルの相談（規約上できませんが、<b>回答はくみこから</b>）</li>
+      <li>支払った金額が違う・二重で払ったかもしれない、という相談</li>
+      <li>怒っている方・急ぎで困っている方</li>
+      <li>この手順書に載っていないこと全部</li>
+    </ul>
+    <p>回すときは「<b>お名前＋受付番号＋スクショ＋ここまでやったこと</b>」をセットで送ると、くみこが一瞬で判断できます。</p>
+    <div class="ok"><b>合言葉：</b>迷ったら回す。回すのは失敗ではなく、いちばん安全な正解です。</div>
+  </div>
+
+  <footer>Merone AI活用ラボ｜サポート対応マニュアル</footer>
+</div>
+
+<script>
+document.querySelectorAll(".cp").forEach(function(b){
+  b.onclick=function(){
+    var t=document.getElementById(b.getAttribute("data-t")).textContent;
+    function ok(){ var o=b.textContent; b.textContent="コピーしました"; setTimeout(function(){ b.textContent=o; },1500); }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok,fb); }else fb();
+    function fb(){ var ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");}catch(e){} ta.remove(); ok(); }
+  };
+});
+</script>
+
+<!-- バグ報告ツール -->
+<style>
+#bugL{position:fixed; left:12px; bottom:16px; z-index:59; background:rgba(255,255,255,.92); border:1px solid #dfe7ee; color:#8a97a5; font-size:10.5px; font-weight:800; border-radius:999px; padding:5px 12px; cursor:pointer; letter-spacing:.04em;}
+#bugM{position:fixed; inset:0; background:rgba(29,49,73,.55); display:none; align-items:center; justify-content:center; z-index:70; padding:24px;}
+#bugM.on{display:flex;}
+#bugM .bx{background:#fff; border-radius:20px; padding:22px 20px; max-width:360px; width:100%;}
+#bugM h3{font-size:14.5px; color:#1d3149; margin-bottom:8px;}
+#bugM textarea{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; padding:11px 13px; font-size:14px; line-height:1.8; color:#1d3149; font-family:inherit; min-height:100px; resize:vertical;}
+#bugM .bb{display:flex; gap:8px; margin-top:12px;}
+#bugM button{flex:1; border:none; border-radius:999px; padding:11px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit;}
+#bugM .s{background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff;}
+#bugM .c{background:#eef2f6; color:#26405f;}
+#bugM .done{display:none; font-size:12.5px; color:#bd7886; font-weight:800; margin-top:8px; text-align:center;}
+</style>
+<div id="bugL">不具合を報告</div>
+<div id="bugM"><div class="bx">
+  <h3>マニュアルの改善点・不具合を教えてください</h3>
+  <textarea id="bugT" placeholder="例）②の手順で、こういうケースはどうすればいいですか？"></textarea>
+  <div class="bb"><button class="c" id="bugC">閉じる</button><button class="s" id="bugS">送信する</button></div>
+  <div class="done" id="bugD">届きました。ありがとうございます。すぐ確認します。</div>
+</div></div>
+<script>
+(function(){
+var U="https://inrvprlyobghviklulcv.supabase.co/rest/v1/ailab_notes";
+var K="sb_publishable_ZrCNcsRHMci-l7Fns8QtIA_X22XZGJp";
+var M=document.getElementById("bugM");
+document.getElementById("bugL").onclick=function(){ M.classList.add("on"); };
+document.getElementById("bugC").onclick=function(){ M.classList.remove("on"); document.getElementById("bugD").style.display="none"; };
+document.getElementById("bugS").onclick=function(){
+  var t=document.getElementById("bugT").value.trim();
+  if(!t){ document.getElementById("bugT").focus(); return; }
+  var btn=this; btn.disabled=true;
+  fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+    body:JSON.stringify({member_id:"bug_support",member_name:"サポートマニュアル｜staff",mood:"バグ報告",worry:t,want:location.href.slice(0,180)+" ／ "+navigator.userAgent.slice(0,140)})})
+    .then(function(){
+      document.getElementById("bugD").style.display="block";
+      document.getElementById("bugT").value=""; btn.disabled=false;
+      setTimeout(function(){ M.classList.remove("on"); document.getElementById("bugD").style.display="none"; },1800);
+    }).catch(function(){ btn.disabled=false; alert("送信できませんでした。通信環境をご確認ください。"); });
+};
+})();
+</script>
+</body>
+</html>
