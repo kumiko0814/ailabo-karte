@@ -69,7 +69,7 @@ a{color:var(--navy); font-weight:700;}
     <h3>最初に、くみこから受け取っておくもの（4つ）</h3>
     <ol>
       <li><b>台帳スプレッドシートの「編集できる」権限</b>（<a href="https://docs.google.com/spreadsheets/d/1_OSOe-YfZ_zRgGJpBUClA-a6OguyIzGU5ynubOPZHOc/edit" target="_blank" rel="noopener">台帳を開く</a>。開けない・書き込めない場合は権限をもらってください）</li>
-      <li><b>オープンチャットの招待リンク</b>（LINEで受け取り、自分のメモに保存。<b style="color:var(--red);">配信やSNSに載せるのは禁止</b>です）</li>
+      <li><b>オープンチャットの招待リンク</b>は、このマニュアルの③に<b>コピーボタンで内蔵</b>されています（別途の受け取りは不要です）</li>
       <li><b>プロラインの操作方法</b>（返信の送り方・タグの付け方）</li>
       <li>ブックマーク2つ：<a href="https://kumiko0814.github.io/ailabo-faq/" target="_blank" rel="noopener">よくあるご質問</a>／<a href="https://kumiko0814.github.io/merone-ai-labo/" target="_blank" rel="noopener">申込ページ</a></li>
     </ol>
@@ -163,17 +163,19 @@ https://kumiko0814.github.io/merone-ai-labo/</div>
     <p class="note">↑これで解決しなかった場合だけ、下の手順に進みます。</p>
     <div class="ng"><b>「何度もやったけど入れない」「完了と送ったのに参加できていない」という方：</b>もう一度やり直させないでください（お客様が疲れてしまいます）。下の手順で<b>台帳で決済を確認→招待リンクを直接送って終わり</b>にします。あなたの判断で完結してOKです。</div>
     <div class="st"><i>1</i><b>台帳でその方を探して、お支払いを確認</b>します（お名前かLINE名で探す→状態がverified、またはreviewでスクショの金額OK）。</div>
-    <div class="st"><i>2</i>確認できたら、この返信に<b>くみこから受け取った招待リンク</b>を貼って送ります。</div>
+    <div class="st"><i>2</i>確認できたら、下の返信をコピーして送ります（<b>招待リンクは自動で入ります</b>）。</div>
     <div class="tpl" id="t4">ご連絡ありがとうございます☺️
 お支払いの確認がとれていますので、ご安心ください。
 
 こちらから直接ご参加いただけます。
 
 ▼Merone生限定🫶🏻 AI活用らぼ（オープンチャット）
-（ここに招待リンクを貼る）
+（招待リンクは自動で入ります）
 
 参加できたら、ひとことスタンプを送ってもらえるとうれしいです✨</div>
-    <button class="cp" data-t="t4">この返信をコピー</button>
+    <button class="cp" data-t="t4">この返信をコピー（リンク入り）</button>
+    <button class="cp" id="occp" style="background:var(--navy);">招待リンクだけをコピー</button>
+    <div class="ng"><b>招待リンクの決まり（3つ）：</b>①スタッフ自身はオープンチャットに<b>参加しません</b>（リンクをタップしない。コピーして送るだけ）②台帳で決済確認できた方に、<b>1人ずつ</b>送る③配信・SNS・グループには載せない。<span class="note">安全のため、リンクは画面に表示せずコピーボタンだけにしています。</span></div>
     <div class="st"><i>3</i>台帳でお支払いが見つからない場合は、この返信を送ります。</div>
     <div class="tpl" id="t5">ご連絡ありがとうございます☺️
 お支払いの確認がまだとれていないようです。お手数ですが、お支払い完了画面のスクリーンショットを、このLINEに送っていただけますか？
@@ -222,14 +224,22 @@ https://kumiko0814.github.io/ailabo-faq/
 </div>
 
 <script>
-document.querySelectorAll(".cp").forEach(function(b){
+var OC=atob("aHR0cHM6Ly9saW5lLm1lL3RpL2cyL1hJWjVIejJ6aGM2Z3VCbnVGaXdDejFtdV9vRkcwTUxQcnZ2ZERnP3V0bV9zb3VyY2U9aW52aXRhdGlvbiZ1dG1fbWVkaXVtPWxpbmtfY29weSZ1dG1fY2FtcGFpZ249ZGVmYXVsdA==");
+document.querySelectorAll(".cp[data-t]").forEach(function(b){
   b.onclick=function(){
     var t=document.getElementById(b.getAttribute("data-t")).textContent;
+    t=t.replace("（招待リンクは自動で入ります）", OC);
     function ok(){ var o=b.textContent; b.textContent="コピーしました"; setTimeout(function(){ b.textContent=o; },1500); }
     if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok,fb); }else fb();
     function fb(){ var ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");}catch(e){} ta.remove(); ok(); }
   };
 });
+document.getElementById("occp").onclick=function(){
+  var b=this;
+  function ok(){ b.textContent="コピーしました"; setTimeout(function(){ b.textContent="招待リンクだけをコピー"; },1500); }
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(OC).then(ok,fb); }else fb();
+  function fb(){ var ta=document.createElement("textarea"); ta.value=OC; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");}catch(e){} ta.remove(); ok(); }
+};
 </script>
 
 <!-- バグ報告ツール -->
