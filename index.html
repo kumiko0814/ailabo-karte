@@ -228,6 +228,7 @@ footer{text-align:center; font-size:11px; color:#9aa7b4; padding:34px 16px 10px;
       <div class="ni sub on" id="ni_new" data-v="v_new"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>新しいカルテ</div>
       <div class="ni" data-v="v_adv"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>アドバイス管理</div>
       <div class="ni" data-v="v_ana"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M21 20H3"/></svg>分析レポート</div>
+      <div class="ni" id="niCur"><svg viewBox="0 0 24 24"><path d="M4 4h13a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3V4z"/><path d="M20 17H7a3 3 0 0 0-3 3"/><path d="M8 8h8M8 12h5"/></svg>カリキュラム</div>
       <div class="ni" data-v="v_set"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.5 5.5l2.1 2.1M16.4 16.4l2.1 2.1M18.5 5.5l-2.1 2.1M7.6 16.4l-2.1 2.1"/></svg>設定</div>
     </nav>
     <div class="sprof">
@@ -426,6 +427,15 @@ function loadAll(){
     .then(function(j){ if(Array.isArray(j)){ j=j.filter(function(a){ return String(a.author_name||"").indexOf("draft")!==0; }); lastAdv=j; renderAdv(j); renderAnalysis(); } }).catch(function(){});
 }
 
+(function(){
+  var el=document.getElementById("niCur");
+  if(el) el.onclick=function(){
+    var home=document.querySelector('.ni[data-v="v_new"]'); if(home) home.click();
+    var c=document.getElementById("curcard");
+    if(c){ c.open=true; setTimeout(function(){ c.scrollIntoView({behavior:"smooth",block:"start"}); },80); }
+  };
+})();
+
 /* ===== カリキュラム常設 ===== */
 (function(){
   var WEEKS=[
@@ -529,6 +539,44 @@ function renderAnalysis(){
     });
   }else{ h+='<div class="habit"><p>カルテがもう少したまると、考え方のくせが見えてきます。</p></div>'; }
   h+='</div>';
+  /* 2.5) こころの天気（時系列） */
+  var chrono=lastNotes.slice().reverse();
+  var NEG=["不安","焦","疲れ","無理","しんど","つらい","辛い","できない","苦手","いっぱいいっぱい","悩"];
+  var POS=["楽しみ","ワクワク","できた","嬉しい","うれしい","やってみ","好き","挑戦","わくわく"];
+  if(chrono.length>=2){
+    var recent=chrono.slice(-6);
+    var icons=recent.map(function(n){
+      var t=(n.worry||"")+" "+(n.want||"");
+      var s=countHits(t,POS)-countHits(t,NEG);
+      return s>0?"☀️":(s<0?"🌧":"⛅");
+    });
+    var half=Math.floor(recent.length/2);
+    function sc(arr){ return arr.reduce(function(a,n){ var t=(n.worry||"")+" "+(n.want||""); return a+countHits(t,POS)-countHits(t,NEG); },0); }
+    var d=sc(recent.slice(half))-sc(recent.slice(0,half));
+    var mood=d>0?"最近のカルテは、前より前向きな言葉が増えています。いい流れです":(d<0?"最近は少しおつかれ気味の言葉が増えています。無理せず、小さな一歩だけで大丈夫":"気持ちは安定しています。このペースでいきましょう");
+    h+='<div class="anasec"><h3>こころの天気（古い→新しい）</h3><div style="font-size:22px; letter-spacing:8px; margin:4px 0;">'+icons.join("")+'</div><p style="font-size:12.5px;">'+mood+'。</p></div>';
+  }
+  /* 2.6) 悩みの変化（前半→後半） */
+  if(chrono.length>=4){
+    var hf=Math.floor(chrono.length/2);
+    function catCount(arr){
+      var t=arr.map(function(n){return (n.worry||"")+" "+(n.want||"");}).join(" ");
+      var o={}; CATS.forEach(function(c){ o[c[0]]=countHits(t,c[1]); }); return o;
+    }
+    var A=catCount(chrono.slice(0,hf)), B=catCount(chrono.slice(hf));
+    var up=null,dn=null,us=0,ds=0;
+    CATS.forEach(function(c){
+      var diff=(B[c[0]]||0)-(A[c[0]]||0);
+      if(diff>us){us=diff;up=c[0];}
+      if(diff<ds){ds=diff;dn=c[0];}
+    });
+    if(up||dn){
+      var line="";
+      if(dn) line+="「"+dn+"」の悩みは落ち着いてきました。";
+      if(up) line+="いまは「"+up+"」の相談が増えています。テーマが進んでいる証拠です。";
+      h+='<div class="anasec"><h3>悩みの変化</h3><p style="font-size:12.5px;">'+line+'</p></div>';
+    }
+  }
   /* 3) くみこからのアドバイスの傾向 */
   h+='<div class="anasec"><h3>くみこがくり返し伝えていること</h3>';
   if(lastAdv.length){
@@ -558,6 +606,42 @@ function renderAnalysis(){
     '<div class="prow"><span class="pk">くみこ流ひとこと</span><span class="pv">'+pl[3]+'</span></div>'+
   '</div></div>';
   h+='<p class="ananote">カルテ'+lastNotes.length+'件・アドバイス'+lastAdv.length+'件をもとに自動分析しています。カルテが増えるほど、精度が上がります。</p>';
+  /* 5) くみこの処方箋（もらったアドバイスから抽出） */
+  if(lastAdv.length){
+    var atext2=lastAdv.map(function(a){return a.message||"";}).join(" ");
+    var RX=[
+      ["Typeless","Typelessで声に出して、Claudeに壁打ちする"],
+      ["報告","毎日ひとこと、Claudeに報告する"],
+      ["仕分け","やることを、先にAIと仕分けてから始める"],
+      ["可視化","時間や気持ちを、見える形にして眺める"],
+      ["見える化","時間や気持ちを、見える形にして眺める"],
+      ["優先順位","優先順位は、自分で悩まずAIに決めてもらう"],
+      ["データ","先にデータ（情報）を渡してから、AIに頼む"],
+      ["テンプレ","テンプレをコピペして、そのまま使う"],
+      ["1週間","まず1週間だけ、続けてみる"],
+      ["3つ","やることは1日3つまでに絞る"]
+    ];
+    var seenRx={}, rx=[];
+    RX.forEach(function(r){
+      if(atext2.indexOf(r[0])>=0 && !seenRx[r[1]]){ seenRx[r[1]]=1; rx.push(r[1]); }
+    });
+    if(rx.length){
+      h+='<div class="anasec"><h3>くみこの処方箋（あなた専用）</h3>';
+      rx.slice(0,4).forEach(function(t){ h+='<p style="font-size:13px; margin-top:6px;">☐ '+t+'</p>'; });
+      h+='<p style="font-size:11.5px; color:#9aa7b4; margin-top:8px;">くみこからのアドバイスに、くり返し出てくる行動です。できた日はカルテで教えてくださいね。</p></div>';
+    }
+    /* 6) 最新の宿題 */
+    var latest=(lastAdv[0].message||"").split("。")[0];
+    if(latest){
+      h+='<div class="anasec"><h3>くみこからの最新メッセージ</h3><p style="font-size:13px; background:var(--pinkbg); border-radius:12px; padding:10px 14px;">'+latest.slice(0,90)+'。</p></div>';
+    }
+  }
+  /* 7) あなたの歩み */
+  (function(){
+    var first=chrono.length?new Date(chrono[0].created_at):null;
+    var days=first?Math.max(1,Math.round((Date.now()-first.getTime())/86400000)):0;
+    h+='<div class="anasec"><h3>あなたの歩み</h3><p style="font-size:12.5px;">相談をはじめて <b>'+days+'日</b>／カルテ <b>'+lastNotes.length+'枚</b>／くみこからの返信 <b>'+lastAdv.length+'通</b>'+(top.length?('／いちばんのテーマは<b>「'+top[0][0]+'」</b>'):'')+'</p></div>';
+  })();
   box.innerHTML=h;
 }
 
