@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>AIらぼの教科書｜Merone AI活用ラボ</title>
+<style>
+:root{ --bg:#f6f1f9; --blue:#8f9fd8; --navy:#26405f; --navy2:#1d3149; --pink:#cf8f9c; --pink2:#bd7886; --pinkbg:#fbeef1; --text:#4a4446; --muted:#8a97a5; --line:#e8e0ef; }
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif; background:linear-gradient(168deg,#f1eaf7 0%,#faf7fb 46%,#fbeef1 100%); color:var(--text); line-height:2.05; -webkit-font-smoothing:antialiased; padding-bottom:90px;}
+.wrap{max-width:640px; margin:0 auto; padding:0 18px;}
+header{background:var(--navy2); color:#fff; padding:13px 18px; text-align:center; position:sticky; top:0; z-index:50;}
+header .lg{font-size:13px; font-weight:800; letter-spacing:.14em; color:#f3cdd7;}
+header .lg i{font-style:normal; color:#cfdcea; font-weight:700; margin-left:6px; letter-spacing:.08em;}
+
+.hero{text-align:center; padding:34px 0 6px;}
+.hero img{width:110px;}
+.hero .tt{font-size:clamp(22px,6.4vw,30px); font-weight:800; color:var(--navy2); line-height:1.6; margin-top:6px;}
+.hero .st{font-size:13px; color:var(--pink2); font-weight:700; margin-top:8px; letter-spacing:.04em;}
+.hero .lead{font-size:13.5px; color:#6b7684; margin-top:14px; text-align:left; background:#fff; border-radius:16px; padding:16px 18px; box-shadow:0 6px 20px rgba(38,64,95,.07);}
+
+.toc{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:18px;}
+.toc a{font-size:12px; font-weight:800; color:var(--navy); background:#fff; border:1.5px solid var(--line); border-radius:999px; padding:7px 13px; text-decoration:none;}
+.toc a:active{background:var(--pinkbg);}
+
+.chap{margin-top:34px; scroll-margin-top:70px;}
+.chapno{font-size:11.5px; font-weight:800; color:var(--blue); letter-spacing:.18em;}
+.chap h2{font-size:clamp(18px,5.2vw,22px); color:var(--navy2); line-height:1.7; margin-top:2px; padding-bottom:8px; border-bottom:2.5px solid #efe3ee;}
+.card{background:#fff; border-radius:18px; padding:20px; margin-top:16px; box-shadow:0 6px 20px rgba(38,64,95,.07);}
+.card h3{font-size:15px; color:var(--navy2); margin-bottom:8px;}
+.card h3 .em{margin-right:5px;}
+.card p{font-size:13.8px; margin-top:8px;}
+.card p b{color:var(--navy2);}
+.card ul,.card ol{font-size:13.8px; padding-left:20px; margin-top:8px;}
+.card li{margin-top:6px;}
+.card li b{color:var(--navy2);}
+.small{font-size:12px; color:var(--muted); margin-top:10px; line-height:1.9;}
+
+.pinkbox{background:var(--pinkbg); border-radius:14px; padding:14px 16px; margin-top:12px; font-size:13.5px;}
+.pinkbox b{color:var(--pink2);}
+.bluebox{background:#eef2fb; border-radius:14px; padding:14px 16px; margin-top:12px; font-size:13.5px;}
+.bluebox b{color:var(--navy);}
+.warn{background:#fdf6ee; border-left:4px solid #e0b184; border-radius:0 12px 12px 0; padding:12px 15px; margin-top:12px; font-size:13px;}
+
+/* 統計バー */
+.bar{margin-top:12px;}
+.bar .bl{display:flex; justify-content:space-between; font-size:13px; font-weight:800; color:var(--navy2);}
+.bar .bl small{color:var(--pink2); font-weight:800;}
+.bar .bt{height:12px; background:#f1ecf5; border-radius:999px; margin-top:4px; overflow:hidden;}
+.bar .bf{height:100%; border-radius:999px; background:linear-gradient(90deg,var(--blue),var(--pink));}
+
+/* 比較表 */
+.tblwrap{overflow-x:auto; margin-top:12px; -webkit-overflow-scrolling:touch;}
+table{border-collapse:collapse; width:100%; min-width:480px; font-size:12.8px; background:#fff;}
+th,td{border:1px solid var(--line); padding:9px 10px; text-align:left; vertical-align:top; line-height:1.8;}
+th{background:#f6f1f9; color:var(--navy2); font-size:12.5px; white-space:nowrap;}
+td b{color:var(--navy2);}
+.hd th:first-child{width:88px;}
+
+/* 図解 */
+.fig{background:#fff; border:1.5px dashed #d9cfe4; border-radius:16px; padding:18px 14px; margin-top:14px; text-align:center;}
+.fig .cap{font-size:11.5px; color:var(--muted); font-weight:800; letter-spacing:.06em; margin-bottom:10px;}
+.fbox{display:inline-block; background:#f6f1f9; border:1.5px solid #d9cfe4; border-radius:12px; padding:9px 13px; font-size:12.8px; font-weight:800; color:var(--navy2); margin:4px; line-height:1.7;}
+.fbox small{display:block; font-size:10.5px; color:var(--muted); font-weight:700;}
+.fbox.pk{background:var(--pinkbg); border-color:#eccfd6;}
+.farrow{display:block; font-size:15px; color:var(--pink2); margin:2px 0; font-weight:800;}
+.farrow.h{display:inline-block; margin:0 2px;}
+.fnote{font-size:11.5px; color:var(--muted); margin-top:8px; line-height:1.8;}
+
+/* プロンプト */
+.prompt{background:#2b3a4e; color:#eef3f8; border-radius:14px; padding:14px 15px; margin-top:12px; font-size:13px; line-height:1.95; position:relative; white-space:pre-wrap; word-break:break-word;}
+.prompt .ph{color:#f3cdd7; font-weight:800;}
+.copy{display:block; width:100%; margin-top:8px; border:none; background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff; border-radius:999px; padding:11px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit;}
+
+/* 事例集 */
+.case{background:#fff; border-radius:18px; margin-top:14px; box-shadow:0 6px 20px rgba(38,64,95,.07); overflow:hidden;}
+.case summary{list-style:none; cursor:pointer; padding:15px 18px; font-size:14px; font-weight:800; color:var(--navy2); display:flex; align-items:center; gap:8px;}
+.case summary::-webkit-details-marker{display:none;}
+.case summary .pct{margin-left:auto; font-size:11px; color:#fff; background:linear-gradient(135deg,var(--blue),var(--pink)); border-radius:999px; padding:3px 10px; white-space:nowrap; font-weight:800;}
+.case .body{padding:0 18px 18px;}
+.voice{background:#faf7fb; border-radius:12px; padding:11px 14px; font-size:12.8px; margin-top:8px; color:#6b7684;}
+.voice::before{content:"💬 "; }
+.steps{margin-top:10px; font-size:13.5px;}
+.steps b{color:var(--pink2);}
+
+footer{text-align:center; font-size:11px; color:#9aa7b4; margin-top:44px; line-height:2;}
+footer a{color:var(--pink2);}
+
+/* バグ報告 */
+#bugL{position:fixed; left:12px; bottom:16px; z-index:59; background:rgba(255,255,255,.92); border:1px solid #dfe7ee; color:#8a97a5; font-size:10.5px; font-weight:800; border-radius:999px; padding:5px 12px; cursor:pointer; letter-spacing:.04em; font-family:inherit;}
+#bugM{position:fixed; inset:0; background:rgba(29,49,73,.55); display:none; align-items:center; justify-content:center; z-index:70; padding:24px;}
+#bugM.on{display:flex;}
+#bugM .bx{background:#fff; border-radius:20px; padding:22px 20px; max-width:360px; width:100%;}
+#bugM h3{font-size:14.5px; color:#1d3149; margin-bottom:8px;}
+#bugM textarea{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; padding:11px 13px; font-size:14px; line-height:1.8; color:#1d3149; font-family:inherit; min-height:100px; resize:vertical;}
+#bugM .bb{display:flex; gap:8px; margin-top:12px;}
+#bugM button{flex:1; border:none; border-radius:999px; padding:11px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit;}
+#bugM .c{background:#eef1f5; color:#5c6b7a;}
+#bugM .s{background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff;}
+#bugM .done{display:none; font-size:13px; color:#2e7d32; font-weight:800; margin-top:10px; text-align:center;}
+.toast{position:fixed; left:50%; bottom:80px; transform:translateX(-50%); opacity:0; background:var(--navy2); color:#fff; padding:10px 20px; border-radius:999px; font-size:12.5px; font-weight:800; z-index:200; transition:opacity .3s; pointer-events:none;}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<header><span class="lg">Merone<i>AI活用ラボ</i></span></header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <img src="https://kumiko0814.github.io/kumiko-illust/lab-peace.png" alt="" onerror="this.style.display='none'">
+    <div class="tt">AIらぼの教科書</div>
+    <div class="st">みんなの悩みからつくった、AIの使い方ぜんぶ</div>
+    <div class="lead">
+      この教科書は、みなさんがカルテに送ってくれた<b>100件の悩み</b>を、ぜんぶ読んでから作りました。だから「一般的なAI入門」ではなく、<b>わたしたちの毎日の悩みを解決するため</b>のAI入門です。<br>
+      上から順に読んでもいいし、目次から気になる章だけ読んでも大丈夫。むずかしい言葉は使いません。ゆっくりどうぞ☺️
+    </div>
+    <nav class="toc">
+      <a href="#c1">① みんなの悩みマップ</a>
+      <a href="#c2">② 3つのAIの性格</a>
+      <a href="#c3">③ ChatGPT</a>
+      <a href="#c4">④ Gemini・スプシ・GAS</a>
+      <a href="#c5">⑤ Claude</a>
+      <a href="#c6">⑥ GitHub</a>
+      <a href="#c7">⑦ 無料で賢く使う</a>
+      <a href="#c8">⑧ 悩み別・解決レシピ集</a>
+    </nav>
+  </div>
+
+  <!-- ======================== 1. 悩みマップ ======================== -->
+  <section class="chap" id="c1">
+    <div class="chapno">CHAPTER 1</div>
+    <h2>みんなの悩みマップ 〜あなたはひとりじゃない〜</h2>
+    <div class="card">
+      <p>カルテに届いた悩み100件を集計しました。まず知ってほしいのは、<b>みんなほとんど同じことで悩んでいる</b>ということです。1つの悩みに複数のテーマが入っていることが多いので、合計は100%を超えます。</p>
+      <div class="bar"><div class="bl"><span>時間管理・タスク整理</span><small>40%</small></div><div class="bt"><div class="bf" style="width:40%"></div></div></div>
+      <div class="bar"><div class="bl"><span>仕事の効率化</span><small>40%</small></div><div class="bt"><div class="bf" style="width:40%"></div></div></div>
+      <div class="bar"><div class="bl"><span>子育て・教育</span><small>37%</small></div><div class="bt"><div class="bf" style="width:37%"></div></div></div>
+      <div class="bar"><div class="bl"><span>物販・メルカリ</span><small>37%</small></div><div class="bt"><div class="bf" style="width:37%"></div></div></div>
+      <div class="bar"><div class="bl"><span>献立・家事</span><small>24%</small></div><div class="bt"><div class="bf" style="width:24%"></div></div></div>
+      <div class="bar"><div class="bl"><span>体調・こころ</span><small>18%</small></div><div class="bt"><div class="bf" style="width:18%"></div></div></div>
+      <div class="bar"><div class="bl"><span>お金・帳簿・確定申告</span><small>15%</small></div><div class="bt"><div class="bf" style="width:15%"></div></div></div>
+      <div class="bar"><div class="bl"><span>自分のアプリを作りたい</span><small>13%</small></div><div class="bt"><div class="bf" style="width:13%"></div></div></div>
+      <div class="bar"><div class="bl"><span>自分の時間・余白がほしい</span><small>12%</small></div><div class="bt"><div class="bf" style="width:12%"></div></div></div>
+      <div class="bar"><div class="bl"><span>介護・家族のケア</span><small>8%</small></div><div class="bt"><div class="bf" style="width:8%"></div></div></div>
+      <div class="bar"><div class="bl"><span>SNS・発信</span><small>7%</small></div><div class="bt"><div class="bf" style="width:7%"></div></div></div>
+      <div class="pinkbox">この結果からわかること。みんなの悩みの正体は<b>「時間が足りない」×「ひとりで抱えている」</b>の2つです。AIはこの2つがいちばん得意です。「考える・調べる・書く・まとめる」をAIに渡すと、時間と心の余白が戻ってきます。この教科書のゴールは、それを<b>自分の手でできるようになる</b>ことです。</div>
+    </div>
+  </section>
+
+  <!-- ======================== 2. 3つのAIの性格 ======================== -->
+  <section class="chap" id="c2">
+    <div class="chapno">CHAPTER 2</div>
+    <h2>3つのAIの性格 〜だれに何を頼む？〜</h2>
+    <div class="card">
+      <p>ChatGPT・Gemini・Claude。ぜんぶ「AIとおしゃべりできる道具」ですが、性格と得意分野がちがいます。<b>「3人のお手伝いさんを雇った」</b>と考えるとわかりやすいです。</p>
+      <div class="tblwrap"><table class="hd">
+        <tr><th></th><th>ChatGPT</th><th>Gemini</th><th>Claude</th></tr>
+        <tr><th>イメージ</th><td><b>ひらめきの友だち</b>。アイデアと絵が得意</td><td><b>Googleの秘書さん</b>。調べものとGoogleの道具に強い</td><td><b>文章と相談の相棒</b>。長い話を深く聞ける</td></tr>
+        <tr><th>得意なこと</th><td>画像づくり・アイデア出し・雑談</td><td>最新情報の検索・スプレッドシートの相談・写真の読み取り</td><td>文章づくり・じっくり相談・<b>アプリづくり</b></td></tr>
+        <tr><th>作った会社</th><td>OpenAI</td><td>Google</td><td>Anthropic</td></tr>
+        <tr><th>らぼでの役割</th><td>画像・イラスト係</td><td>スプシ・調べもの係</td><td><b>メイン</b>。カルテのAIくみこもClaudeでできています</td></tr>
+      </table></div>
+      <div class="bluebox"><b>大事な考え方:</b> 「どれが一番いいAI？」ではなく<b>「この用事はだれに頼む？」</b>で考えます。絵ならChatGPT、Google系ならGemini、じっくり相談とアプリならClaude。使い分けのくわしい作戦はCHAPTER 7でお話しします。</div>
+    </div>
+  </section>
+
+  <!-- ======================== 3. ChatGPT ======================== -->
+  <section class="chap" id="c3">
+    <div class="chapno">CHAPTER 3</div>
+    <h2>ChatGPT 〜ひらめきと画像の友だち〜</h2>
+    <div class="card">
+      <h3><span class="em">🎨</span>いちばんの得意技は「画像づくり」</h3>
+      <p>ChatGPTのすごいところは、<b>日本語でお願いするだけで画像を作ってくれる</b>ことです。昔の画像AIは英語の呪文が必要でしたが、今は「こんな絵がほしいな」と話しかけるだけ。特にこんなことが得意です。</p>
+      <ul>
+        <li><b>文字入りの画像</b> … 「セール中！」と入ったお知らせ画像、インスタ投稿の表紙など。以前のAIは文字が崩れましたが、今はきれいに入ります</li>
+        <li><b>イラスト・キャラクター</b> … 「やわらかい水彩風で」「絵本のタッチで」など、雰囲気の指定が通じます</li>
+        <li><b>写真の変身</b> … 手持ちの写真を渡して「この写真をイラスト風にして」「背景だけ白にして」</li>
+        <li><b>何度でも直せる</b> … 出てきた画像に「もう少し明るく」「文字を大きく」と会話で修正できます</li>
+      </ul>
+      <div class="pinkbox"><b>コツは「3点セット」でお願いすること。</b>①何の画像か ②雰囲気 ③使いみち。この3つを伝えると、一発で好みに近づきます。</div>
+      <div class="prompt" id="p-cgpt1">インスタ投稿用の画像を作ってください。
+①内容：<span class="ph">【例：「今週の新着アイテム」という文字が入ったお知らせ画像】</span>
+②雰囲気：<span class="ph">【例：やさしいピンクとベージュ、女性向け、上品でかわいい】</span>
+③使いみち：<span class="ph">【例：メルカリショップのインスタ告知】</span>
+文字は大きく読みやすくしてください。</div>
+      <button class="copy" data-c="p-cgpt1">このお願い文をコピーする</button>
+    </div>
+    <div class="card">
+      <h3><span class="em">💡</span>画像のほかに得意なこと</h3>
+      <ul>
+        <li><b>アイデア出しの壁打ち</b> … 「子どもの自由研究のテーマを10個」「インスタのネタを20個」のような数出しが速い</li>
+        <li><b>ネーミング</b> … ショップ名・企画名の案出し</li>
+        <li><b>音声でおしゃべり</b> … スマホアプリのマイクボタンで、家事をしながら声で相談できます</li>
+      </ul>
+      <div class="warn">⚠️ 注意：無料プランの画像づくりは<b>1日の枚数に上限</b>があります（時期によって変わります）。大事な画像は、お願い文をしっかり練ってから作りはじめるのがおすすめです。</div>
+    </div>
+  </section>
+
+  <!-- ======================== 4. Gemini ======================== -->
+  <section class="chap" id="c4">
+    <div class="chapno">CHAPTER 4</div>
+    <h2>Gemini 〜Googleの秘書さん・スプシと在庫管理〜</h2>
+    <div class="card">
+      <h3><span class="em">🔍</span>Geminiでやれること</h3>
+      <ul>
+        <li><b>最新情報の調べもの</b> … Google検索と直結しているので、「今日の」「最新の」情報に強い</li>
+        <li><b>写真・スクショの読み取り</b> … 手書きメモ、学校のお手紙、レシートを撮って渡すと文字にしてくれます</li>
+        <li><b>スプレッドシートの相談相手</b> … 表の整理のしかた・関数を日本語で聞けます</li>
+        <li><b>長い動画・資料の要約</b> … YouTubeのURLを渡して「要点だけ教えて」</li>
+      </ul>
+      <p>Googleアカウント（Gmailのアカウント）があれば、<a href="https://gemini.google.com" target="_blank" rel="noopener">gemini.google.com</a>ですぐ使えます。</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">📦</span>在庫管理表×Gemini 〜みんながつまずく5つのポイント〜</h3>
+      <p>物販のみなさんの在庫管理表をたくさん見てきて、つまずくポイントは実はいつも同じです。<b>表の作り方さえ直せば、AIが一気に働けるようになります。</b></p>
+      <ol>
+        <li><b>1行1商品になっていない</b> … 1つのセルに「バッグ3点」とまとめ書きすると、AIも関数も数えられません。<b>1商品＝1行</b>が鉄則です</li>
+        <li><b>セルの結合を使っている</b> … 見た目はきれいでも、AIにとっては表が壊れた状態になります。結合は使いません</li>
+        <li><b>言葉がバラバラ</b> … 「売却済」「売れた」「済」が混ざると、別のものとして数えられます。書き方を1つに決めます</li>
+        <li><b>日付の形がバラバラ</b> … 「8/4」「8月4日」「0804」の混在。「2026/08/04」の形にそろえます</li>
+        <li><b>仕入れ値と売値と経費が別のシートに散らばる</b> … 1商品の情報は同じ行に横に並べます。行がそろえば利益は自動計算できます</li>
+      </ol>
+      <div class="pinkbox"><b>この5つ、自分でチェックしなくて大丈夫。</b>下のお願い文で、Geminiに表の健康診断をしてもらえます。</div>
+      <div class="prompt" id="p-gem1">わたしの在庫管理表を整理したいです。今の表のスクリーンショットを渡します。
+①この表の問題点を、やさしい言葉で教えてください
+②「1行1商品・結合なし・言葉と日付の統一」ができた理想の表の見本を作ってください
+③今の表から見本の形へ、何をどの順番で直せばいいか、手順を1つずつ教えてください
+<span class="ph">【ここにスプレッドシートのスクショを貼る】</span></div>
+      <button class="copy" data-c="p-gem1">このお願い文をコピーする</button>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">📊</span>整った表は「分析」までできる</h3>
+      <p>表が整うと、Geminiはただの入力係から<b>経営参謀</b>に変わります。月に1回、表のスクショ（または範囲をコピーした文字）を渡してこう聞いてみてください。</p>
+      <div class="prompt" id="p-gem2">わたしの在庫管理表のデータです。次の4つを教えてください。
+①今月いちばん利益が出た商品と、その理由の推測
+②仕入れてから売れるまでが遅い「眠り在庫」はどれか
+③値下げしてでも早く売ったほうがいい商品はどれか
+④来月の仕入れで意識するといいこと
+むずかしい言葉を使わず、明日からできることだけ教えてください。
+<span class="ph">【ここに表のスクショかコピーを貼る】</span></div>
+      <button class="copy" data-c="p-gem2">このお願い文をコピーする</button>
+      <p class="small">※ スプレッドシートの画面の中にGeminiのボタンが出る機能もありますが、有料版限定のことがあります。無料で使うなら「スクショやコピーを渡して相談する」この方法がいちばん確実です。</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">🤖</span>GAS（Google Apps Script）って何？</h3>
+      <p>Googleの道具の中で、いちばん「？」となるのがGASです。でも正体はとても単純です。</p>
+      <div class="fig">
+        <div class="cap">図1：GASの正体</div>
+        <span class="fbox">📋 あなたのスプレッドシート<small>ふだん使っている表</small></span>
+        <span class="farrow h">＋</span>
+        <span class="fbox pk">🤖 GAS<small>表についてくる小さなロボット</small></span>
+        <div class="fnote">どのスプレッドシートにも、実は最初から「ロボット置き場」がついています。<br>メニューの「拡張機能」→「Apps Script」がその入り口です。</div>
+      </div>
+      <p><b>GASは、スプレッドシートに住んでいるロボット</b>です。ふだんは寝ていますが、「命令書」（これがプログラム）を書いて渡すと、あなたの代わりに表を読んだり、書いたり、メールを送ったりしてくれます。しかも<b>完全無料</b>です。</p>
+      <div class="fig">
+        <div class="cap">図2：ロボットが働く流れ（「トリガー」＝目覚まし時計）</div>
+        <span class="fbox">⏰ 毎朝7時になる<small>目覚まし時計（トリガー）</small></span>
+        <span class="farrow">↓</span>
+        <span class="fbox pk">🤖 ロボットが起きて命令書を読む</span>
+        <span class="farrow">↓</span>
+        <span class="fbox">📋 表をチェック「今日発送の商品は…」</span>
+        <span class="farrow">↓</span>
+        <span class="fbox">📩 あなたにメールでお知らせ</span>
+        <div class="fnote">「トリガー」＝ロボットを起こす目覚まし時計。「毎朝7時」のほかに<br>「表に新しい行が増えたら起きる」という設定もできます。</div>
+      </div>
+      <div class="fig">
+        <div class="cap">図3：実際に動いている使用例（感想の自動お返事係）</div>
+        <span class="fbox">👩 生徒さんが感想フォームを送信</span>
+        <span class="farrow">↓</span>
+        <span class="fbox">📋 スプレッドシートに1行増える</span>
+        <span class="farrow">↓</span>
+        <span class="fbox pk">🤖 GASが気づいて起きる</span>
+        <span class="farrow">↓</span>
+        <span class="fbox">💌 お礼のメッセージを自動でお返事</span>
+        <div class="fnote">これはMeroneで実際に動いている仕組みです。人間は1回設定するだけで、<br>あとは24時間365日、ロボットが働き続けてくれます。</div>
+      </div>
+      <div class="pinkbox"><b>いちばん大事なこと：命令書（プログラム）は自分で書かなくていい。</b>AIに「こういうことがしたい」と日本語で伝えると、命令書はAIが書いてくれます。あなたの仕事は「やってほしいことを決める」ことと「貼り付ける」ことだけです。</div>
+      <div class="prompt" id="p-gas1">スプレッドシートのGAS（Apps Script）を作ってください。わたしはプログラムがまったくわかりません。
+やりたいこと：<span class="ph">【例：この在庫表で、仕入れから30日たっても売れていない商品を、毎週月曜の朝にメールで知らせてほしい】</span>
+表の内容：<span class="ph">【ここに表のスクショを貼る】</span>
+①コードを全部作ってください
+②どこに貼り付けて、どのボタンを押せばいいか、手順を1つずつ教えてください
+③トリガー（自動で動く設定）のやり方も教えてください</div>
+      <button class="copy" data-c="p-gas1">このお願い文をコピーする</button>
+    </div>
+  </section>
+
+  <!-- ======================== 5. Claude ======================== -->
+  <section class="chap" id="c5">
+    <div class="chapno">CHAPTER 5</div>
+    <h2>Claude 〜このらぼの主役・3つの入り口〜</h2>
+    <div class="card">
+      <h3><span class="em">💜</span>Claudeの性格</h3>
+      <p>Claudeは<b>「長い話をじっくり聞いて、深く考える」</b>のが得意なAIです。文章が自然でやさしく、相談ごとの受け答えが丁寧。そして<b>会話しながらアプリまで作れてしまう</b>のが最大の特徴です。みなさんのカルテで動いている「AIくみこ」も、この教科書も、らぼの申込サイトも、ぜんぶClaudeで作られています。</p>
+    </div>
+    <div class="card">
+      <h3><span class="em">🚪</span>3つの入り口の使い分け</h3>
+      <p>Claudeには入り口が3つあって、ここでみんな迷います。でも役割はハッキリ分かれています。</p>
+      <div class="fig">
+        <div class="cap">図4：Claudeの3つの入り口</div>
+        <span class="fbox pk">💬 チャット<small>ふだん使いの相談窓口</small></span>
+        <span class="fbox pk">📁 Projects<small>資料を覚えた専用の部屋</small></span>
+        <span class="fbox">⌨️ Claude Code<small>パソコンを動かす上級版</small></span>
+        <div class="fnote">らぼで使うのは左の2つ。Claude Codeは「いつか」でOKです。</div>
+      </div>
+      <div class="tblwrap"><table class="hd">
+        <tr><th></th><th>💬 チャット</th><th>📁 Projects</th><th>⌨️ Claude Code</th></tr>
+        <tr><th>ひとことで</th><td>その場の相談窓口</td><td><b>覚えてくれる専用ルーム</b></td><td>パソコン操作の職人</td></tr>
+        <tr><th>使いどき</th><td>献立・文章・調べもの・アプリづくり。<b>まずは全部ここでOK</b></td><td>同じテーマを何度も相談するとき。資料を最初に渡しておくと毎回説明しなくてすむ</td><td>本格的な開発・パソコンのファイル整理の自動化など</td></tr>
+        <tr><th>例</th><td>「今夜の献立を考えて」</td><td>「在庫の部屋」を作り在庫表を覚えさせる→毎回「今週の分析して」だけで通じる</td><td>プロ・上級者向け（有料プラン）</td></tr>
+        <tr><th>らぼでは</th><td>◎ メインで使います</td><td>◎ 慣れてきたら</td><td>△ 卒業後のお楽しみ</td></tr>
+      </table></div>
+      <div class="bluebox"><b>Projectsのイメージは「かかりつけのお医者さん」。</b>ふつうのチャットは初診なので毎回イチから説明が必要ですが、Projectsという部屋に家族構成・在庫表・お仕事の内容を最初に置いておけば、2回目からは「いつもの、お願い」が通じます。<b>「何度も同じ説明をしているな」と気づいたら、Projectsを作るタイミング</b>です。</div>
+    </div>
+    <div class="card">
+      <h3><span class="em">✨</span>アーティファクト 〜あなたの作品置き場〜</h3>
+      <p>Claudeに「アプリを作って」とお願いすると、画面の横に<b>実際にさわれる作品</b>が現れます。これが「アーティファクト」です。</p>
+      <div class="fig">
+        <div class="cap">図5：アプリができて、みんなに配るまで</div>
+        <span class="fbox">💬 「子どもの歯みがき表アプリを作って」</span>
+        <span class="farrow">↓</span>
+        <span class="fbox pk">✨ 画面の横にアプリが出現（アーティファクト）</span>
+        <span class="farrow">↓</span>
+        <span class="fbox">🔗 「共有」を押すとURLができる</span>
+        <span class="farrow">↓</span>
+        <span class="fbox">👨‍👩‍👧 家族のスマホに送れば、みんな使える</span>
+        <div class="fnote">らぼの最終ミッション「自分のアプリ2つ」も、この方法で完成させます。<br>くわしいお願いのしかたは「魔法の言葉」のページにあります。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 6. GitHub ======================== -->
+  <section class="chap" id="c6">
+    <div class="chapno">CHAPTER 6</div>
+    <h2>GitHub 〜作品の倉庫と展示場〜</h2>
+    <div class="card">
+      <h3><span class="em">🏠</span>GitHubの正体</h3>
+      <p>GitHubは、ひとことで言うと<b>「作品の倉庫」と「展示場」がセットになった場所</b>です。世界中の人がプログラムの保管に使っていますが、むずかしく考える必要はありません。</p>
+      <div class="fig">
+        <div class="cap">図6：GitHubのしくみ</div>
+        <span class="fbox">💻 あなたの作品<small>Claudeと作ったアプリなど</small></span>
+        <span class="farrow">↓ アップロード（保管）</span>
+        <span class="fbox pk">📦 GitHub＝倉庫<small>作品を安全に保管。昔の版も全部残る</small></span>
+        <span class="farrow">↓ 公開スイッチON</span>
+        <span class="fbox">🏛 GitHub Pages＝展示場<small>あなた専用のURLで世界に公開</small></span>
+        <div class="fnote">このらぼの申込サイトもカルテも、この教科書も、<br>ぜんぶGitHub Pagesの「展示場」に置いてあります。しかも無料です。</div>
+      </div>
+      <p>倉庫のいいところは2つあります。①<b>消えない</b>（パソコンが壊れても作品は無事）②<b>歴史が残る</b>（直す前の版にいつでも戻れる。「上書きして前のが消えた！」がなくなります）。</p>
+    </div>
+    <div class="card">
+      <h3><span class="em">🤔</span>で、わたしに必要？</h3>
+      <div class="pinkbox"><b>結論：らぼの間は、なくても大丈夫です。</b>アプリの公開はClaudeの「共有」ボタン（図5）でできるので、GitHubなしで最終ミッションまで完走できます。</div>
+      <p>GitHubが必要になるのは、次の段階に進みたくなったときです。</p>
+      <ul>
+        <li>作品に<b>自分だけの覚えやすいURL</b>をつけたい</li>
+        <li>お客さま向けの<b>ちゃんとしたサイト</b>として育てたい</li>
+        <li>作品がたくさん増えて、<b>1か所で安全に管理</b>したい</li>
+      </ul>
+      <div class="warn">⚠️ 先に知っておいてほしい注意が2つ。①画面がぜんぶ英語です（翻訳しながらで大丈夫）。②無料プランで展示場（Pages）を使うと、<b>作品の中身（コード）はだれでも見られる状態</b>になります。パスワードや個人情報をコードの中に書かないこと。ここだけ守れば安全です。</div>
+      <p class="small">興味がわいた方は、勉強会で画面をお見せします。焦らなくて大丈夫です。</p>
+    </div>
+  </section>
+
+  <!-- ======================== 7. 無料で賢く ======================== -->
+  <section class="chap" id="c7">
+    <div class="chapno">CHAPTER 7</div>
+    <h2>無料での賢い使い方 〜お金をかけない作戦〜</h2>
+    <div class="card">
+      <h3><span class="em">🎫</span>無料でどこまでできる？</h3>
+      <div class="tblwrap"><table class="hd">
+        <tr><th></th><th>無料でできること</th><th>知っておくこと</th></tr>
+        <tr><th>ChatGPT</th><td>会話はたっぷり。画像づくりもOK</td><td>画像は1日の枚数上限あり。混んでいる時間は性能が下がることも</td></tr>
+        <tr><th>Gemini</th><td>会話・調べもの・写真読み取り。Googleアカウントだけで使える</td><td>無料枠が比較的ゆったり。雑用係に最適</td></tr>
+        <tr><th>Claude</th><td>会話・アプリづくり・Projectsも無料で使える</td><td>回数が少なめで、上限に届くと数時間お休みに。使いどころを選ぶのがコツ</td></tr>
+        <tr><th>GAS</th><td><b>ぜんぶ無料</b></td><td>上限を気にする必要はほぼなし</td></tr>
+        <tr><th>GitHub</th><td>倉庫も展示場も無料</td><td>無料プランは作品の中身が公開になる（CHAPTER 6の注意）</td></tr>
+      </table></div>
+      <p class="small">※ 各社の無料枠は時期によって変わります。「今日は上限です」と言われたら、翌日や数時間後に回復します。</p>
+    </div>
+    <div class="card">
+      <h3><span class="em">🧠</span>賢い人の使い分け作戦</h3>
+      <ol>
+        <li><b>雑用は分散する</b> … 調べもの・写真の読み取りはGeminiへ。アイデア出しと画像はChatGPTへ。無料枠は「3人分」あると考えます</li>
+        <li><b>Claudeの無料枠は「ここぞ」に温存</b> … Claudeがいちばん力を発揮するのは、じっくり相談とアプリづくり。短い雑用で使い切らないこと</li>
+        <li><b>お願い文を練ってから送る</b> … 何度もやり直すと回数がもったいない。この教科書のコピペ文のように、①やりたいこと②材料③条件をまとめて1回で渡すのが節約のコツです</li>
+        <li><b>迷いごとの相談はカルテへ</b> … あなたのカルテのAIくみこは回数を気にせず使えます。「どのAIに聞けばいい？」もAIくみこに聞いてOK</li>
+        <li><b>課金するなら、最初の1つはClaude</b> … らぼの本命だからです。毎日アプリづくりをしたくなったら検討する、で十分。それまでは無料で困りません</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ======================== 8. 事例集 ======================== -->
+  <section class="chap" id="c8">
+    <div class="chapno">CHAPTER 8</div>
+    <h2>悩み別・解決レシピ集 〜コピペで今日から〜</h2>
+    <div class="card">
+      <p>ここからが、この教科書の本番です。カルテに届いた悩みに、<b>「どのAIで・どうやって」をぜんぶレシピにしました</b>。自分の悩みに近いところを開いて、お願い文をコピーして、<span class="ph" style="color:var(--pink2);font-weight:800;">【 】</span>を自分の内容に書きかえて送るだけ。まずは1つ、今夜ためしてみてください。</p>
+    </div>
+
+    <details class="case"><summary>⏰ 時間がない・タスクに追われる<span class="pct">悩みの40%</span></summary><div class="body">
+      <div class="voice">「仕事と育児の両立でタスクに追われて、効率化を考える余裕もない」「何の作業があるのかわからなくなって、その場しのぎになってしまう」</div>
+      <p class="steps"><b>使うAI：Claude（またはChatGPT）</b><br>コツは、整理してから相談しないこと。<b>散らかったまま、ぜんぶ吐き出す</b>のが正解です。仕分けはAIの仕事です。スマホのマイクボタンで喋るだけでOK。</p>
+      <div class="prompt" id="p-c1">今から、頭の中にあるやること・気になっていることを、思いつくまま順番バラバラに書きます。整理しないで書くので、あなたが整理してください。
+①今日やるべき順に並べ替えてください
+②15分以内でできるものに★をつけてください
+③わたしがやらなくてもいいもの（AI・家族・道具に任せられるもの）に♻をつけて、任せ方も教えてください
+<span class="ph">【ここに思いつくまま全部書く（喋るのでもOK）】</span></div>
+      <button class="copy" data-c="p-c1">コピーする</button>
+      <p class="small">✨ ワンポイント：これを毎晩やると、朝「今日なにからやるんだっけ」と考える時間が消えます。♻マークの数が、あなたに戻ってくる時間です。</p>
+    </div></details>
+
+    <details class="case"><summary>💼 仕事を効率化したい<span class="pct">悩みの40%</span></summary><div class="body">
+      <div class="voice">「日報のスクショを毎回手で表に転記している」「昔ながらのやり方のまま事務作業がまわっていて、効率が悪い気がする」</div>
+      <p class="steps"><b>使うAI：Gemini（読み取り係）＋Claude（マニュアル係)</b><br>効率化の第一歩は「転記をやめる」こと。第二歩は「マニュアルを作って人に渡せるようにする」ことです。</p>
+      <div class="prompt" id="p-c2a">この画像の内容を、表の形にして書き出してください。
+列は <span class="ph">【例：日付・名前・報告内容・金額】</span> の順でお願いします。
+<span class="ph">【ここにスクショや書類の写真を貼る】</span></div>
+      <button class="copy" data-c="p-c2a">読み取り用をコピーする</button>
+      <div class="prompt" id="p-c2b">わたしの仕事の手順を今から話すので、ほかの人に渡せるマニュアルにまとめてください。
+・手順に抜けや曖昧なところがあれば、質問してください
+・「初めての人がこれだけ見ればできる」レベルを目指してください
+<span class="ph">【ここに仕事の手順を思いつくまま話す】</span></div>
+      <button class="copy" data-c="p-c2b">マニュアル用をコピーする</button>
+      <p class="small">✨ ワンポイント：毎日やっている作業こそ、GAS（CHAPTER 4の図3）で自動化できないかAIに相談する価値があります。「この作業、自動にできる？」と聞くだけで道が開けます。</p>
+    </div></details>
+
+    <details class="case"><summary>👧 子育て・宿題・寝かしつけ<span class="pct">悩みの37%</span></summary><div class="body">
+      <div class="voice">「子どもが夏休みの宿題を計画的にできない」「寝かしつけに時間がかかって自分の時間がない」「きょうだい喧嘩にどう声をかければいいか」</div>
+      <p class="steps"><b>使うAI：Claude</b><br>コツは、お子さんの年齢・性格・状況をしっかり伝えること。「うちの子専用」の答えに変わります。宿題は<b>親が管理をやめて、AIの計画に乗せる</b>と親子ともに楽になります。</p>
+      <div class="prompt" id="p-c3">子どものことを相談させてください。
+子ども：<span class="ph">【例：小4男子。ゲームが好き。コツコツは苦手】</span>
+困っていること：<span class="ph">【例：夏休みの宿題が残り◯◯。声をかけるとケンカになる】</span>
+①8月末までに終わる計画を、1日30分以内の量で立ててください
+②ゲームのように進み具合が見えるしかけを入れてください
+③親のわたしが言うとよい声かけを10個ください（命令にならない言い方で）</div>
+      <button class="copy" data-c="p-c3">コピーする</button>
+      <p class="small">✨ ワンポイント：この相談をClaudeのProjects（「子育ての部屋」）でやると、子どもの性格を覚えたまま何度でも続きが相談できます。寝かしつけ・食事・声かけ、ぜんぶ同じ部屋でどうぞ。</p>
+    </div></details>
+
+    <details class="case"><summary>🛍 物販・メルカリをもっとうまく<span class="pct">悩みの37%</span></summary><div class="body">
+      <div class="voice">「洋服の写真が黄色っぽくなってしまう」「説明文を書くのに時間がかかる」「在庫がどこにあるかわからなくなる」</div>
+      <p class="steps"><b>使うAI：Claude または ChatGPT（説明文）＋Gemini（在庫表・CHAPTER 4参照）</b><br>出品作業でいちばん時間を食う「説明文づくり」は、写真を渡すだけの仕事に変えられます。</p>
+      <div class="prompt" id="p-c4">この商品の写真から、メルカリの商品説明文を作ってください。
+ブランド：<span class="ph">【例：ユニクロ】</span>／サイズ：<span class="ph">【M】</span>／状態：<span class="ph">【2回着用・目立つ傷なし】</span>
+①検索されやすいキーワードを自然に入れてください
+②ていねいで感じのよい、買いたくなる文章にしてください
+③タイトル案も3つください
+<span class="ph">【ここに商品写真を貼る】</span></div>
+      <button class="copy" data-c="p-c4">コピーする</button>
+      <p class="small">✨ ワンポイント：写真が黄色くなる悩みは、アプリより「昼間に窓際で撮る」が最強の解決策です。値段づけは、必ず自分でメルカリの「売り切れ」検索をして実際に売れた価格を見ること。AIの推測より市場の事実が主役です。</p>
+    </div></details>
+
+    <details class="case"><summary>🍳 献立・家事をラクに<span class="pct">悩みの24%</span></summary><div class="body">
+      <div class="voice">「毎日夕方に献立を考えて、足りないものを買いに走ってしまう」「子どもの年齢差で食事を作り分けるのが大変」「レパートリーがいつも同じ」</div>
+      <p class="steps"><b>使うAI：Claude または Gemini</b><br>献立は「毎日考える」から「週1回、AIと決める」に変えるだけで、夕方の時間と心の余裕がまるごと戻ってきます。</p>
+      <div class="prompt" id="p-c5">1週間分の夕食の献立を作ってください。
+家族：<span class="ph">【例：大人2人、5歳と2歳。下の子は辛いものNG】</span>
+条件：<span class="ph">【例：平日は調理30分以内。子どもが野菜を食べやすい工夫を】</span>
+①7日分の献立（作り分けが必要な日はその方法も）
+②買い物リストは3日分ずつ2回に分けて。卵・牛乳などの常備品も入れてください
+③とちゅうで野菜をもらったり予定が変わったら、組み替えをお願いするので対応してください</div>
+      <button class="copy" data-c="p-c5">コピーする</button>
+      <p class="small">✨ ワンポイント：冷蔵庫の中身の写真を撮って「これで作れる夕食を3案」と送る技も便利です。買い物前のスキマ時間にどうぞ。</p>
+    </div></details>
+
+    <details class="case"><summary>🌤 体調・こころの波と付き合う<span class="pct">悩みの18%</span></summary><div class="body">
+      <div class="voice">「体力が落ちて思うように動けない」「気分の波で計画どおりに進まない」「イライラを子どもにぶつけてしまって自己嫌悪」</div>
+      <p class="steps"><b>使うAI：Claude ＋ あなたのカルテ</b><br>波はなくすものではなく、<b>見える化して付き合う</b>ものです。毎晩3行の記録が、いちばんの薬になります。</p>
+      <div class="prompt" id="p-c6">今日から毎晩、体調と気分の記録を送ります。ためていって、ときどき分析してください。
+今日の記録：
+・体調（10点満点）：<span class="ph">【7】</span>
+・気分ひとこと：<span class="ph">【例：午前は元気、夕方からイライラ】</span>
+・今日あったこと：<span class="ph">【例：寝不足。子どもの習い事の送迎が2件】</span>
+2週間たまったら「わたしの波のパターンと、疲れの前ぶれサイン」を教えてください。</div>
+      <button class="copy" data-c="p-c6">コピーする</button>
+      <div class="warn">⚠️ 大切なこと：痛みが続く、眠れない日が続く、気分の落ち込みが重い。そんなときは、AIより先に<b>お医者さまや専門機関に相談してください</b>。AIは記録係と、通院時に症状を正確に伝えるお手伝い役です。</div>
+    </div></details>
+
+    <details class="case"><summary>💰 お金・帳簿・確定申告<span class="pct">悩みの15%</span></summary><div class="body">
+      <div class="voice">「帳簿はいつも1年分ためてギリギリにまとめている」「家計簿・貯金目標・ローンの期日をまとめて管理したい」</div>
+      <p class="steps"><b>使うAI：Gemini（レシート読み取り）＋Claude（整理・全体表）</b><br>帳簿の敵は「ためること」。月1回、写真を撮ってAIに渡すだけの仕組みに変えます。</p>
+      <div class="prompt" id="p-c7">今月のレシートと売上画面の写真を渡します。
+①日付・内容・金額・区分（仕入れ／送料／消耗品／売上）の表にしてください
+②読み取れなかったものは「不明」と書いて、わたしに質問してください
+③今月の売上合計・経費合計・利益を出してください
+<span class="ph">【ここにレシートや画面の写真をまとめて貼る】</span></div>
+      <button class="copy" data-c="p-c7">コピーする</button>
+      <p class="small">✨ ワンポイント：この表を毎月ためていけば、確定申告前の地獄が「1年分の表をつなげるだけ」になります。申告書の正式な作り方は税務署や会計ソフトの案内が確実です。AIは下ごしらえ係と考えてください。</p>
+    </div></details>
+
+    <details class="case"><summary>📱 自分のアプリを作ってみたい<span class="pct">悩みの13%</span></summary><div class="body">
+      <div class="voice">「赤ちゃんと一緒に進められるアプリを作りたい」「家の困りごとを自分のアプリで解決して、仕事でも使えるレベルになりたい」</div>
+      <p class="steps"><b>使うAI：Claude</b><br>らぼの最終ミッションです。むずかしそうに見えて、必要なのは<b>「作りたいもの」と「使う人」を決めることだけ</b>。あとはCHAPTER 5の図5の流れで完成します。</p>
+      <div class="prompt" id="p-c8">アプリを作ってください。わたしはプログラムがわかりませんが、会話で一緒に完成させたいです。
+作りたいもの：<span class="ph">【例：子どもの歯みがきができたらスタンプがたまる表】</span>
+使う人：<span class="ph">【例：5歳の娘。ひらがなが読める】</span>
+・スマホで使いやすく、かわいくしてください
+・まず最初の版を作って見せてください。さわってみて、直したいところを伝えます</div>
+      <button class="copy" data-c="p-c8">コピーする</button>
+      <p class="small">✨ ワンポイント：もっと本格的なお願いのテンプレートは、らぼ特典の「魔法の言葉」ページにあります。1回で完璧を目指さず、「作る→さわる→直す」を3回まわすのが上達の近道です。</p>
+    </div></details>
+
+    <details class="case"><summary>🕊 自分の時間・余白がほしい<span class="pct">悩みの12%</span></summary><div class="body">
+      <div class="voice">「ワンオペで1人の時間がまったくない」「寝かしつけで一緒に寝てしまい、朝もどちらかが起きてくる」</div>
+      <p class="steps"><b>使うAI：Claude</b><br>「時間を作る」のではなく、まず<b>「時間がどこに消えているか」を見える化</b>します。犯人がわかれば、対策はAIが一緒に考えてくれます。</p>
+      <div class="prompt" id="p-c9">わたしの平日1日の流れを書きます。自分の時間を30分作るのが目標です。
+<span class="ph">【例：6時起床、朝食づくり、7時半送り、9時仕事、17時お迎え、18時夕食づくり…と流れを書く】</span>
+①時間が消えている場所（まとめられる・やめられる・任せられるところ）を見つけてください
+②30分の余白を作る現実的な案を3つください。根性が必要な案はなしでお願いします</div>
+      <button class="copy" data-c="p-c9">コピーする</button>
+      <p class="small">✨ ワンポイント：このレシピ集の「献立」と「時間管理」を先にやると、余白はさらに増えます。余白の使いみちを決めておく（ドラマ1話、と決めるなど）のも続けるコツです。</p>
+    </div></details>
+
+    <details class="case"><summary>🧡 介護・家族のケアと両立する<span class="pct">悩みの8%</span></summary><div class="body">
+      <div class="voice">「母の介護と物販の両立がむずかしい。自分の体も万全ではない」「家族の通院や薬の管理で頭がいっぱいになる」</div>
+      <p class="steps"><b>使うAI：Claude（記録と整理係）</b><br>まず大前提として、介護の体制づくりは<b>地域包括支援センターやケアマネジャーさんなど専門機関に相談</b>してください。AIの出番は、その手前と合間の「記録・整理・気持ちの置き場」です。</p>
+      <div class="prompt" id="p-c10">家族のケアの記録を手伝ってください。
+状況：<span class="ph">【例：母の通院が月3回。薬が5種類。わたしは日中仕事】</span>
+①通院・薬・体調メモを整理する記録の型を作ってください（毎日1分で書ける形で）
+②ケアマネジャーさんやお医者さまに相談するとき、伝えるべきことを整理してください
+③わたし自身が休む時間も、予定に組み込んでください</div>
+      <button class="copy" data-c="p-c10">コピーする</button>
+      <p class="small">✨ ワンポイント：しんどい気持ちは、整理せずそのままカルテに送ってください。がんばりを続けるためには、吐き出す場所が必要です。</p>
+    </div></details>
+
+    <details class="case"><summary>📣 SNS・発信をがんばりたい<span class="pct">悩みの7%</span></summary><div class="body">
+      <div class="voice">「インスタ投稿のタイトルと文で毎日悩む」「参考投稿の収集と整理がまわらず、リサーチの手前で止まっている」</div>
+      <p class="steps"><b>使うAI：ChatGPT（ネタ出し・画像）＋Claude（分析・文章）</b><br>毎日ゼロから考えるのをやめて、「集めるのは自分・整理と分析はAI」に分業します。</p>
+      <div class="prompt" id="p-c11">SNS発信を手伝ってください。
+アカウント：<span class="ph">【例：レディース古着のメルカリショップ。フォロワーは30〜40代女性】</span>
+①今週の投稿ネタを10個、タイトル案つきでください
+②参考にしたい投稿のスクショを渡すので、「型・フック（つかみ）・ターゲット」で分類して、わたしの投稿に活かせる点を教えてください
+<span class="ph">【参考投稿のスクショがあればここに貼る】</span></div>
+      <button class="copy" data-c="p-c11">コピーする</button>
+      <p class="small">✨ ワンポイント：参考投稿は見つけたらスクショして1つのフォルダに入れるだけにして、週1回まとめてAIに整理してもらうのが続く型です。投稿画像づくりはChatGPT（CHAPTER 3）の出番です。</p>
+    </div></details>
+
+  </section>
+
+  <!-- ======================== おわりに ======================== -->
+  <section class="chap" id="c9">
+    <div class="chapno">FINAL</div>
+    <h2>困ったときは</h2>
+    <div class="card">
+      <ul>
+        <li><b>使い方に迷ったら</b> … あなたのカルテの「AIくみこ」に、なんでも聞いてください</li>
+        <li><b>よくある質問</b> … <a href="https://kumiko0814.github.io/ailabo-faq/" target="_blank" rel="noopener">FAQページ</a>にまとまっています</li>
+        <li><b>アプリづくりのテンプレ</b> … 特典「魔法の言葉」ページをどうぞ</li>
+      </ul>
+      <div class="pinkbox">この教科書は、みなさんの悩みが届くたびに育っていきます。「ここがわからなかった」も宝物なので、左下の「不具合を報告」から気軽に教えてください。それでは、らぼで一緒に楽しみましょう☺️</div>
+    </div>
+  </section>
+
+  <footer>Merone AI活用ラボ｜AIらぼの教科書<br><a href="index.html">カルテにもどる</a></footer>
+</div>
+
+<button id="bugL">不具合を報告</button>
+<div id="bugM"><div class="bx">
+  <h3>不具合・気になったことを教えてください</h3>
+  <textarea id="bugT" placeholder="例）コピーボタンが反応しませんでした（iPhone/Safari）"></textarea>
+  <div class="bb"><button class="c" id="bugC">閉じる</button><button class="s" id="bugS">送信する</button></div>
+  <div class="done" id="bugD">届きました。ありがとうございます。すぐ確認します。</div>
+</div></div>
+<div class="toast" id="toast">コピーしました</div>
+
+<script>
+(function(){
+  var U="https://inrvprlyobghviklulcv.supabase.co/rest/v1/ailab_notes";
+  var K="sb_publishable_ZrCNcsRHMci-l7Fns8QtIA_X22XZGJp";
+
+  /* コピー */
+  var toast=document.getElementById("toast"), toastT=null;
+  function showToast(){ toast.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(function(){ toast.classList.remove("show"); },1500); }
+  Array.prototype.forEach.call(document.querySelectorAll(".copy"),function(btn){
+    btn.addEventListener("click",function(){
+      var el=document.getElementById(btn.getAttribute("data-c"));
+      if(!el) return;
+      var txt=el.innerText||el.textContent;
+      function ok(){ showToast(); }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(ok).catch(function(){ fallback(); });
+      } else { fallback(); }
+      function fallback(){
+        var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta);
+        ta.select(); try{ document.execCommand("copy"); ok(); }catch(e){} document.body.removeChild(ta);
+      }
+    });
+  });
+
+  /* バグ報告 */
+  var M=document.getElementById("bugM");
+  document.getElementById("bugL").onclick=function(){ M.classList.add("on"); };
+  document.getElementById("bugC").onclick=function(){ M.classList.remove("on"); document.getElementById("bugD").style.display="none"; };
+  document.getElementById("bugS").onclick=function(){
+    var t=document.getElementById("bugT").value.trim();
+    if(!t){ document.getElementById("bugT").focus(); return; }
+    var btn=this; btn.disabled=true;
+    function done(){
+      document.getElementById("bugD").style.display="block";
+      document.getElementById("bugT").value=""; btn.disabled=false;
+      setTimeout(function(){ M.classList.remove("on"); document.getElementById("bugD").style.display="none"; },1800);
+    }
+    fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+      body:JSON.stringify({member_id:"bug_教科書",member_name:"教科書",mood:"バグ報告",worry:t,want:location.href.slice(0,180)+" ／ "+navigator.userAgent.slice(0,140)})})
+      .then(function(){ done(); }).catch(function(){ btn.disabled=false; alert("送信できませんでした。通信環境をご確認ください。"); });
+  };
+})();
+</script>
+</body>
+</html>

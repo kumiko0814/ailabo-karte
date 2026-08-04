@@ -454,6 +454,7 @@ function loadAll(){
     html+='<div class="curwk'+(i===cur?" now":"")+'"><span class="wn">'+w[0]+'<br>'+w[1]+'</span><span class="wt"><b>'+w[2]+(i===cur?"　←いまここ":"")+'</b>'+w[3]+'</span></div>';
   });
   html+='<div class="curwk"><span class="wn">勉強会</span><span class="wt"><b>8/11（火）・8/16（日）・8/28（金）</b>すべてアーカイブつき</span></div>';
+  html+='<div class="curwk"><span class="wn">📖</span><span class="wt"><b><a href="textbook.html" style="color:#bd7886;">AIらぼの教科書を読む</a></b>みんなの悩みから作った、AIの使い方ぜんぶ</span></div>';
   box.innerHTML=html;
   var lbl=document.getElementById("curnow");
   if(cur>=0){ lbl.textContent="いま"+WEEKS[cur][0]; } else if(now<starts[0].getTime()){ lbl.textContent="8/8 開講"; }
@@ -462,7 +463,16 @@ function loadAll(){
 /* ===== くみこからのメッセージ（1人1回表示） ===== */
 (function(){
   function show(msg){
-    document.getElementById("ntcMsg").textContent=msg;
+    var box=document.getElementById("ntcMsg");
+    box.textContent="";
+    String(msg).split(/(https?:\/\/[^\s]+)/g).forEach(function(part){
+      if(/^https?:\/\//.test(part)){
+        var a=document.createElement("a");
+        a.href=part; a.target="_blank"; a.rel="noopener";
+        a.textContent=part; a.style.cssText="color:#bd7886;font-weight:800;word-break:break-all;";
+        box.appendChild(a);
+      } else if(part){ box.appendChild(document.createTextNode(part)); }
+    });
     document.getElementById("ntcOv").classList.add("on");
   }
   function init(){
