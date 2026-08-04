@@ -348,6 +348,7 @@ var demoApps=[
 {member_id:"rina06",member_name:"りな",mood:"申込",want:"申込サイトで決済確認（受付番号 M12345679）",created_at:new Date(Date.now()-7200000).toISOString()},
 {member_id:"yuki01",member_name:"ゆき",mood:"申込",want:"申込サイトで決済確認（受付番号 M12345680）",created_at:new Date(Date.now()-100000000).toISOString()}
 ];
+var demoDrafts={mariko02:{id:0,message:"まりこさん、頼み方が悪いなんてことはありません。ふわっと返ってくるのは、渡す情報がまだ少ないだけです。今夜は献立だけ、「家族の人数・好き嫌い・冷蔵庫にあるもの」の3つを添えてClaudeにお願いしてみてください。5分で変わります。"}};
 var demoAdv={yuki01:[{message:"ゆきさん、まずは説明文だけAIに渡しましょう。特典テンプレ②に商品情報を貼るだけ。今夜1本だけ試してみてください。",created_at:new Date(Date.now()-3600000).toISOString()}]};
 
 var CATS=[
@@ -367,10 +368,11 @@ function renderMembers(apps,regs,karte,advMap){
   var box=document.getElementById("memlist");
   var m={};
   function touch(n,kind){
-    if(!m[n.member_id]) m[n.member_id]={name:n.member_name||n.member_id, at:n.created_at, k:0, app:false, reg:false, rno:""};
+    if(!m[n.member_id]) m[n.member_id]={name:n.member_name||n.member_id, at:n.created_at, last:n.created_at, k:0, app:false, reg:false, rno:""};
     var v=m[n.member_id];
     if(n.member_name) v.name=n.member_name;
     if(new Date(n.created_at)<new Date(v.at)) v.at=n.created_at;
+    if(new Date(n.created_at)>new Date(v.last)) v.last=n.created_at;
     if(kind==="app"){ v.app=true; var mt=(n.want||"").match(/受付番号\s*([A-Za-z0-9]+)/); if(mt) v.rno=mt[1]; }
     if(kind==="reg") v.reg=true;
     if(kind==="karte") v.k++;
@@ -404,6 +406,7 @@ function renderMembers(apps,regs,karte,advMap){
     else if(v.k===0) right+='<span class="mood" style="background:var(--pinkbg); color:var(--pink3);">カルテ未提出</span>';
     else right+='<span class="advpill">カルテ'+v.k+'件</span>';
     if(advs) right+='<span class="advpill" style="background:#e8f3ee; color:#3f7d63;">返信'+advs+'件</span>';
+    if(v.k>0 && (Date.now()-new Date(v.last).getTime())>14*86400000) right+='<span class="mood" style="background:#fdf3e0; color:#9a6b1f;">2週間動きなし</span>';
     e.innerHTML='<span class="ava a'+(idx%4+1)+'"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c1-4 4.2-6 8-6s7 2 8 6z"/></svg></span>'+
       '<div class="icol"><div class="nm">'+esc(v.name)+'</div><div class="id">'+esc(id)+'</div></div>'+
       '<div class="ibody" style="align-self:center;"><div class="wt">'+(v.app?"申込":"登録")+'：'+fmt(v.at)+'</div></div>'+
@@ -491,7 +494,8 @@ function isDone(n,advMap){
   if(n.mood==="対応済み") return true;
   return (advMap[n.member_id]||[]).some(function(a){ return new Date(a.created_at)>new Date(n.created_at); });
 }
-function renderInbox(notes,advMap){
+function renderInbox(notes,advMap,drafts){
+  drafts=drafts||{};
   var box=document.getElementById("ilist"); box.innerHTML="";
   var open=notes.filter(function(n){ return !isDone(n,advMap); }).length;
   document.querySelector("#sec-inbox .ihead .cnt").textContent=notes.length?("未対応 "+open+"件／全"+notes.length+"件"):"";
@@ -518,6 +522,15 @@ function renderInbox(notes,advMap){
       '<div class="reply"><textarea placeholder="'+esc(n.member_name||"")+'さんへのアドバイス（どんなAIとの付き合い方がよいか・どのAIが合うか・最初の一歩）"></textarea>'+
       '<button class="sbtn">アドバイスを送る</button><div class="sentok">送信しました。本人のページと分析に反映されます。</div></div>';
     var ta=e.querySelector("textarea"), sbtn=e.querySelector(".sbtn"), okm=e.querySelector(".sentok");
+    var dft=(!done && drafts[n.member_id])||null;
+    if(dft){
+      ta.value=dft.message||"";
+      sbtn.textContent="承認して送信";
+      var dbg=document.createElement("span"); dbg.className="advpill";
+      dbg.style.cssText="background:#eef2fb; color:#3b5b9a; margin-left:10px;";
+      dbg.textContent="AI下書き（編集できます）";
+      sbtn.parentNode.insertBefore(dbg, sbtn.nextSibling);
+    }
     sbtn.onclick=function(){
       var msg=ta.value.trim(); if(!msg){ ta.focus(); return; }
       sbtn.disabled=true;
@@ -536,6 +549,7 @@ function renderInbox(notes,advMap){
         .then(function(){
           done();
           if(n.id) sb("ailab_notes?id=eq."+n.id,{method:"PATCH",body:JSON.stringify({mood:"対応済み"})}).catch(function(){});
+          if(dft && dft.id) sb("ailab_advice?id=eq."+dft.id,{method:"PATCH",body:JSON.stringify({author_name:"draft_used"})}).catch(function(){});
         })
         .catch(function(){ sbtn.disabled=false; alert("送信できませんでした。通信環境を確認してください。"); });
     };
@@ -543,7 +557,7 @@ function renderInbox(notes,advMap){
   });
 }
 function loadInbox(){
-  if(DEMO){ lastNotesA=demoNotes.slice(); renderMembers(demoApps,demoRegs,demoNotes,demoAdv); renderInbox(demoNotes,demoAdv); renderTrend(demoNotes,demoAdv); renderBugs([{id:0,member_name:"マイページ｜demo",mood:"バグ報告",worry:"（デモ）送信ボタンの反応が遅い気がします",want:"https://…／iPhone Safari",created_at:new Date().toISOString()}]); return; }
+  if(DEMO){ lastNotesA=demoNotes.slice(); renderMembers(demoApps,demoRegs,demoNotes,demoAdv); renderInbox(demoNotes,demoAdv,demoDrafts); renderTrend(demoNotes,demoAdv); renderBugs([{id:0,member_name:"マイページ｜demo",mood:"バグ報告",worry:"（デモ）送信ボタンの反応が遅い気がします",want:"https://…／iPhone Safari",created_at:new Date().toISOString()}]); return; }
   Promise.all([
     sb("ailab_notes?order=created_at.desc&limit=1000").then(function(r){return r.json();}),
     sb("ailab_advice?order=created_at.desc&limit=1000").then(function(r){return r.json();})
@@ -554,9 +568,14 @@ function loadInbox(){
     var apps=rest.filter(function(n){ return n.mood==="申込"; });
     var regs=rest.filter(function(n){ return n.mood==="登録"; });
     var notes=rest.filter(function(n){ return n.mood!=="登録" && n.mood!=="申込"; });
-    var advMap={};
-    (Array.isArray(res[1])?res[1]:[]).forEach(function(a){ (advMap[a.target_id]=advMap[a.target_id]||[]).push(a); });
-    lastNotesA=notes; renderMembers(apps,regs,notes,advMap); renderInbox(notes,advMap); renderTrend(notes,advMap); renderBugs(bugs);
+    var advMap={}, drafts={};
+    (Array.isArray(res[1])?res[1]:[]).forEach(function(a){
+      var an=String(a.author_name||"");
+      if(an==="draft"){ if(!drafts[a.target_id]) drafts[a.target_id]=a; return; }
+      if(an.indexOf("draft")===0) return;
+      (advMap[a.target_id]=advMap[a.target_id]||[]).push(a);
+    });
+    lastNotesA=notes; renderMembers(apps,regs,notes,advMap); renderInbox(notes,advMap,drafts); renderTrend(notes,advMap); renderBugs(bugs);
   }).catch(function(){
     document.getElementById("ilist").innerHTML='<div class="empty2">読み込めませんでした。初期設定（setup.html）がまだの可能性があります。</div>';
   });

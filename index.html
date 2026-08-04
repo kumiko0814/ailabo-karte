@@ -384,7 +384,7 @@ function loadAll(){
   sb("ailab_notes?member_id=eq."+UID+"&order=created_at.desc&limit=100").then(function(r){return r.json();})
     .then(function(j){ if(Array.isArray(j)){ lastNotes=j; renderHist(j); renderAnalysis(); } }).catch(function(){});
   sb("ailab_advice?target_id=eq."+UID+"&order=created_at.desc&limit=100").then(function(r){return r.json();})
-    .then(function(j){ if(Array.isArray(j)){ lastAdv=j; renderAdv(j); renderAnalysis(); } }).catch(function(){});
+    .then(function(j){ if(Array.isArray(j)){ j=j.filter(function(a){ return String(a.author_name||"").indexOf("draft")!==0; }); lastAdv=j; renderAdv(j); renderAnalysis(); } }).catch(function(){});
 }
 
 /* ===== 分析エンジン（カルテが増えるたびに自動で更新） ===== */
