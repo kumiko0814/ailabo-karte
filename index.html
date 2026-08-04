@@ -317,6 +317,14 @@ footer{text-align:center; font-size:11px; color:#9aa7b4; padding:34px 16px 10px;
           </div>
         </div>
 
+        <!-- curriculum -->
+        <div class="view" id="v_cur">
+          <div class="card" style="padding-bottom:20px;">
+            <h2>ラボのカリキュラム</h2>
+            <div id="curpage"></div>
+          </div>
+        </div>
+
         <!-- settings -->
         <div class="view" id="v_set">
           <div class="card setcard">
@@ -356,6 +364,7 @@ footer{text-align:center; font-size:11px; color:#9aa7b4; padding:34px 16px 10px;
 <div class="mnav">
   <button class="mn on" data-v="v_new"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>新しいカルテ</button>
   <button class="mn" data-v="v_list"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>カルテ一覧</button>
+  <button class="mn" data-v="v_cur"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5v13z"/><path d="M9 8h7M9 11.5h5"/></svg>カリキュラム</button>
   <button class="mn" data-v="v_adv"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>アドバイス</button>
   <button class="mn" data-v="v_ana"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M21 20H3"/></svg>分析</button>
   <button class="mn" data-v="v_set"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.5 5.5l2.1 2.1M16.4 16.4l2.1 2.1M18.5 5.5l-2.1 2.1M7.6 16.4l-2.1 2.1"/></svg>設定</button>
@@ -429,15 +438,13 @@ function loadAll(){
 
 (function(){
   var el=document.getElementById("niCur");
-  if(el) el.onclick=function(){
-    var home=document.querySelector('.ni[data-v="v_new"]'); if(home) home.click();
-    var c=document.getElementById("curcard");
-    if(c){ c.open=true; setTimeout(function(){ c.scrollIntoView({behavior:"smooth",block:"start"}); },80); }
-  };
+  if(el) el.onclick=function(){ if(window.switchView) window.switchView("v_cur"); };
 })();
 
-/* ===== カリキュラム常設 ===== */
+/* ===== カリキュラム常設（8/5 あさ9時オープン） ===== */
 (function(){
+  var CUR_OPEN=new Date("2026-08-05T09:00:00+09:00").getTime();
+  var opened=Date.now()>=CUR_OPEN;
   var WEEKS=[
     ["第1週","8/8〜","AIに自分を覚えさせる＋タスクの仕分け","STEP0-1"],
     ["第2週","8/15〜","頼み方5点セット（題材：メルカリ説明文）","STEP2"],
@@ -449,15 +456,28 @@ function loadAll(){
   var starts=[new Date("2026-08-08"),new Date("2026-08-15"),new Date("2026-08-22"),new Date("2026-08-29"),new Date("2026-09-05"),new Date("2026-09-12"),new Date("2026-09-20")];
   var now=Date.now(), cur=-1;
   for(var i=0;i<6;i++){ if(now>=starts[i].getTime() && now<starts[i+1].getTime()) cur=i; }
-  var box=document.getElementById("curbody"), html="";
-  WEEKS.forEach(function(w,i){
-    html+='<div class="curwk'+(i===cur?" now":"")+'"><span class="wn">'+w[0]+'<br>'+w[1]+'</span><span class="wt"><b>'+w[2]+(i===cur?"　←いまここ":"")+'</b>'+w[3]+'</span></div>';
-  });
-  html+='<div class="curwk"><span class="wn">勉強会</span><span class="wt"><b>8/11（火）・8/16（日）・8/28（金）</b>すべてアーカイブつき</span></div>';
-  html+='<div class="curwk"><span class="wn">📖</span><span class="wt"><b><a href="textbook.html" style="color:#bd7886;">AIらぼの教科書を読む</a></b>みんなの悩みから作った、AIの使い方ぜんぶ</span></div>';
-  box.innerHTML=html;
+  var html="";
+  if(opened){
+    WEEKS.forEach(function(w,i){
+      html+='<div class="curwk'+(i===cur?" now":"")+'"><span class="wn">'+w[0]+'<br>'+w[1]+'</span><span class="wt"><b>'+w[2]+(i===cur?"　←いまここ":"")+'</b>'+w[3]+'</span></div>';
+    });
+    html+='<div class="curwk"><span class="wn">勉強会</span><span class="wt"><b>8/11（火）・8/16（日）・8/28（金）</b>すべてアーカイブつき</span></div>';
+    html+='<div class="curwk"><span class="wn">📖</span><span class="wt"><b><a href="textbook.html" style="color:#bd7886;">AIらぼの教科書を読む</a></b>みんなの悩みから作った、AIの使い方ぜんぶ</span></div>';
+  } else {
+    html='<div style="text-align:center; padding:26px 10px;">'
+      +'<div style="font-size:34px;">🎁</div>'
+      +'<div style="font-size:15px; font-weight:800; color:#1d3149; margin-top:8px;">カリキュラムは<br>8/5（水）あさ9時にオープンします</div>'
+      +'<div style="font-size:12.5px; color:#8a97a5; margin-top:10px; line-height:2;">みなさんのカルテの悩みをぜんぶ読んで、<br>くみこが心を込めて準備しています。<br>おたのしみに☺️</div>'
+      +'</div>';
+  }
+  var box=document.getElementById("curbody"); if(box) box.innerHTML=html;
+  var page=document.getElementById("curpage"); if(page) page.innerHTML=html;
   var lbl=document.getElementById("curnow");
-  if(cur>=0){ lbl.textContent="いま"+WEEKS[cur][0]; } else if(now<starts[0].getTime()){ lbl.textContent="8/8 開講"; }
+  if(lbl){
+    if(!opened){ lbl.textContent="8/5 あさ9時オープン"; }
+    else if(cur>=0){ lbl.textContent="いま"+WEEKS[cur][0]; }
+    else if(now<starts[0].getTime()){ lbl.textContent="8/8 開講"; }
+  }
 })();
 
 /* ===== くみこからのメッセージ（1人1回表示） ===== */
@@ -700,7 +720,7 @@ document.getElementById("reset").onclick=function(){
 };
 
 /* view switching */
-var TITLES={v_new:"新しいカルテ",v_list:"カルテ一覧",v_adv:"アドバイス管理",v_ana:"分析レポート",v_set:"設定"};
+var TITLES={v_new:"新しいカルテ",v_list:"カルテ一覧",v_cur:"カリキュラム",v_adv:"アドバイス管理",v_ana:"分析レポート",v_set:"設定"};
 function switchView(id){
   document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("on"); });
   document.getElementById(id).classList.add("on");
@@ -713,6 +733,7 @@ function switchView(id){
 document.querySelectorAll(".mn,.ni[data-v]").forEach(function(n){
   n.onclick=function(){ switchView(n.getAttribute("data-v")); };
 });
+window.switchView=switchView;
 
 loadAll();
 })();

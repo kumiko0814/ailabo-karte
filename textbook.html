@@ -574,6 +574,20 @@ footer a{color:var(--pink2);}
   var U="https://inrvprlyobghviklulcv.supabase.co/rest/v1/ailab_notes";
   var K="sb_publishable_ZrCNcsRHMci-l7Fns8QtIA_X22XZGJp";
 
+  /* 8/5 あさ9時オープン（それまではお楽しみ表示） */
+  var OPEN=new Date("2026-08-05T09:00:00+09:00").getTime();
+  if(Date.now()<OPEN){
+    var w=document.querySelector(".wrap");
+    if(w){
+      w.innerHTML='<div class="hero">'
+        +'<img src="https://kumiko0814.github.io/kumiko-illust/lab-think.png" alt="" onerror="this.style.display=\'none\'">'
+        +'<div class="tt">AIらぼの教科書</div>'
+        +'<div class="st">8/5（水）あさ9時にオープンします</div>'
+        +'<div class="lead" style="text-align:center;">みなさんの悩みをぜんぶ読んで、<b>世界にひとつの教科書</b>を準備しています。<br>あさ9時に、くみこからのおたよりと一緒に届きます。おたのしみに🎁</div>'
+        +'</div>';
+    }
+  }
+
   /* コピー */
   var toast=document.getElementById("toast"), toastT=null;
   function showToast(){ toast.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(function(){ toast.classList.remove("show"); },1500); }
