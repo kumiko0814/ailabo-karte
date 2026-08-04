@@ -242,6 +242,17 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
       </div>
     </div>
 
+    <div class="inboxwrap" id="sec-notice">
+      <div class="ihead"><h2>みんなへのメッセージ</h2><span class="cnt" id="ntcnt"></span></div>
+      <div style="padding:6px 22px 18px;">
+        <p style="font-size:12.5px; color:#8a97a5;">送ると、全員のカルテページを次に開いた時に、かわいい演出つきで表示されます（1人1回だけ）。</p>
+        <textarea id="ntbody" placeholder="みんなへのメッセージ（例：開講のごあいさつ、今週のひとこと）" style="width:100%; border:1.5px solid #e3e9f0; border-radius:12px; padding:11px 13px; font-size:14px; line-height:1.9; font-family:inherit; min-height:90px; margin-top:6px;"></textarea>
+        <button class="subbtn" id="ntsend" style="margin-top:8px;">みんなに送る</button>
+        <span id="ntok" style="display:none; font-size:12.5px; color:var(--pink3); font-weight:800; margin-left:10px;">送信しました。次にページを開いた人から表示されます。</span>
+        <div id="ntlist" style="margin-top:12px; font-size:12.5px; color:#8a97a5;"></div>
+      </div>
+    </div>
+
     <div class="inboxwrap" id="sec-members">
       <div class="ihead"><h2>参加者一覧</h2><span class="cnt" id="memcnt"></span></div>
       <div class="ilist" style="padding:8px 22px 16px;" id="memlist"><div class="empty2">まだ登録がありません。参加者が入口ページで専用URLを作ると、ここに並びます。</div></div>
@@ -269,7 +280,7 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
 
     <div class="inboxwrap" id="sec-line">
       <div class="ihead"><h2>公式LINEの新着</h2><span class="cnt" id="linecnt"></span><button class="rl" id="lineall" style="margin-left:auto;">すべて確認済みにする</button></div>
-      <div class="ilist" style="padding:8px 22px 16px;" id="linelist"><div class="empty2">新着はありません。1日2回（朝8時前・夜20時前）自動で取り込みます。</div></div>
+      <div class="ilist" style="padding:8px 22px 16px;" id="linelist"><div class="empty2">新着はありません。</div></div>
     </div>
   </main>
 </div>
@@ -598,7 +609,7 @@ function loadInbox(){
     var all=Array.isArray(res[0])?res[0]:[];
     var bugs=all.filter(function(n){ return (n.member_id||"").indexOf("bug_")===0; });
     var lines=all.filter(function(n){ return (n.member_id||"").indexOf("line_")===0; });
-    var rest=all.filter(function(n){ var m=(n.member_id||""); return m.indexOf("bug_")!==0 && m.indexOf("line_")!==0 && m.indexOf("svy_")!==0; });
+    var rest=all.filter(function(n){ var m=(n.member_id||""); return m.indexOf("bug_")!==0 && m.indexOf("line_")!==0 && m.indexOf("svy_")!==0 && m.indexOf("notice_")!==0; });
     var apps=rest.filter(function(n){ return n.mood==="申込"; });
     var regs=rest.filter(function(n){ return n.mood==="登録"; });
     var notes=rest.filter(function(n){ return n.mood!=="登録" && n.mood!=="申込"; });
@@ -641,6 +652,25 @@ document.querySelectorAll(".ni,.mn").forEach(function(n){
   }
 });
 
+document.getElementById("ntsend").onclick=function(){
+  var t=(document.getElementById("ntbody").value||"").trim();
+  if(!t){ document.getElementById("ntbody").focus(); return; }
+  var b=this; b.disabled=true;
+  if(DEMO){ document.getElementById("ntok").style.display="inline"; b.disabled=false; return; }
+  sb("ailab_notes",{method:"POST",body:JSON.stringify({member_id:"notice_all",member_name:"くみこ",mood:"おしらせ",worry:t})})
+    .then(function(){ document.getElementById("ntok").style.display="inline"; document.getElementById("ntbody").value=""; b.disabled=false; loadNotices(); })
+    .catch(function(){ b.disabled=false; alert("送信できませんでした"); });
+};
+function loadNotices(){
+  if(DEMO) return;
+  sb("ailab_notes?member_id=eq.notice_all&mood=eq.おしらせ&order=created_at.desc&limit=3").then(function(r){return r.json();})
+    .then(function(j){
+      if(!Array.isArray(j)||!j.length) return;
+      document.getElementById("ntcnt").textContent="これまで"+j.length+"件以上";
+      document.getElementById("ntlist").innerHTML="直近："+j.map(function(n){ return "「"+esc((n.worry||"").slice(0,30))+"…」("+fmt(n.created_at)+")"; }).join("　");
+    }).catch(function(){});
+}
+loadNotices();
 document.getElementById("csvbtn").onclick=downloadCSV;
 document.getElementById("bakbtn").onclick=function(){
   var b=this;

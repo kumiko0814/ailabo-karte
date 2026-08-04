@@ -171,6 +171,31 @@ footer{text-align:center; font-size:11px; color:#9aa7b4; padding:34px 16px 10px;
   .mn svg{width:20px; height:20px; display:block; margin:0 auto 2px; fill:none; stroke:#9aa7b4; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
   .mn.on{color:var(--pink2);} .mn.on svg{stroke:var(--pink2);}
 }
+
+/* カリキュラム常設 */
+.curcard{background:#fff; border-radius:18px; margin-top:16px; box-shadow:0 6px 20px rgba(38,64,95,.07); overflow:hidden;}
+.curcard summary{list-style:none; cursor:pointer; padding:15px 18px; font-size:14.5px; font-weight:800; color:var(--navy2);}
+.curcard summary::-webkit-details-marker{display:none;}
+.curcard summary::before{content:"📚 ";}
+.curnow{float:right; background:var(--pinkbg); color:var(--pink2); border-radius:999px; padding:2px 12px; font-size:11px; font-weight:800;}
+.curbody{padding:0 18px 16px;}
+.curwk{display:flex; gap:10px; padding:9px 0; border-top:1px dashed #f0e6ee; font-size:12.5px; line-height:1.7; align-items:flex-start;}
+.curwk .wn{flex:none; width:64px; font-weight:800; color:#9aa7b4; font-size:11px; padding-top:2px;}
+.curwk .wt b{color:var(--navy2); display:block; font-size:13px;}
+.curwk.now{background:linear-gradient(90deg,#fbeef1,transparent); margin:0 -18px; padding:9px 18px; border-radius:8px;}
+.curwk.now .wn{color:var(--pink2);}
+/* くみこからのメッセージ */
+#ntcOv{position:fixed; inset:0; background:rgba(29,49,73,.5); display:none; align-items:center; justify-content:center; z-index:80; padding:22px;}
+#ntcOv.on{display:flex;}
+#ntcCard{position:relative; background:linear-gradient(165deg,#fff 0%,#fdf4f7 100%); border:2px solid #f3d9e0; border-radius:24px; padding:26px 22px 22px; max-width:360px; width:100%; text-align:center; box-shadow:0 20px 60px rgba(29,49,73,.3); animation:ntcPop .5s cubic-bezier(.2,1.4,.4,1);}
+@keyframes ntcPop{0%{transform:scale(.7); opacity:0;} 100%{transform:scale(1); opacity:1;}}
+#ntcCard img{width:92px; margin-top:-64px; filter:drop-shadow(0 6px 14px rgba(189,120,134,.3));}
+#ntcCard h3{font-size:13px; color:var(--pink2); letter-spacing:.14em; font-weight:800; margin-top:6px;}
+#ntcMsg{font-size:14px; color:var(--navy2); line-height:2; margin-top:10px; text-align:left; white-space:pre-wrap;}
+#ntcClose{border:none; background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff; border-radius:999px; padding:12px 34px; font-size:13.5px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:16px; box-shadow:0 8px 22px rgba(189,120,134,.35);}
+.ntcFx{position:absolute; inset:0; pointer-events:none; overflow:visible;}
+.ntcFx span{position:absolute; bottom:-10px; font-size:16px; opacity:0; animation:ntcFloat 3.2s ease-in infinite;}
+@keyframes ntcFloat{0%{transform:translateY(0) scale(.7) rotate(0deg); opacity:0;} 15%{opacity:.9;} 100%{transform:translateY(-330px) scale(1.15) rotate(18deg); opacity:0;}}
 </style>
 </head>
 <body>
@@ -255,6 +280,14 @@ footer{text-align:center; font-size:11px; color:#9aa7b4; padding:34px 16px 10px;
             <button class="gbtn" id="send"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>この内容でカルテを作成する</button>
             <div class="ok" id="okmsg">カルテが届きました。くみこが読んで、アドバイスをお返ししますね。</div>
             <p class="note">※作成したカルテはいつでも編集・追加できます。</p>
+          </div>
+
+          <details class="curcard" id="curcard">
+            <summary>ラボのカリキュラム（全体の流れ）<span class="curnow" id="curnow"></span></summary>
+            <div class="curbody" id="curbody"></div>
+          </details>
+
+          <div style="display:none;">
           </div>
         </div>
 
@@ -392,6 +425,49 @@ function loadAll(){
   sb("ailab_advice?target_id=eq."+UID+"&order=created_at.desc&limit=100").then(function(r){return r.json();})
     .then(function(j){ if(Array.isArray(j)){ j=j.filter(function(a){ return String(a.author_name||"").indexOf("draft")!==0; }); lastAdv=j; renderAdv(j); renderAnalysis(); } }).catch(function(){});
 }
+
+/* ===== カリキュラム常設 ===== */
+(function(){
+  var WEEKS=[
+    ["第1週","8/8〜","AIに自分を覚えさせる＋タスクの仕分け","STEP0-1"],
+    ["第2週","8/15〜","頼み方5点セット（題材：メルカリ説明文）","STEP2"],
+    ["第3週","8/22〜","3つのAIの使い分け（題材：献立・家族の予定）","STEP3"],
+    ["第4週","8/29〜","時短レシピ12（暮らし編・仕事編）","STEP4"],
+    ["第5週","9/5〜","くり返し作業を自分のアプリに","STEP5"],
+    ["第6週","9/12〜","最終ミッション：アプリ2つで卒業","STEP6"]
+  ];
+  var starts=[new Date("2026-08-08"),new Date("2026-08-15"),new Date("2026-08-22"),new Date("2026-08-29"),new Date("2026-09-05"),new Date("2026-09-12"),new Date("2026-09-20")];
+  var now=Date.now(), cur=-1;
+  for(var i=0;i<6;i++){ if(now>=starts[i].getTime() && now<starts[i+1].getTime()) cur=i; }
+  var box=document.getElementById("curbody"), html="";
+  WEEKS.forEach(function(w,i){
+    html+='<div class="curwk'+(i===cur?" now":"")+'"><span class="wn">'+w[0]+'<br>'+w[1]+'</span><span class="wt"><b>'+w[2]+(i===cur?"　←いまここ":"")+'</b>'+w[3]+'</span></div>';
+  });
+  html+='<div class="curwk"><span class="wn">勉強会</span><span class="wt"><b>8/11（火）・8/16（日）・8/28（金）</b>すべてアーカイブつき</span></div>';
+  box.innerHTML=html;
+  var lbl=document.getElementById("curnow");
+  if(cur>=0){ lbl.textContent="いま"+WEEKS[cur][0]; } else if(now<starts[0].getTime()){ lbl.textContent="8/8 開講"; }
+})();
+
+/* ===== くみこからのメッセージ（1人1回表示） ===== */
+(function(){
+  function show(msg){
+    document.getElementById("ntcMsg").textContent=msg;
+    document.getElementById("ntcOv").classList.add("on");
+  }
+  function init(){
+  document.getElementById("ntcClose").onclick=function(){ document.getElementById("ntcOv").classList.remove("on"); };
+  if(DEMO){ setTimeout(function(){ show("（デモ表示）ようこそ、Merone AI活用ラボへ。ここに、くみこからのメッセージがかわいい演出つきで届きます。"); },800); return; }
+  sb("ailab_notes?member_id=eq.notice_all&mood=eq.おしらせ&order=created_at.desc&limit=1").then(function(r){return r.json();})
+    .then(function(j){
+      if(!Array.isArray(j)||!j.length) return;
+      var n=j[0], key="ailab_seen_ntc_"+n.id;
+      try{ if(localStorage.getItem(key)) return; localStorage.setItem(key,"1"); }catch(e){}
+      setTimeout(function(){ show(n.worry||""); },700);
+    }).catch(function(){});
+  }
+  if(document.readyState==="loading"){ document.addEventListener("DOMContentLoaded",init); } else { init(); }
+})();
 
 /* ===== 分析エンジン（カルテが増えるたびに自動で更新） ===== */
 var CATS=[
@@ -561,6 +637,20 @@ loadAll();
 #aikP iframe{flex:1; border:none; width:100%;}
 @media(max-width:900px){ #aikW{bottom:88px; right:10px;} #aikP{bottom:84px; height:min(560px,calc(100vh - 120px));} }
 </style>
+<div id="ntcOv">
+  <div id="ntcCard">
+    <div class="ntcFx">
+      <span style="left:6%; animation-delay:0s;">🩷</span><span style="left:18%; animation-delay:1.1s;">✨</span>
+      <span style="left:32%; animation-delay:.5s;">🤍</span><span style="left:46%; animation-delay:1.6s;">🩷</span>
+      <span style="left:60%; animation-delay:.2s;">✨</span><span style="left:73%; animation-delay:1.3s;">💗</span>
+      <span style="left:86%; animation-delay:.8s;">✨</span><span style="left:94%; animation-delay:2s;">🩷</span>
+    </div>
+    <img src="assets/char-peace.png" alt="">
+    <h3>くみこからのメッセージ</h3>
+    <div id="ntcMsg"></div>
+    <button id="ntcClose">よんだよ 🩷</button>
+  </div>
+</div>
 <div id="aikW">
   <img src="assets/char-typing.png" alt="AIくみこ" id="aikC">
   <div class="pl" id="aikL">AIくみこ</div>
