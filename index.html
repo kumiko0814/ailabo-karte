@@ -287,7 +287,12 @@ footer{text-align:center; font-size:11px; color:#9aa7b4; padding:34px 16px 10px;
         <div class="view" id="v_set">
           <div class="card setcard">
             <h2>設定</h2>
-            <p>書いた内容は、くみこだけが見られます。データはこの専用ページとくみこの管理画面の間だけでやりとりされます。</p>
+            <h3 style="font-size:13.5px; color:var(--pink2); margin-bottom:6px;">呼ばれたい名前の変更</h3>
+            <p style="font-size:12.5px;">ニックネームで登録してしまった場合など、いつでも変えられます。これまでに書いたカルテはそのまま残ります。</p>
+            <input type="text" id="nmchg" maxlength="20" placeholder="新しい名前" style="width:100%; border:1.5px solid #e3e9f0; border-radius:12px; padding:11px 13px; font-size:14px; font-family:inherit; margin-top:8px;">
+            <button id="nmsave" style="border:none; background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff; border-radius:999px; padding:11px 26px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:10px;">この名前に変更する</button>
+            <p id="nmok" style="display:none; font-size:12.5px; color:var(--pink2); font-weight:800; margin-top:6px;">変更しました。次のカルテから新しい名前で届きます。</p>
+            <p style="margin-top:18px;">書いた内容は、くみこだけが見られます。データはこの専用ページとくみこの管理画面の間だけでやりとりされます。</p>
             <p style="margin-top:12px;"><a id="reset" href="javascript:void(0)">プロフィールをリセットする</a></p>
           </div>
         </div>
@@ -328,6 +333,7 @@ footer{text-align:center; font-size:11px; color:#9aa7b4; padding:34px 16px 10px;
 var P=new URLSearchParams(location.search);
 var UID=(P.get("u")||"").replace(/[^a-zA-Z0-9_\-]/g,"").slice(0,40);
 var NAME=(P.get("name")||"").slice(0,20);
+try{ var __nm=localStorage.getItem("ailab_name_"+(P.get("u")||"")); if(__nm) NAME=__nm.slice(0,20); }catch(e){}
 var DEMO=P.get("demo")==="1"||!UID||!(typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.enabled);
 
 document.getElementById("who").textContent=(NAME||"あなた")+"さんの専用ページ";
@@ -506,6 +512,18 @@ document.getElementById("send").onclick=function(){
     .catch(function(){ btn.disabled=false; alert("送信できませんでした。電波のよいところでもう一度お試しください。"); });
 };
 document.getElementById("refresh").onclick=loadAll;
+document.getElementById("nmsave").onclick=function(){
+  var v=(document.getElementById("nmchg").value||"").trim().slice(0,20);
+  if(!v){ document.getElementById("nmchg").focus(); return; }
+  try{ localStorage.setItem("ailab_name_"+UID, v); }catch(e){}
+  try{
+    var my=JSON.parse(localStorage.getItem("ailab_my")||"{}");
+    if(my && my.id===UID){ my.name=v; my.url=location.origin+location.pathname+"?u="+UID+"&name="+encodeURIComponent(v); localStorage.setItem("ailab_my",JSON.stringify(my)); }
+  }catch(e){}
+  document.getElementById("nmok").style.display="block";
+  var u=new URL(location.href); u.searchParams.set("name", v);
+  setTimeout(function(){ location.href=u.toString(); }, 900);
+};
 document.getElementById("reset").onclick=function(){
   document.getElementById("worry").value=""; document.getElementById("want").value="";
   switchView("v_new");
