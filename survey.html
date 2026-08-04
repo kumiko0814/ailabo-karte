@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>学びたいことアンケート｜Merone AI活用ラボ</title>
+<style>
+:root{ --navy:#26405f; --navy2:#1d3149; --pink:#cf8f9c; --pink2:#bd7886; --pinkbg:#fbeef1; --text:#4a4446; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif; background:linear-gradient(168deg,#f1eaf7 0%,#faf7fb 46%,#fbeef1 100%); color:var(--text); line-height:1.95; -webkit-font-smoothing:antialiased; padding-bottom:60px;}
+.wrap{max-width:560px; margin:0 auto; padding:0 18px;}
+header{background:var(--navy2); color:#fff; padding:14px 18px; text-align:center;}
+header .lg{font-size:13px; font-weight:800; letter-spacing:.14em; color:#f3cdd7;}
+header .lg i{font-style:normal; color:#cfdcea; font-weight:700; margin-left:6px; letter-spacing:.08em;}
+.hero{text-align:center; padding:28px 0 8px;}
+.hero img{width:104px;}
+.hero h1{font-size:clamp(19px,5.4vw,24px); color:var(--navy2); margin-top:4px;}
+.hero p{font-size:12.5px; color:#8a97a5; margin-top:6px;}
+.card{background:#fff; border-radius:18px; padding:20px; margin-top:16px; box-shadow:0 6px 20px rgba(38,64,95,.07);}
+.q{font-size:14px; font-weight:800; color:var(--navy2); margin-bottom:8px;}
+.q small{color:var(--pink2); font-size:11px; margin-left:6px;}
+.opt{display:block; background:#faf7fb; border:1.5px solid #e8e0ef; border-radius:12px; padding:11px 14px; font-size:13.5px; margin-top:8px; cursor:pointer;}
+.opt input{margin-right:8px; accent-color:#bd7886;}
+input[type=text],textarea{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; padding:11px 13px; font-size:14px; font-family:inherit; margin-top:4px;}
+textarea{min-height:80px; resize:vertical; line-height:1.8;}
+.send{display:block; width:100%; border:none; background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff; border-radius:999px; padding:15px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:20px; box-shadow:0 8px 22px rgba(189,120,134,.35);}
+#done{display:none; text-align:center; padding:40px 0;}
+#done h2{color:var(--navy2); font-size:19px;}
+#done p{font-size:13.5px; margin-top:8px;}
+footer{text-align:center; font-size:11px; color:#9aa7b4; margin-top:36px;}
+</style>
+</head>
+<body>
+<header><span class="lg">Merone<i>AI活用ラボ</i></span></header>
+<div class="wrap">
+  <div class="hero">
+    <img src="https://kumiko0814.github.io/kumiko-illust/lab-think.png" alt="" onerror="this.style.display='none'">
+    <h1>学びたいことアンケート</h1>
+    <p>1分で終わります。カリキュラムはみなさんの声で育ちます</p>
+  </div>
+
+  <div id="form">
+    <div class="card">
+      <div class="q">お名前（LINE名）<small>必須</small></div>
+      <input type="text" id="nm" maxlength="30" placeholder="例）ゆき">
+    </div>
+    <div class="card">
+      <div class="q">いま一番学びたいことは？<small>必須・1つ</small></div>
+      <label class="opt"><input type="radio" name="q1" value="時間管理・タスク整理">時間管理・やることの整理</label>
+      <label class="opt"><input type="radio" name="q1" value="物販の効率化">物販の効率化（説明文・在庫・値付け）</label>
+      <label class="opt"><input type="radio" name="q1" value="家庭・献立・子ども">家庭のこと（献立・子どもの習慣・家族の予定）</label>
+      <label class="opt"><input type="radio" name="q1" value="お金の管理">お金の管理（経費・家計・支払い）</label>
+      <label class="opt"><input type="radio" name="q1" value="アプリづくり">自分のアプリを作れるようになりたい</label>
+      <label class="opt"><input type="radio" name="q1" value="発信・仕事効率">発信・お仕事の効率化</label>
+    </div>
+    <div class="card">
+      <div class="q">AIはどれくらい使っていますか？<small>必須</small></div>
+      <label class="opt"><input type="radio" name="q2" value="はじめて">ほぼはじめて</label>
+      <label class="opt"><input type="radio" name="q2" value="少し">少し触ったことがある</label>
+      <label class="opt"><input type="radio" name="q2" value="毎日">毎日使っている</label>
+    </div>
+    <div class="card">
+      <div class="q">作ってみたいアプリ・勉強会で扱ってほしいこと<small>自由記入</small></div>
+      <textarea id="free" maxlength="500" placeholder="例）子どもの歯みがき表アプリ／出品説明文のライブ実演が見たい　など"></textarea>
+    </div>
+    <button class="send" id="send">送信する</button>
+  </div>
+
+  <div id="done">
+    <h2>ありがとうございます</h2>
+    <p>いただいた声は、勉強会とカリキュラムにそのまま反映していきます。<br>お楽しみに☺️</p>
+  </div>
+
+  <footer>Merone AI活用ラボ</footer>
+</div>
+<script>
+document.getElementById("send").onclick=function(){
+  var nm=(document.getElementById("nm").value||"").trim();
+  var q1=document.querySelector('input[name=q1]:checked');
+  var q2=document.querySelector('input[name=q2]:checked');
+  if(!nm){ document.getElementById("nm").focus(); return; }
+  if(!q1||!q2){ alert("選択の質問に答えてください"); return; }
+  var free=(document.getElementById("free").value||"").trim();
+  var btn=this; btn.disabled=true;
+  fetch("https://inrvprlyobghviklulcv.supabase.co/rest/v1/ailab_notes",{method:"POST",
+    headers:{apikey:"sb_publishable_ZrCNcsRHMci-l7Fns8QtIA_X22XZGJp",Authorization:"Bearer sb_publishable_ZrCNcsRHMci-l7Fns8QtIA_X22XZGJp","Content-Type":"application/json"},
+    body:JSON.stringify({member_id:"svy_"+Date.now().toString(36),member_name:nm,mood:"アンケート",
+      worry:"学びたい: "+q1.value+"／AI歴: "+q2.value, want:free})})
+    .then(function(){ document.getElementById("form").style.display="none"; document.getElementById("done").style.display="block"; window.scrollTo(0,0); })
+    .catch(function(){ btn.disabled=false; alert("送信できませんでした。通信環境をご確認ください。"); });
+};
+</script>
+</body>
+</html>

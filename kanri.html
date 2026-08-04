@@ -266,6 +266,11 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
       <div class="ihead"><h2>バグ報告</h2><span class="cnt" id="bugcnt"></span></div>
       <div class="ilist" style="padding:8px 22px 16px;" id="buglist"><div class="empty2">報告はありません。</div></div>
     </div>
+
+    <div class="inboxwrap" id="sec-line">
+      <div class="ihead"><h2>公式LINEの新着</h2><span class="cnt" id="linecnt"></span><button class="rl" id="lineall" style="margin-left:auto;">すべて確認済みにする</button></div>
+      <div class="ilist" style="padding:8px 22px 16px;" id="linelist"><div class="empty2">新着はありません。1日2回（朝8時前・夜20時前）自動で取り込みます。</div></div>
+    </div>
   </main>
 </div>
 
@@ -479,6 +484,34 @@ function renderBugs(bugs){
     box.appendChild(e);
   });
 }
+function renderLine(items){
+  var box=document.getElementById("linelist");
+  var open=items.filter(function(b){ return b.mood==="LINE新着"; });
+  document.getElementById("linecnt").textContent=items.length?("未確認 "+open.length+"件"):"";
+  document.getElementById("lineall").style.display=open.length?"":"none";
+  if(!items.length){ return; }
+  if(!open.length){ box.innerHTML='<div class="empty2">未確認の新着はありません。</div>'; return; }
+  box.innerHTML="";
+  open.forEach(function(b){
+    var e=document.createElement("div"); e.className="item"; e.style.flexWrap="wrap";
+    e.innerHTML='<div class="ibody"><div class="tx"><b style="color:var(--navy2);">'+esc(b.member_name||"")+'</b>　'+esc(b.worry||"")+'</div>'+
+      (b.want?'<div class="wt">'+esc(b.want)+'</div>':'')+'</div>'+
+      '<div class="iright"><span class="dt">'+fmt(b.created_at)+'</span>'+
+      '<button class="subbtn linedone" style="margin:0;">確認済みにする</button></div>';
+    e.querySelector(".linedone").onclick=function(){
+      this.disabled=true; var el=e;
+      sb("ailab_notes?id=eq."+b.id,{method:"PATCH",body:JSON.stringify({mood:"確認済み"})})
+        .then(function(){ el.style.opacity=".45"; el.querySelector(".linedone").outerHTML='<span class="advpill" style="background:#e8f3ee; color:#3f7d63;">確認済み</span>'; })
+        .catch(function(){});
+    };
+    box.appendChild(e);
+  });
+  document.getElementById("lineall").onclick=function(){
+    var btn=this; btn.disabled=true;
+    Promise.all(open.map(function(b){ return sb("ailab_notes?id=eq."+b.id,{method:"PATCH",body:JSON.stringify({mood:"確認済み"})}); }))
+      .then(function(){ loadInbox(); btn.disabled=false; }).catch(function(){ btn.disabled=false; });
+  };
+}
 function downloadCSV(){
   if(!lastNotesA.length){ alert("データがありません"); return; }
   var rows=[["日時","ID","名前","気分","困りごと","AIでやりたいこと"]];
@@ -563,8 +596,9 @@ function loadInbox(){
     sb("ailab_advice?order=created_at.desc&limit=1000").then(function(r){return r.json();})
   ]).then(function(res){
     var all=Array.isArray(res[0])?res[0]:[];
-    var rest=all.filter(function(n){ return (n.member_id||"").indexOf("bug_")!==0; });
     var bugs=all.filter(function(n){ return (n.member_id||"").indexOf("bug_")===0; });
+    var lines=all.filter(function(n){ return (n.member_id||"").indexOf("line_")===0; });
+    var rest=all.filter(function(n){ var m=(n.member_id||""); return m.indexOf("bug_")!==0 && m.indexOf("line_")!==0 && m.indexOf("svy_")!==0; });
     var apps=rest.filter(function(n){ return n.mood==="申込"; });
     var regs=rest.filter(function(n){ return n.mood==="登録"; });
     var notes=rest.filter(function(n){ return n.mood!=="登録" && n.mood!=="申込"; });
@@ -575,7 +609,7 @@ function loadInbox(){
       if(an.indexOf("draft")===0) return;
       (advMap[a.target_id]=advMap[a.target_id]||[]).push(a);
     });
-    lastNotesA=notes; renderMembers(apps,regs,notes,advMap); renderInbox(notes,advMap,drafts); renderTrend(notes,advMap); renderBugs(bugs);
+    lastNotesA=notes; renderMembers(apps,regs,notes,advMap); renderInbox(notes,advMap,drafts); renderTrend(notes,advMap); renderBugs(bugs); renderLine(lines);
   }).catch(function(){
     document.getElementById("ilist").innerHTML='<div class="empty2">読み込めませんでした。初期設定（setup.html）がまだの可能性があります。</div>';
   });
