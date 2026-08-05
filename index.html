@@ -475,7 +475,8 @@ function loadAll(){
       html+='<div class="curwk'+(i===cur?" now":"")+'"><span class="wn">'+w[0]+'<br>'+w[1]+'</span><span class="wt"><b>'+w[2]+(i===cur?"　←いまここ":"")+'</b>'+w[3]+'</span></div>';
     });
     html+='<div class="curwk"><span class="wn">勉強会</span><span class="wt"><b>8/11（火）・8/16（日）・8/28（金）</b>すべてアーカイブつき</span></div>';
-    html+='<div class="curwk"><span class="wn">📖</span><span class="wt"><b><a href="textbook.html" style="color:#bd7886;">AIらぼの教科書を読む</a></b>みんなの悩みから作った、AIの使い方ぜんぶ</span></div>';
+    var bookUrl="textbook.html"+(typeof UID!=="undefined"&&UID?("?u="+UID+"&name="+encodeURIComponent(typeof NAME!=="undefined"?(NAME||""):"")):"");
+    html+='<div class="curwk"><span class="wn">📖</span><span class="wt"><b><a href="'+bookUrl+'" style="color:#bd7886;">AIらぼの教科書を読む</a></b>みんなの悩みから作った、AIの使い方ぜんぶ</span></div>';
   } else {
     html='<div style="text-align:center; padding:26px 10px;">'
       +'<div style="font-size:34px;">🎁</div>'
@@ -742,6 +743,14 @@ function switchView(id){
   document.querySelectorAll(".ni[data-v]").forEach(function(n){ n.classList.toggle("on", n.getAttribute("data-v")===id); });
   document.getElementById("crumbnow").textContent=TITLES[id]||"";
   if(id==="v_adv"||id==="v_list"||id==="v_ana") loadAll();
+  if(id==="v_cur"){
+    try{
+      if(!DEMO && UID && !localStorage.getItem("ailab_cur_seen_"+UID)){
+        localStorage.setItem("ailab_cur_seen_"+UID,"1");
+        sb("ailab_notes",{method:"POST",body:JSON.stringify({member_id:"read_cur",member_name:(NAME||UID).slice(0,30),mood:"既読",worry:"カリキュラムを開いた",want:UID})});
+      }
+    }catch(e){}
+  }
   window.scrollTo(0,0);
 }
 document.querySelectorAll(".mn,.ni[data-v]").forEach(function(n){

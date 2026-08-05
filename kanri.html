@@ -253,6 +253,14 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
       </div>
     </div>
 
+    <div class="inboxwrap" id="sec-progress">
+      <div class="ihead"><h2>📚 カリキュラムの進捗</h2><span class="cnt" id="prgcnt"></span></div>
+      <div style="padding:6px 22px 18px;">
+        <p style="font-size:12.5px; color:#8a97a5;">レター・カリキュラム・教科書を「開いた人」を自動で記録しています（8/5昼から計測開始）。</p>
+        <div id="prgbody" style="font-size:13px; line-height:2; margin-top:6px;">読み込み中…</div>
+      </div>
+    </div>
+
     <div class="inboxwrap" id="sec-members">
       <div class="ihead"><h2>参加者一覧</h2><span class="cnt" id="memcnt"></span></div>
       <div class="ilist" style="padding:8px 22px 16px;" id="memlist"><div class="empty2">まだ登録がありません。参加者が入口ページで専用URLを作ると、ここに並びます。</div></div>
@@ -685,6 +693,30 @@ function loadNotices(){
     }).catch(function(){});
 }
 loadNotices();
+function loadProgress(){
+  var box=document.getElementById("prgbody");
+  if(!box) return;
+  if(DEMO){ box.innerHTML="（デモ表示）ここに、レター既読・カリキュラム・教科書を開いた人数と名前が並びます。"; return; }
+  sb("ailab_notes?mood=eq.既読&select=member_id,member_name,want&order=created_at.asc&limit=1000").then(function(r){return r.json();})
+    .then(function(j){
+      if(!Array.isArray(j)) j=[];
+      var G={letter:{},cur:{},book:{}};
+      j.forEach(function(x){
+        if(!x.want) return;
+        var m=x.member_id||"";
+        var g = m==="read_cur" ? "cur" : (m==="read_book" ? "book" : (m.indexOf("read_")===0 ? "letter" : null));
+        if(g) G[g][x.want]=x.member_name||x.want;
+      });
+      function row(label,obj){
+        var names=Object.keys(obj).map(function(k){ return esc(obj[k]); });
+        return "<div><b style='color:#1d3149;'>"+label+"：<span style='color:#bd7886;'>"+names.length+"名</span></b>"+(names.length?"<span style='color:#8a97a5;'>　"+names.join("、")+"</span>":"")+"</div>";
+      }
+      box.innerHTML=row("💌 レターを読んだ",G.letter)+row("📚 カリキュラムを開いた",G.cur)+row("📖 教科書を開いた",G.book);
+      var total=Object.keys(G.letter).length+Object.keys(G.cur).length+Object.keys(G.book).length;
+      var pc=document.getElementById("prgcnt"); if(pc) pc.textContent=total?("のべ"+total+"件"):"";
+    }).catch(function(){ box.textContent="読み込めませんでした。リロードしてください。"; });
+}
+loadProgress();
 document.getElementById("csvbtn").onclick=downloadCSV;
 document.getElementById("bakbtn").onclick=function(){
   var b=this;

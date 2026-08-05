@@ -576,6 +576,17 @@ footer a{color:var(--pink2);}
 
   /* 8/5 あさ9時オープン（それまではお楽しみ表示） */
   var OPEN=new Date("2026-08-05T09:00:00+09:00").getTime();
+  /* 進捗記録（カルテから来た人のみ・1人1回） */
+  try{
+    var q=new URLSearchParams(location.search);
+    var u=(q.get("u")||"").replace(/[^a-zA-Z0-9_\-]/g,"").slice(0,40);
+    var nm=(q.get("name")||"").slice(0,30);
+    if(u && Date.now()>=OPEN && !localStorage.getItem("ailab_book_seen_"+u)){
+      localStorage.setItem("ailab_book_seen_"+u,"1");
+      fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+        body:JSON.stringify({member_id:"read_book",member_name:nm||u,mood:"既読",worry:"教科書を開いた",want:u})});
+    }
+  }catch(e){}
   if(Date.now()<OPEN){
     var w=document.querySelector(".wrap");
     if(w){
