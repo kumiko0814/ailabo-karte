@@ -256,7 +256,7 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
     <div class="inboxwrap" id="sec-inbox">
       <div class="ihead">
         <h2>カルテ受信ボックス</h2><span class="cnt">全4件</span>
-        <button class="rl" id="csvbtn" style="margin-left:auto;">CSVでダウンロード</button><button class="rl" id="bakbtn" style="margin-left:8px;">全データを保存</button><button class="rl" style="margin-left:8px;">⟳ 最新に更新</button>
+        <button class="rl" id="doneToggle" style="margin-left:auto;">回答済みを表示</button><button class="rl" id="csvbtn" style="margin-left:8px;">CSVでダウンロード</button><button class="rl" id="bakbtn" style="margin-left:8px;">全データを保存</button><button class="rl" style="margin-left:8px;">⟳ 最新に更新</button>
       </div>
       <div class="ilist" id="ilist"><div class="empty2">読み込み中…</div></div>
     </div>
@@ -280,16 +280,16 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
       </div>
     </div>
 
-    <div class="inboxwrap" id="sec-members">
-      <div class="ihead"><h2>参加者一覧</h2><span class="cnt" id="memcnt"></span></div>
-      <div class="ilist" style="padding:8px 22px 16px;" id="memlist"><div class="empty2">まだ登録がありません。参加者が入口ページで専用URLを作ると、ここに並びます。</div></div>
-    </div>
-
     <div class="inboxwrap" id="sec-trend">
       <div class="ihead">
         <h2>みんなの傾向</h2><span class="cnt" id="tnote"></span>
       </div>
       <div class="ilist" style="padding:20px 22px;" id="trend"><div class="empty2">カルテが届くと、ここに全体の傾向が表示されます。</div></div>
+    </div>
+
+    <div class="inboxwrap" id="sec-members">
+      <div class="ihead" id="memhead" style="cursor:pointer;"><h2><span id="memarrow" style="display:inline-block; transition:transform .2s; margin-right:4px;">▸</span>参加者一覧</h2><span class="cnt" id="memcnt"></span><span class="cnt" style="margin-left:auto; color:#b0a3aa;">クリックで開閉</span></div>
+      <div class="ilist" style="padding:8px 22px 16px; display:none;" id="memlist"><div class="empty2">まだ登録がありません。参加者が入口ページで専用URLを作ると、ここに並びます。</div></div>
     </div>
 
     <div class="inboxwrap" id="sec-bugs">
@@ -557,8 +557,10 @@ function isDone(n,advMap){
   if(n.mood==="対応済み") return true;
   return (advMap[n.member_id]||[]).some(function(a){ return new Date(a.created_at)>new Date(n.created_at); });
 }
+var showDone=false;
 function renderInbox(notes,advMap,drafts){
   drafts=drafts||{};
+  renderInbox._last={notes:notes,advMap:advMap,drafts:drafts};
   var box=document.getElementById("ilist"); box.innerHTML="";
   var open=notes.filter(function(n){ return !isDone(n,advMap); }).length;
   document.querySelector("#sec-inbox .ihead .cnt").textContent=notes.length?("未対応 "+open+"件／全"+notes.length+"件"):"";
@@ -570,6 +572,15 @@ function renderInbox(notes,advMap,drafts){
     if(da!==db) return da?1:-1;
     return new Date(b.created_at)-new Date(a.created_at);
   });
+  if(!showDone){
+    var nDone=arr.length;
+    arr=arr.filter(function(n){ return !isDone(n,advMap); });
+    nDone-=arr.length;
+    if(!arr.length){
+      box.innerHTML='<div class="empty2">未対応はありません。すべて回答済みです（'+nDone+'件は「回答済みを表示」で見られます）。</div>';
+      return;
+    }
+  }
   arr.forEach(function(n,idx){
     var e=document.createElement("div"); e.className="item"; e.style.flexWrap="wrap";
     var advs=(advMap[n.member_id]||[]);
@@ -704,6 +715,25 @@ function loadNotices(){
     }).catch(function(){});
 }
 loadNotices();
+/* 回答済みトグル */
+(function(){
+  var t=document.getElementById("doneToggle");
+  if(t) t.onclick=function(){
+    showDone=!showDone;
+    t.textContent=showDone?"回答済みを隠す":"回答済みを表示";
+    var L=renderInbox._last;
+    if(L) renderInbox(L.notes,L.advMap,L.drafts);
+  };
+})();
+/* 参加者一覧の開閉 */
+(function(){
+  var h=document.getElementById("memhead"), l=document.getElementById("memlist"), a=document.getElementById("memarrow");
+  if(h&&l) h.onclick=function(){
+    var openNow=l.style.display==="none";
+    l.style.display=openNow?"":"none";
+    if(a) a.style.transform=openNow?"rotate(90deg)":"";
+  };
+})();
 var CHAPS=[["CH1","みんなの悩みマップ"],["CH2","3つのAIの性格"],["CH3","ChatGPT"],["CH4","Gemini・スプシ・GAS"],["CH5","Claude"],["CH6","GitHub"],["CH7","無料で賢く使う"],["CH8","悩み別・解決レシピ集"]];
 function loadProgress(){
   if(!document.getElementById("prgChaps")) return;
