@@ -166,14 +166,14 @@ footer{text-align:center; font-size:11px; color:#9aa7b4; padding:34px 16px 10px;
   .card{padding:20px 18px; border-radius:20px;}
   .herochar{display:none;}
   .main{padding-bottom:92px;}
-  .mnav{display:flex; position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid #eee; justify-content:space-around; padding:8px 4px calc(8px + env(safe-area-inset-bottom)); z-index:30;}
-  .mn{position:relative; border:none; background:none; font-family:inherit; text-align:center; font-size:9.5px; font-weight:800; color:#b0a3aa; cursor:pointer; padding-top:7px;}
+  .mnav{display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid #eee; padding:8px 2px calc(8px + env(safe-area-inset-bottom)); z-index:30;}
+  .mn{position:relative; border:none; background:none; font-family:inherit; text-align:center; font-size:9px; letter-spacing:0; font-weight:800; color:#b0a3aa; cursor:pointer; padding:7px 0 0; width:100%; white-space:nowrap; overflow:hidden;}
   .mn svg{width:23px; height:23px; display:block; margin:0 auto 2px;}
   .mn svg .b{fill:#ecc9d2;} .mn svg .a{fill:#d492a2;} .mn svg .w{fill:#fff;}
   .mn svg .s{fill:none; stroke:#d492a2; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round;}
   .mn.on{color:var(--pink2);}
   .mn.on svg .b{fill:#cf8f9c;} .mn.on svg .a{fill:#bd7886;} .mn.on svg .s{stroke:#bd7886;}
-  .mn.on::before{content:""; position:absolute; top:0; left:16%; right:16%; height:3px; border-radius:99px; background:linear-gradient(90deg,#cf8f9c,#bd7886);}
+  .mn.on::before{content:""; position:absolute; top:0; left:50%; transform:translateX(-50%); width:34px; height:3px; border-radius:99px; background:linear-gradient(90deg,#cf8f9c,#bd7886);}
   #bugL{display:none;}
   #bugBar.on{display:block;}
   .mhero{position:relative;}
