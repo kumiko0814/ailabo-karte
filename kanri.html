@@ -253,11 +253,30 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
       </div>
     </div>
 
+    <div class="inboxwrap" id="sec-inbox">
+      <div class="ihead">
+        <h2>カルテ受信ボックス</h2><span class="cnt">全4件</span>
+        <button class="rl" id="csvbtn" style="margin-left:auto;">CSVでダウンロード</button><button class="rl" id="bakbtn" style="margin-left:8px;">全データを保存</button><button class="rl" style="margin-left:8px;">⟳ 最新に更新</button>
+      </div>
+      <div class="ilist" id="ilist"><div class="empty2">読み込み中…</div></div>
+    </div>
+
     <div class="inboxwrap" id="sec-progress">
       <div class="ihead"><h2>📚 カリキュラムの進捗</h2><span class="cnt" id="prgcnt"></span></div>
       <div style="padding:6px 22px 18px;">
-        <p style="font-size:12.5px; color:#8a97a5;">レター・カリキュラム・教科書を「開いた人」を自動で記録しています（8/5昼から計測開始）。</p>
-        <div id="prgbody" style="font-size:13px; line-height:2; margin-top:6px;">読み込み中…</div>
+        <div id="prgtop" style="display:flex; align-items:center; gap:22px; flex-wrap:wrap; margin-top:6px;">
+          <div style="position:relative; width:92px; height:92px; flex:none;">
+            <svg width="92" height="92" viewBox="0 0 42 42">
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="#f1ecf5" stroke-width="5"/>
+              <circle id="prgArc" cx="21" cy="21" r="15.9" fill="none" stroke="#bd7886" stroke-width="5" stroke-linecap="round" stroke-dasharray="0 100" stroke-dashoffset="25"/>
+            </svg>
+            <div id="prgPct" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; font-weight:800; color:#26405f; font-size:17px;">–<span style="font-size:9.5px; color:#8a97a5;">全体進捗</span></div>
+          </div>
+          <div style="font-size:12.5px; line-height:2;" id="prgKpi">読み込み中…</div>
+        </div>
+        <div id="prgChaps" style="margin-top:16px;"></div>
+        <div id="prgMembers" style="margin-top:14px; border-top:1px solid #f1ecf5; padding-top:10px;"></div>
+        <div id="prgOpens" style="margin-top:12px; font-size:12px; color:#8a97a5; line-height:1.9;"></div>
       </div>
     </div>
 
@@ -271,14 +290,6 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
         <h2>みんなの傾向</h2><span class="cnt" id="tnote"></span>
       </div>
       <div class="ilist" style="padding:20px 22px;" id="trend"><div class="empty2">カルテが届くと、ここに全体の傾向が表示されます。</div></div>
-    </div>
-
-    <div class="inboxwrap" id="sec-inbox">
-      <div class="ihead">
-        <h2>カルテ受信ボックス</h2><span class="cnt">全4件</span>
-        <button class="rl" id="csvbtn" style="margin-left:auto;">CSVでダウンロード</button><button class="rl" id="bakbtn" style="margin-left:8px;">全データを保存</button><button class="rl" style="margin-left:8px;">⟳ 最新に更新</button>
-      </div>
-      <div class="ilist" id="ilist"><div class="empty2">読み込み中…</div></div>
     </div>
 
     <div class="inboxwrap" id="sec-bugs">
@@ -693,28 +704,69 @@ function loadNotices(){
     }).catch(function(){});
 }
 loadNotices();
+var CHAPS=[["CH1","みんなの悩みマップ"],["CH2","3つのAIの性格"],["CH3","ChatGPT"],["CH4","Gemini・スプシ・GAS"],["CH5","Claude"],["CH6","GitHub"],["CH7","無料で賢く使う"],["CH8","悩み別・解決レシピ集"]];
 function loadProgress(){
-  var box=document.getElementById("prgbody");
-  if(!box) return;
-  if(DEMO){ box.innerHTML="（デモ表示）ここに、レター既読・カリキュラム・教科書を開いた人数と名前が並びます。"; return; }
-  sb("ailab_notes?mood=eq.既読&select=member_id,member_name,want&order=created_at.asc&limit=1000").then(function(r){return r.json();})
+  if(!document.getElementById("prgChaps")) return;
+  if(DEMO){
+    document.getElementById("prgKpi").innerHTML="（デモ表示）スタート済み <b>12名</b>／読まれた章 のべ<b>38章</b>";
+    return;
+  }
+  sb("ailab_notes?mood=eq.既読&select=member_id,member_name,worry,want&order=created_at.asc&limit=2000").then(function(r){return r.json();})
     .then(function(j){
       if(!Array.isArray(j)) j=[];
-      var G={letter:{},cur:{},book:{}};
+      var byUser={}, names={}, letter={}, curOpen={}, bookOpen={};
       j.forEach(function(x){
         if(!x.want) return;
         var m=x.member_id||"";
-        var g = m==="read_cur" ? "cur" : (m==="read_book" ? "book" : (m.indexOf("read_")===0 ? "letter" : null));
-        if(g) G[g][x.want]=x.member_name||x.want;
+        names[x.want]=x.member_name||x.want;
+        if(m==="read_ch"){
+          var ch=(x.worry||"").trim();
+          byUser[x.want]=byUser[x.want]||{}; byUser[x.want][ch]=1;
+        } else if(m==="read_cur"){ curOpen[x.want]=1; }
+        else if(m==="read_book"){ bookOpen[x.want]=1; }
+        else if(m.indexOf("read_")===0){ letter[x.want]=1; }
       });
-      function row(label,obj){
-        var names=Object.keys(obj).map(function(k){ return esc(obj[k]); });
-        return "<div><b style='color:#1d3149;'>"+label+"：<span style='color:#bd7886;'>"+names.length+"名</span></b>"+(names.length?"<span style='color:#8a97a5;'>　"+names.join("、")+"</span>":"")+"</div>";
-      }
-      box.innerHTML=row("💌 レターを読んだ",G.letter)+row("📚 カリキュラムを開いた",G.cur)+row("📖 教科書を開いた",G.book);
-      var total=Object.keys(G.letter).length+Object.keys(G.cur).length+Object.keys(G.book).length;
-      var pc=document.getElementById("prgcnt"); if(pc) pc.textContent=total?("のべ"+total+"件"):"";
-    }).catch(function(){ box.textContent="読み込めませんでした。リロードしてください。"; });
+      var starters={};
+      Object.keys(byUser).forEach(function(u){ starters[u]=1; });
+      Object.keys(bookOpen).forEach(function(u){ starters[u]=1; });
+      Object.keys(curOpen).forEach(function(u){ starters[u]=1; });
+      var nStart=Object.keys(starters).length;
+      var totalRead=0; Object.keys(byUser).forEach(function(u){ totalRead+=Object.keys(byUser[u]).length; });
+      var pct = nStart ? Math.round(totalRead/(CHAPS.length*nStart)*100) : 0;
+      document.getElementById("prgArc").setAttribute("stroke-dasharray", pct+" "+(100-pct));
+      document.getElementById("prgPct").innerHTML=pct+"%<span style='font-size:9.5px; color:#8a97a5;'>全体進捗</span>";
+      document.getElementById("prgKpi").innerHTML=
+        "カリキュラムをスタート：<b style='color:#bd7886;'>"+nStart+"名</b><br>読まれた章：のべ<b style='color:#bd7886;'>"+totalRead+"章</b>（全"+CHAPS.length+"章×スタート人数で計算）";
+      /* 章別 */
+      var chHtml="<div style='font-size:12px; font-weight:800; color:#26405f; margin-bottom:4px;'>章ごとの読了人数</div>";
+      CHAPS.forEach(function(c,i){
+        var n=0; Object.keys(byUser).forEach(function(u){ if(byUser[u][c[0]]) n++; });
+        var w = nStart ? Math.round(n/nStart*100) : 0;
+        chHtml+="<div style='display:flex; align-items:center; gap:8px; font-size:12px; margin-top:5px;'>"
+          +"<span style='flex:none; width:150px; color:#4a4446;'>"+(i+1)+"/8　"+esc(c[1])+"</span>"
+          +"<span style='flex:1; height:9px; background:#f1ecf5; border-radius:99px; overflow:hidden;'><span style='display:block; height:100%; width:"+w+"%; background:linear-gradient(90deg,#8f9fd8,#cf8f9c); border-radius:99px;'></span></span>"
+          +"<span style='flex:none; width:44px; text-align:right; font-weight:800; color:#bd7886;'>"+n+"名</span></div>";
+      });
+      document.getElementById("prgChaps").innerHTML=chHtml;
+      /* 生徒別 */
+      var users=Object.keys(starters).map(function(u){
+        var n=byUser[u]?Object.keys(byUser[u]).length:0;
+        return {u:u, n:n, name:names[u]||u};
+      }).sort(function(a,b){ return b.n-a.n; });
+      var mHtml="<div style='font-size:12px; font-weight:800; color:#26405f; margin-bottom:4px;'>生徒ごとの進み具合</div>";
+      if(!users.length){ mHtml+="<div style='font-size:12px; color:#8a97a5;'>まだ記録がありません。教科書の各章の「ここまで読んだ！」ボタンで記録されます。</div>"; }
+      users.forEach(function(x){
+        var w=Math.round(x.n/CHAPS.length*100);
+        mHtml+="<div style='display:flex; align-items:center; gap:8px; font-size:12px; margin-top:5px;'>"
+          +"<span style='flex:none; width:150px; color:#4a4446; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;'>"+esc(x.name)+"</span>"
+          +"<span style='flex:1; height:9px; background:#f1ecf5; border-radius:99px; overflow:hidden;'><span style='display:block; height:100%; width:"+w+"%; background:linear-gradient(90deg,#cf8f9c,#bd7886); border-radius:99px;'></span></span>"
+          +"<span style='flex:none; width:52px; text-align:right; font-weight:800; color:#26405f;'>"+x.n+"/"+CHAPS.length+"章</span></div>";
+      });
+      document.getElementById("prgMembers").innerHTML=mHtml;
+      document.getElementById("prgOpens").innerHTML=
+        "💌 レターを読んだ "+Object.keys(letter).length+"名　📚 カリキュラムを開いた "+Object.keys(curOpen).length+"名　📖 教科書を開いた "+Object.keys(bookOpen).length+"名";
+      var pc=document.getElementById("prgcnt"); if(pc) pc.textContent=nStart?("スタート"+nStart+"名"):"";
+    }).catch(function(){ document.getElementById("prgKpi").textContent="読み込めませんでした。リロードしてください。"; });
 }
 loadProgress();
 document.getElementById("csvbtn").onclick=downloadCSV;
