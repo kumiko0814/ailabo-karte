@@ -167,11 +167,18 @@ footer{text-align:center; font-size:11px; color:#9aa7b4; padding:34px 16px 10px;
   .herochar{display:none;}
   .main{padding-bottom:92px;}
   .mnav{display:flex; position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid #eee; justify-content:space-around; padding:8px 4px calc(8px + env(safe-area-inset-bottom)); z-index:30;}
-  .mn{border:none; background:none; font-family:inherit; text-align:center; font-size:9.5px; font-weight:800; color:#b0a3aa; cursor:pointer;}
+  .mn{position:relative; border:none; background:none; font-family:inherit; text-align:center; font-size:9.5px; font-weight:800; color:#b0a3aa; cursor:pointer; padding-top:7px;}
   .mn svg{width:23px; height:23px; display:block; margin:0 auto 2px;}
   .mn svg .b{fill:#ecc9d2;} .mn svg .a{fill:#d492a2;} .mn svg .w{fill:#fff;}
+  .mn svg .s{fill:none; stroke:#d492a2; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round;}
   .mn.on{color:var(--pink2);}
-  .mn.on svg .b{fill:#cf8f9c;} .mn.on svg .a{fill:#bd7886;}
+  .mn.on svg .b{fill:#cf8f9c;} .mn.on svg .a{fill:#bd7886;} .mn.on svg .s{stroke:#bd7886;}
+  .mn.on::before{content:""; position:absolute; top:0; left:16%; right:16%; height:3px; border-radius:99px; background:linear-gradient(90deg,#cf8f9c,#bd7886);}
+  #bugL{display:none;}
+  #bugBar.on{display:block;}
+  .mhero{position:relative;}
+  .mhero::after{content:"♡"; position:absolute; right:10px; top:8px; color:#e5a9b8; font-size:17px; font-weight:800;}
+  .mhero::before{content:"✦"; position:absolute; right:36px; top:28px; color:#f0c6d1; font-size:11px;}
 }
 
 /* カリキュラム常設 */
@@ -336,6 +343,9 @@ footer{text-align:center; font-size:11px; color:#9aa7b4; padding:34px 16px 10px;
             <input type="text" id="nmchg" maxlength="20" placeholder="新しい名前" style="width:100%; border:1.5px solid #e3e9f0; border-radius:12px; padding:11px 13px; font-size:14px; font-family:inherit; margin-top:8px;">
             <button id="nmsave" style="border:none; background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff; border-radius:999px; padding:11px 26px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:10px;">この名前に変更する</button>
             <p id="nmok" style="display:none; font-size:12.5px; color:var(--pink2); font-weight:800; margin-top:6px;">変更しました。次のカルテから新しい名前で届きます。</p>
+            <h3 style="font-size:13.5px; color:var(--pink2); margin:22px 0 6px;">不具合のご報告</h3>
+            <p style="font-size:12.5px;">うまく動かないところがあったら、こちらから教えてください。すぐ直します。</p>
+            <button id="bugOpen2" style="border:1.5px solid #e8c7d0; background:#fff; color:var(--pink2); border-radius:999px; padding:10px 24px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:8px;">不具合を報告する</button>
             <p style="margin-top:18px;">書いた内容は、くみこだけが見られます。データはこの専用ページとくみこの管理画面の間だけでやりとりされます。</p>
             <p style="margin-top:12px;"><a id="reset" href="javascript:void(0)">プロフィールをリセットする</a></p>
           </div>
@@ -364,13 +374,14 @@ footer{text-align:center; font-size:11px; color:#9aa7b4; padding:34px 16px 10px;
 
 <!-- mobile bottom nav -->
 <div class="mnav">
-  <button class="mn on" data-v="v_new"><svg viewBox="0 0 24 24"><rect class="b" x="4.5" y="4" width="15" height="18" rx="3"/><rect class="a" x="8.5" y="2" width="7" height="4" rx="1.8"/><path class="w" d="M12 17.6l-2.9-2.8c-1.6-1.5-.4-4.2 1.7-3.9.5.1 1 .4 1.2.9.2-.5.7-.8 1.2-.9 2.1-.3 3.3 2.4 1.7 3.9z"/></svg>新しいカルテ</button>
-  <button class="mn" data-v="v_list"><svg viewBox="0 0 24 24"><path class="b" d="M12 6.2C10 4.6 7 4.2 3.8 4.6v14.6c3.2-.4 6.2 0 8.2 1.6 2-1.6 5-2 8.2-1.6V4.6C17 4.2 14 4.6 12 6.2z"/><rect class="w" x="11.3" y="6.2" width="1.4" height="14" rx=".7"/><path class="a" d="M19.3 1l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6z"/></svg>カルテ一覧</button>
-  <button class="mn" data-v="v_cur"><svg viewBox="0 0 24 24"><rect class="b" x="4.5" y="3.5" width="15" height="17.5" rx="2.6"/><path class="a" d="M13.8 3.5h4v6.2l-2-1.6-2 1.6z"/><rect class="w" x="7.5" y="13.5" width="9" height="1.4" rx=".7"/><rect class="w" x="7.5" y="16.7" width="6" height="1.4" rx=".7"/></svg>カリキュラム</button>
-  <button class="mn" data-v="v_adv"><svg viewBox="0 0 24 24"><path class="b" d="M12 2.6a6.4 6.4 0 0 0-3.5 11.8c.6.4.9 1 .9 1.7v.5h5.2v-.5c0-.7.3-1.3.9-1.7A6.4 6.4 0 0 0 12 2.6z"/><path class="w" d="M12 12.4l-1.8-1.7c-1-1-.3-2.7 1-2.5.3 0 .6.2.8.5.2-.3.5-.5.8-.5 1.3-.2 2 1.5 1 2.5z"/><rect class="a" x="9.6" y="18" width="4.8" height="1.6" rx=".8"/><rect class="a" x="10.2" y="20.4" width="3.6" height="1.6" rx=".8"/><path class="a" d="M20 3.6l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z"/></svg>アドバイス</button>
-  <button class="mn" data-v="v_ana"><svg viewBox="0 0 24 24"><rect class="b" x="3.6" y="13.5" width="4" height="7.5" rx="1.3"/><rect class="b" x="10" y="9.5" width="4" height="11.5" rx="1.3"/><rect class="b" x="16.4" y="6" width="4" height="15" rx="1.3"/><path class="a" d="M18.4 1.4c.5-.9 1.9-.7 2.1.3.1.6-.3 1.1-.8 1.5l-1.3 1.1-1.3-1.1c-.5-.4-.9-.9-.8-1.5.2-1 1.6-1.2 2.1-.3z"/></svg>分析</button>
-  <button class="mn" data-v="v_set"><svg viewBox="0 0 24 24"><g class="b"><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(45 12 12)"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(90 12 12)"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(135 12 12)"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(180 12 12)"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(225 12 12)"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(270 12 12)"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(315 12 12)"/><circle cx="12" cy="12" r="7"/></g><path class="w" d="M12 15.4l-2.3-2.2c-1.3-1.2-.3-3.3 1.3-3.1.4.1.8.3 1 .7.2-.4.6-.6 1-.7 1.6-.2 2.6 1.9 1.3 3.1z"/></svg>設定</button>
+  <button class="mn on" data-v="v_new"><svg viewBox="0 0 24 24"><rect class="b" x="4.5" y="4" width="15" height="18" rx="3"/><rect class="a" x="8.5" y="2" width="7" height="4" rx="1.8"/><path class="w" d="M12 18.2l-3.3-3.1c-1.8-1.7-.5-4.7 1.9-4.3.6.1 1.1.5 1.4 1 .3-.5.8-.9 1.4-1 2.4-.4 3.7 2.6 1.9 4.3z"/></svg>新しいカルテ</button>
+  <button class="mn" data-v="v_list"><svg viewBox="0 0 24 24"><path class="b" d="M12 6.2C10 4.6 7 4.2 3.8 4.6v14.6c3.2-.4 6.2 0 8.2 1.6 2-1.6 5-2 8.2-1.6V4.6C17 4.2 14 4.6 12 6.2z"/><rect class="w" x="11.3" y="6.2" width="1.4" height="14" rx=".7"/><path class="w" d="M17 13.4l-1.7-1.6c-.9-.9-.3-2.5 1-2.3.3 0 .5.2.7.5.2-.3.4-.5.7-.5 1.3-.2 1.9 1.4 1 2.3z"/><path class="a" d="M20.3 1l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z"/></svg>カルテ一覧</button>
+  <button class="mn" data-v="v_cur"><svg viewBox="0 0 24 24"><rect class="b" x="2.8" y="3.8" width="18.4" height="14.2" rx="4"/><path class="b" d="M7.2 17.4l-.7 4.2 4.7-3.6z"/><path class="w" d="M12 14.3l-2.8-2.6c-1.6-1.5-.4-4 1.7-3.7.5.1.9.4 1.1.9.2-.5.6-.8 1.1-.9 2.1-.3 3.3 2.2 1.7 3.7z"/><path class="a" d="M21.2 1l.4 1.1 1.1.4-1.1.4-.4 1.1-.4-1.1-1.1-.4 1.1-.4z"/></svg>カリキュラム</button>
+  <button class="mn" data-v="v_adv"><svg viewBox="0 0 24 24"><path class="b" d="M12 2.4a6.6 6.6 0 0 0-3.6 12.1c.6.4 1 1.1 1 1.8v.4h5.2v-.4c0-.7.4-1.4 1-1.8A6.6 6.6 0 0 0 12 2.4z"/><path class="w" d="M12 13l-2.1-2c-1.2-1.1-.3-3 1.2-2.8.4.1.7.3.9.6.2-.3.5-.5.9-.6 1.5-.2 2.4 1.7 1.2 2.8z"/><rect class="a" x="9.5" y="17.9" width="5" height="1.6" rx=".8"/><rect class="a" x="10.1" y="20.3" width="3.8" height="1.6" rx=".8"/><path class="a" d="M20.6 4l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z"/><path class="a" d="M3.2 6.3l.4 1 1 .4-1 .4-.4 1-.4-1-1-.4 1-.4z"/></svg>アドバイス</button>
+  <button class="mn" data-v="v_ana"><svg viewBox="0 0 24 24"><rect class="b" x="3.4" y="14" width="4" height="7" rx="1.3"/><rect class="b" x="10" y="10.5" width="4" height="10.5" rx="1.3"/><rect class="b" x="16.6" y="7" width="4" height="14" rx="1.3"/><path class="s" d="M3.8 9.6L9.3 5.9l4 2.3 4.2-3"/><path class="a" d="M18.8 3.2l-.1 3.3-2.9-1.7z"/><path class="w" d="M18.6 11.6l-1.3-1.2c-.7-.7-.2-1.9.7-1.8.2 0 .4.2.6.4.2-.2.4-.4.6-.4.9-.1 1.4 1.1.7 1.8z"/></svg>分析</button>
+  <button class="mn" data-v="v_set"><svg viewBox="0 0 24 24"><g class="b"><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(45 12 12)"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(90 12 12)"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(135 12 12)"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(180 12 12)"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(225 12 12)"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(270 12 12)"/><rect x="10.9" y="1.6" width="2.2" height="4.4" rx="1.1" transform="rotate(315 12 12)"/><circle cx="12" cy="12" r="7"/></g><path class="w" d="M12 15.6l-2.5-2.4c-1.4-1.3-.4-3.5 1.4-3.3.4.1.8.3 1.1.8.3-.5.7-.7 1.1-.8 1.8-.2 2.8 2 1.4 3.3z"/></svg>設定</button>
 </div>
+<div id="bugBar">不具合を報告する場合は、右下の「設定」からご連絡ください。<button class="x" id="bugBarX">✕</button></div>
 
 <script src="supabase_config.js"></script>
 <script>
@@ -790,6 +801,8 @@ document.getElementById("aikX").onclick=closeP;
 <!-- バグ報告ツール -->
 <style>
 #bugL{position:fixed; left:12px; bottom:16px; z-index:59; background:rgba(255,255,255,.92); border:1px solid #dfe7ee; color:#8a97a5; font-size:10.5px; font-weight:800; border-radius:999px; padding:5px 12px; cursor:pointer; letter-spacing:.04em;}
+#bugBar{display:none; position:fixed; left:10px; right:10px; bottom:calc(68px + env(safe-area-inset-bottom)); background:#fff; border:1.5px solid #f3d9e0; color:#bd7886; font-size:11.5px; font-weight:800; border-radius:999px; padding:10px 42px 10px 16px; z-index:29; box-shadow:0 8px 22px rgba(189,120,134,.2); line-height:1.6;}
+#bugBar .x{position:absolute; right:4px; top:50%; transform:translateY(-50%); border:none; background:none; color:#bd7886; font-size:14px; font-weight:800; padding:8px 12px; cursor:pointer; font-family:inherit;}
 #bugM{position:fixed; inset:0; background:rgba(29,49,73,.55); display:none; align-items:center; justify-content:center; z-index:70; padding:24px;}
 #bugM.on{display:flex;}
 #bugM .bx{background:#fff; border-radius:20px; padding:22px 20px; max-width:360px; width:100%;}
@@ -833,6 +846,13 @@ document.getElementById("bugS").onclick=function(){
     body:JSON.stringify({member_id:"bug_マイページ",member_name:"マイページ｜"+uid,mood:"バグ報告",worry:t,want:location.href.slice(0,180)+" ／ "+navigator.userAgent.slice(0,140)})})
     .then(function(){ done(); }).catch(function(){ btn.disabled=false; alert("送信できませんでした。通信環境をご確認ください。"); });
 };
+var o2=document.getElementById("bugOpen2");
+if(o2) o2.onclick=function(){ M.classList.add("on"); };
+var bar=document.getElementById("bugBar");
+var seenBar=false; try{ seenBar=!!localStorage.getItem("ailab_bugbar_v1"); }catch(e){}
+if(bar && !seenBar) bar.classList.add("on");
+var bx=document.getElementById("bugBarX");
+if(bx) bx.onclick=function(){ bar.classList.remove("on"); try{ localStorage.setItem("ailab_bugbar_v1","1"); }catch(e){} };
 })();
 </script>
 </body>
