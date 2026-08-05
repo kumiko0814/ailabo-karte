@@ -609,7 +609,7 @@ function loadInbox(){
     var all=Array.isArray(res[0])?res[0]:[];
     var bugs=all.filter(function(n){ return (n.member_id||"").indexOf("bug_")===0; });
     var lines=all.filter(function(n){ return (n.member_id||"").indexOf("line_")===0; });
-    var rest=all.filter(function(n){ var m=(n.member_id||""); return m.indexOf("bug_")!==0 && m.indexOf("line_")!==0 && m.indexOf("svy_")!==0 && m.indexOf("notice_")!==0; });
+    var rest=all.filter(function(n){ var m=(n.member_id||""); return m.indexOf("bug_")!==0 && m.indexOf("line_")!==0 && m.indexOf("svy_")!==0 && m.indexOf("notice_")!==0 && m.indexOf("read_")!==0; });
     var apps=rest.filter(function(n){ return n.mood==="申込"; });
     var regs=rest.filter(function(n){ return n.mood==="登録"; });
     var notes=rest.filter(function(n){ return n.mood!=="登録" && n.mood!=="申込"; });
@@ -667,7 +667,21 @@ function loadNotices(){
     .then(function(j){
       if(!Array.isArray(j)||!j.length) return;
       document.getElementById("ntcnt").textContent="これまで"+j.length+"件以上";
-      document.getElementById("ntlist").innerHTML="直近："+j.map(function(n){ return "「"+esc((n.worry||"").slice(0,30))+"…」("+fmt(n.created_at)+")"; }).join("　");
+      var ids=j.map(function(n){ return n.id; });
+      sb("ailab_notes?mood=eq.既読&member_id=in.("+ids.map(function(i){return "read_"+i;}).join(",")+")&select=member_id,want").then(function(r){return r.json();})
+        .then(function(reads){
+          var byN={};
+          if(Array.isArray(reads)) reads.forEach(function(x){
+            var nid=(x.member_id||"").replace("read_","");
+            byN[nid]=byN[nid]||{}; if(x.want) byN[nid][x.want]=1;
+          });
+          document.getElementById("ntlist").innerHTML="直近："+j.map(function(n){
+            var c=byN[n.id]?Object.keys(byN[n.id]).length:0;
+            return "「"+esc((n.worry||"").slice(0,30))+"…」("+fmt(n.created_at)+"・既読"+c+"名)";
+          }).join("　");
+        }).catch(function(){
+          document.getElementById("ntlist").innerHTML="直近："+j.map(function(n){ return "「"+esc((n.worry||"").slice(0,30))+"…」("+fmt(n.created_at)+")"; }).join("　");
+        });
     }).catch(function(){});
 }
 loadNotices();
