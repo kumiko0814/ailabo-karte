@@ -392,6 +392,24 @@ var NAME=(P.get("name")||"").slice(0,20);
 try{ var __nm=localStorage.getItem("ailab_name_"+(P.get("u")||"")); if(__nm) NAME=__nm.slice(0,20); }catch(e){}
 var DEMO=P.get("demo")==="1"||!UID||!(typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.enabled);
 
+/* u=（カルテの鍵）が欠けたURLで開いた人への防御画面（デモ指定は除く） */
+if(!UID && P.get("demo")!=="1" && (typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.enabled)){
+  (function(){
+    function showLost(){
+      var ov=document.createElement("div");
+      ov.style.cssText="position:fixed;inset:0;background:rgba(29,49,73,.62);display:flex;align-items:center;justify-content:center;z-index:95;padding:24px;";
+      ov.innerHTML='<div style="background:#fff;border-radius:22px;padding:26px 22px;max-width:360px;width:100%;text-align:center;">'
+        +'<div style="font-size:30px;">🔑</div>'
+        +'<h3 style="font-size:15px;color:#1d3149;margin-top:8px;line-height:1.8;">あなた専用ページの鍵が<br>このリンクに入っていません</h3>'
+        +'<p style="font-size:12.5px;color:#6b7684;line-height:2;margin-top:10px;">このまま使うと自分のカルテが表示されません。下のボタンから<b>申込のときと同じメールアドレス</b>を入れると、いつものカルテにそのまま戻れます（新しいページは作られません）。</p>'
+        +'<a href="start.html" style="display:block;margin-top:14px;background:linear-gradient(135deg,#c76e85,#cf8f9c);color:#fff;border-radius:999px;padding:13px;font-size:14px;font-weight:800;text-decoration:none;">自分のページに戻る</a>'
+        +'</div>';
+      document.body.appendChild(ov);
+    }
+    if(document.readyState==="loading"){ document.addEventListener("DOMContentLoaded",showLost); } else { showLost(); }
+  })();
+}
+
 document.getElementById("who").textContent=(NAME||"あなた")+"さんの専用ページ";
 document.getElementById("who2").textContent=(NAME||"あなた")+"さんの専用ページ";
 if(DEMO) document.getElementById("demoband").style.display="block";
