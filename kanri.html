@@ -274,6 +274,7 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
           </div>
           <div style="font-size:12.5px; line-height:2;" id="prgKpi">読み込み中…</div>
         </div>
+        <div id="prgTest" style="margin-top:14px;"></div>
         <div id="prgChaps" style="margin-top:16px;"></div>
         <div id="prgMembers" style="margin-top:14px; border-top:1px solid #f1ecf5; padding-top:10px;"></div>
         <div id="prgOpens" style="margin-top:12px; font-size:12px; color:#8a97a5; line-height:1.9;"></div>
@@ -287,11 +288,6 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
       <div class="ilist" style="padding:20px 22px;" id="trend"><div class="empty2">カルテが届くと、ここに全体の傾向が表示されます。</div></div>
     </div>
 
-    <div class="inboxwrap" id="sec-members">
-      <div class="ihead" id="memhead" style="cursor:pointer;"><h2><span id="memarrow" style="display:inline-block; transition:transform .2s; margin-right:4px;">▸</span>参加者一覧</h2><span class="cnt" id="memcnt"></span><span class="cnt" style="margin-left:auto; color:#b0a3aa;">クリックで開閉</span></div>
-      <div class="ilist" style="padding:8px 22px 16px; display:none;" id="memlist"><div class="empty2">まだ登録がありません。参加者が入口ページで専用URLを作ると、ここに並びます。</div></div>
-    </div>
-
     <div class="inboxwrap" id="sec-bugs">
       <div class="ihead"><h2>バグ報告</h2><span class="cnt" id="bugcnt"></span></div>
       <div class="ilist" style="padding:8px 22px 16px;" id="buglist"><div class="empty2">報告はありません。</div></div>
@@ -300,6 +296,11 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
     <div class="inboxwrap" id="sec-line">
       <div class="ihead"><h2>公式LINEの新着</h2><span class="cnt" id="linecnt"></span><button class="rl" id="lineall" style="margin-left:auto;">すべて確認済みにする</button></div>
       <div class="ilist" style="padding:8px 22px 16px;" id="linelist"><div class="empty2">新着はありません。</div></div>
+    </div>
+
+    <div class="inboxwrap" id="sec-members">
+      <div class="ihead" id="memhead" style="cursor:pointer;"><h2><span id="memarrow" style="display:inline-block; transition:transform .2s; margin-right:4px;">▸</span>参加者名簿一覧</h2><span class="cnt" id="memcnt"></span><span class="cnt" style="margin-left:auto; color:#b0a3aa;">ふだんは閉じたまま・クリックで開閉</span></div>
+      <div class="ilist" style="padding:8px 22px 16px; display:none;" id="memlist"><div class="empty2">まだ登録がありません。参加者が入口ページで専用URLを作ると、ここに並びます。</div></div>
     </div>
   </main>
 </div>
@@ -639,7 +640,7 @@ function loadInbox(){
     var all=Array.isArray(res[0])?res[0]:[];
     var bugs=all.filter(function(n){ return (n.member_id||"").indexOf("bug_")===0; });
     var lines=all.filter(function(n){ return (n.member_id||"").indexOf("line_")===0; });
-    var rest=all.filter(function(n){ var m=(n.member_id||""); return m.indexOf("bug_")!==0 && m.indexOf("line_")!==0 && m.indexOf("svy_")!==0 && m.indexOf("notice_")!==0 && m.indexOf("read_")!==0; });
+    var rest=all.filter(function(n){ var m=(n.member_id||""); return m.indexOf("bug_")!==0 && m.indexOf("line_")!==0 && m.indexOf("svy_")!==0 && m.indexOf("notice_")!==0 && m.indexOf("read_")!==0 && m.indexOf("test")!==0 && n.mood!=="テスト"; });
     var apps=rest.filter(function(n){ return n.mood==="申込"; });
     var regs=rest.filter(function(n){ return n.mood==="登録"; });
     var notes=rest.filter(function(n){ return n.mood!=="登録" && n.mood!=="申込"; });
@@ -735,38 +736,74 @@ loadNotices();
   };
 })();
 var CHAPS=[["CH1","みんなの悩みマップ"],["CH2","3つのAIの性格"],["CH3","ChatGPT"],["CH4","Gemini・スプシ・GAS"],["CH5","Claude"],["CH6","GitHub"],["CH7","無料で賢く使う"],["CH8","悩み別・解決レシピ集"]];
+function scoreColor(s){ return s>=8?"#c9a227":(s>=6?"#3f7d63":(s>=4?"#c9922e":"#c0607a")); }
+function scoreEmoji(s){ return s>=8?"💯":(s>=6?"🌸":(s>=4?"☘️":"🌱")); }
 function loadProgress(){
   if(!document.getElementById("prgChaps")) return;
   if(DEMO){
     document.getElementById("prgKpi").innerHTML="（デモ表示）スタート済み <b>12名</b>／読まれた章 のべ<b>38章</b>";
+    document.getElementById("prgTest").innerHTML="<div style='font-size:12px;color:#8a97a5;'>（デモ）テストを受けると、ここに点数がパッと見で並びます。</div>";
     return;
   }
-  sb("ailab_notes?mood=eq.既読&select=member_id,member_name,worry,want&order=created_at.asc&limit=2000").then(function(r){return r.json();})
-    .then(function(j){
-      if(!Array.isArray(j)) j=[];
+  Promise.all([
+    sb("ailab_notes?mood=eq.既読&select=member_id,member_name,worry,want&order=created_at.asc&limit=3000").then(function(r){return r.json();}),
+    sb("ailab_notes?mood=eq.テスト&select=member_name,worry,want,created_at&order=created_at.asc&limit=2000").then(function(r){return r.json();})
+  ]).then(function(res){
+      var j=Array.isArray(res[0])?res[0]:[];
+      var tj=Array.isArray(res[1])?res[1]:[];
       var byUser={}, names={}, letter={}, curOpen={}, bookOpen={};
       j.forEach(function(x){
         if(!x.want) return;
         var m=x.member_id||"";
         names[x.want]=x.member_name||x.want;
-        if(m==="read_ch"){
-          var ch=(x.worry||"").trim();
-          byUser[x.want]=byUser[x.want]||{}; byUser[x.want][ch]=1;
-        } else if(m==="read_cur"){ curOpen[x.want]=1; }
+        if(m==="read_ch"){ var ch=(x.worry||"").trim(); byUser[x.want]=byUser[x.want]||{}; byUser[x.want][ch]=1; }
+        else if(m==="read_cur"){ curOpen[x.want]=1; }
         else if(m==="read_book"){ bookOpen[x.want]=1; }
         else if(m.indexOf("read_")===0){ letter[x.want]=1; }
       });
+      /* テスト結果（同一人物は最新を採用） */
+      var testByUser={};
+      tj.forEach(function(x){
+        if(!x.want) return;
+        var d; try{ d=JSON.parse(x.worry||"{}"); }catch(e){ d={}; }
+        names[x.want]=x.member_name||names[x.want]||x.want;
+        testByUser[x.want]={score:(d.score!=null?d.score:null), total:(d.total||8), b:d.b||[], at:x.created_at};
+      });
+
       var starters={};
       Object.keys(byUser).forEach(function(u){ starters[u]=1; });
       Object.keys(bookOpen).forEach(function(u){ starters[u]=1; });
       Object.keys(curOpen).forEach(function(u){ starters[u]=1; });
+      Object.keys(testByUser).forEach(function(u){ starters[u]=1; });
       var nStart=Object.keys(starters).length;
       var totalRead=0; Object.keys(byUser).forEach(function(u){ totalRead+=Object.keys(byUser[u]).length; });
       var pct = nStart ? Math.round(totalRead/(CHAPS.length*nStart)*100) : 0;
       document.getElementById("prgArc").setAttribute("stroke-dasharray", pct+" "+(100-pct));
       document.getElementById("prgPct").innerHTML=pct+"%<span style='font-size:9.5px; color:#8a97a5;'>全体進捗</span>";
       document.getElementById("prgKpi").innerHTML=
-        "カリキュラムをスタート：<b style='color:#bd7886;'>"+nStart+"名</b><br>読まれた章：のべ<b style='color:#bd7886;'>"+totalRead+"章</b>（全"+CHAPS.length+"章×スタート人数で計算）";
+        "カリキュラムをスタート：<b style='color:#bd7886;'>"+nStart+"名</b><br>読まれた章：のべ<b style='color:#bd7886;'>"+totalRead+"章</b>";
+
+      /* ===== テストのサマリー（視認性重視） ===== */
+      var tUsers=Object.keys(testByUser);
+      var scores=tUsers.map(function(u){return testByUser[u].score;}).filter(function(s){return s!=null;});
+      var tHtml="";
+      if(scores.length){
+        var avg=Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length*10)/10;
+        var follow=scores.filter(function(s){return s<4;}).length;
+        var perfect=scores.filter(function(s){return s>=8;}).length;
+        tHtml="<div style='display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:linear-gradient(135deg,#fbeef1,#f1eaf7);border-radius:14px;padding:14px 16px;'>"
+          +"<div style='font-size:13px;font-weight:800;color:#26405f;'>📝 第1回テスト</div>"
+          +"<div style='display:flex;gap:14px;flex-wrap:wrap;margin-left:auto;font-size:12.5px;'>"
+          +"<span>受験 <b style='color:#bd7886;font-size:15px;'>"+scores.length+"</b>名</span>"
+          +"<span>平均 <b style='color:"+scoreColor(avg)+";font-size:15px;'>"+avg+"</b>/8</span>"
+          +"<span>💯満点 <b style='color:#c9a227;font-size:15px;'>"+perfect+"</b></span>"
+          +"<span>要フォロー <b style='color:#c0607a;font-size:15px;'>"+follow+"</b></span>"
+          +"</div></div>";
+      } else {
+        tHtml="<div style='font-size:12px;color:#8a97a5;background:#faf7fb;border-radius:12px;padding:11px 14px;'>📝 第1回テストは、まだ受験者がいません。カルテの「カリキュラム」から受けられます。</div>";
+      }
+      document.getElementById("prgTest").innerHTML=tHtml;
+
       /* 章別 */
       var chHtml="<div style='font-size:12px; font-weight:800; color:#26405f; margin-bottom:4px;'>章ごとの読了人数</div>";
       CHAPS.forEach(function(c,i){
@@ -778,21 +815,45 @@ function loadProgress(){
           +"<span style='flex:none; width:44px; text-align:right; font-weight:800; color:#bd7886;'>"+n+"名</span></div>";
       });
       document.getElementById("prgChaps").innerHTML=chHtml;
-      /* 生徒別 */
+
+      /* 生徒別（テスト点数バッジを先頭に・点数順→章順） */
       var users=Object.keys(starters).map(function(u){
         var n=byUser[u]?Object.keys(byUser[u]).length:0;
-        return {u:u, n:n, name:names[u]||u};
-      }).sort(function(a,b){ return b.n-a.n; });
-      var mHtml="<div style='font-size:12px; font-weight:800; color:#26405f; margin-bottom:4px;'>生徒ごとの進み具合</div>";
-      if(!users.length){ mHtml+="<div style='font-size:12px; color:#8a97a5;'>まだ記録がありません。教科書の各章の「ここまで読んだ！」ボタンで記録されます。</div>"; }
+        var ts=testByUser[u]?testByUser[u].score:null;
+        return {u:u, n:n, name:names[u]||u, ts:ts, tb:testByUser[u]?testByUser[u].b:null};
+      }).sort(function(a,b){
+        var as=(a.ts==null?-1:a.ts), bs=(b.ts==null?-1:b.ts);
+        if(bs!==as) return bs-as;
+        return b.n-a.n;
+      });
+      var mHtml="<div style='font-size:12px; font-weight:800; color:#26405f; margin:2px 0 6px;'>生徒ごと（📝テスト点数 ＋ 📚読了）</div>";
+      if(!users.length){ mHtml+="<div style='font-size:12px; color:#8a97a5;'>まだ記録がありません。</div>"; }
       users.forEach(function(x){
         var w=Math.round(x.n/CHAPS.length*100);
-        mHtml+="<div style='display:flex; align-items:center; gap:8px; font-size:12px; margin-top:5px;'>"
-          +"<span style='flex:none; width:150px; color:#4a4446; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;'>"+esc(x.name)+"</span>"
+        var badge;
+        if(x.ts!=null){
+          badge="<span style='flex:none;width:52px;text-align:center;font-weight:800;font-size:13px;color:#fff;background:"+scoreColor(x.ts)+";border-radius:999px;padding:3px 0;'>"+scoreEmoji(x.ts)+x.ts+"</span>";
+        } else {
+          badge="<span style='flex:none;width:52px;text-align:center;font-size:10.5px;color:#b0a3aa;border:1px dashed #d9cfe4;border-radius:999px;padding:2px 0;'>未受験</span>";
+        }
+        var btn = (x.tb && (x.tb[0]||x.tb[1])) ? "<button class='rl tbtn' data-u='"+esc(x.u)+"' style='flex:none;font-size:10.5px;padding:3px 8px;'>記述</button>" : "";
+        mHtml+="<div style='display:flex; align-items:center; gap:8px; font-size:12px; margin-top:6px;'>"
+          +badge
+          +"<span style='flex:none; width:120px; color:#4a4446; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;'>"+esc(x.name)+"</span>"
           +"<span style='flex:1; height:9px; background:#f1ecf5; border-radius:99px; overflow:hidden;'><span style='display:block; height:100%; width:"+w+"%; background:linear-gradient(90deg,#cf8f9c,#bd7886); border-radius:99px;'></span></span>"
-          +"<span style='flex:none; width:52px; text-align:right; font-weight:800; color:#26405f;'>"+x.n+"/"+CHAPS.length+"章</span></div>";
+          +"<span style='flex:none; width:40px; text-align:right; font-weight:800; color:#26405f;'>"+x.n+"章</span>"
+          +btn
+          +"</div>";
+        if(x.tb && (x.tb[0]||x.tb[1])){
+          mHtml+="<div class='tbody' id='tb_"+esc(x.u)+"' style='display:none;background:#faf7fb;border-radius:10px;padding:10px 12px;margin:4px 0 0 60px;font-size:12px;line-height:1.8;'>"
+            +"<div><b>Q9 頼み方の書き直し：</b><br>"+esc(x.tb[0]||"（未記入）")+"</div>"
+            +"<div style='margin-top:6px;'><b>Q10 AIに任せる/自分で考える：</b><br>"+esc(x.tb[1]||"（未記入）")+"</div></div>";
+        }
       });
       document.getElementById("prgMembers").innerHTML=mHtml;
+      document.querySelectorAll(".tbtn").forEach(function(b){
+        b.onclick=function(){ var el=document.getElementById("tb_"+b.getAttribute("data-u")); if(el) el.style.display=el.style.display==="none"?"block":"none"; };
+      });
       document.getElementById("prgOpens").innerHTML=
         "💌 レターを読んだ "+Object.keys(letter).length+"名　📚 カリキュラムを開いた "+Object.keys(curOpen).length+"名　📖 教科書を開いた "+Object.keys(bookOpen).length+"名";
       var pc=document.getElementById("prgcnt"); if(pc) pc.textContent=nStart?("スタート"+nStart+"名"):"";

@@ -493,8 +493,10 @@ function loadAll(){
       html+='<div class="curwk'+(i===cur?" now":"")+'"><span class="wn">'+w[0]+'<br>'+w[1]+'</span><span class="wt"><b>'+w[2]+(i===cur?"　←いまここ":"")+'</b>'+w[3]+'</span></div>';
     });
     html+='<div class="curwk"><span class="wn">勉強会</span><span class="wt"><b>8/11（火）・8/16（日）・8/28（金）</b>すべてアーカイブつき</span></div>';
-    var bookUrl="textbook.html"+(typeof UID!=="undefined"&&UID?("?u="+UID+"&name="+encodeURIComponent(typeof NAME!=="undefined"?(NAME||""):"")):"");
+    var qs=(typeof UID!=="undefined"&&UID?("?u="+UID+"&name="+encodeURIComponent(typeof NAME!=="undefined"?(NAME||""):"")):"");
+    var bookUrl="textbook.html"+qs;
     html+='<div class="curwk"><span class="wn">📖</span><span class="wt"><b><a href="'+bookUrl+'" style="color:#bd7886;">AIらぼの教科書を読む</a></b>みんなの悩みから作った、AIの使い方ぜんぶ</span></div>';
+    html+='<div class="curwk" style="background:linear-gradient(135deg,#fbeef1,#f1eaf7);"><span class="wn">📝</span><span class="wt"><b><a href="shiken.html'+qs+'" style="color:#bd7886;">第1回 考える力チェックを受ける</a></b>15分・提出式。AIに聞く？先生に聞く？の判断力テスト</span></div>';
   } else {
     html='<div style="text-align:center; padding:26px 10px;">'
       +'<div style="font-size:34px;">🎁</div>'
@@ -517,11 +519,16 @@ function loadAll(){
   function show(msg){
     var box=document.getElementById("ntcMsg");
     box.textContent="";
-    String(msg).split(/(https?:\/\/[^\s]+)/g).forEach(function(part){
+    var qs=(typeof UID!=="undefined"&&UID?("?u="+UID+"&name="+encodeURIComponent(typeof NAME!=="undefined"?(NAME||""):"")):"");
+    // {TEST}=第1回テスト個別リンク・{BOOK}=教科書個別リンク をこのページの持ち主のURLに差し替える
+    msg=String(msg).replace(/\{TEST\}/g, location.href.replace(/[^/]*$/,"")+"shiken.html"+qs)
+                   .replace(/\{BOOK\}/g, location.href.replace(/[^/]*$/,"")+"textbook.html"+qs);
+    msg.split(/(https?:\/\/[^\s]+)/g).forEach(function(part){
       if(/^https?:\/\//.test(part)){
         var a=document.createElement("a");
         a.href=part; a.target="_blank"; a.rel="noopener";
-        a.textContent=part; a.style.cssText="color:#bd7886;font-weight:800;word-break:break-all;";
+        a.textContent=/shiken/.test(part)?"▶ テストを受ける":(/textbook/.test(part)?"▶ 教科書をひらく":part);
+        a.style.cssText="display:inline-block;color:#fff;background:linear-gradient(135deg,#c76e85,#cf8f9c);font-weight:800;border-radius:999px;padding:8px 18px;margin:4px 0;text-decoration:none;word-break:break-all;";
         box.appendChild(a);
       } else if(part){ box.appendChild(document.createTextNode(part)); }
     });
