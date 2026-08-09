@@ -180,8 +180,8 @@ footer a{color:var(--pink2);}
 <script src="supabase_config.js"></script>
 <script>
 (function(){
-  /* 一時停止：くみこが内容を作り直し中。?preview=1 のときだけ中身を確認できる（生徒には準備中表示） */
-  var PAUSED=true;
+  /* 公開中（2026-08-09 くみこ承認）。再び止めたい時は PAUSED=true に戻すだけ */
+  var PAUSED=false;
   if(PAUSED && new URLSearchParams(location.search).get("preview")!=="1"){
     document.querySelector(".wrap").innerHTML='<div class="hero"><img src="https://kumiko0814.github.io/kumiko-illust/lab-think.png" alt="" onerror="this.style.display=\'none\'"><h1>ただいま準備中です</h1><div class="sub">第1回テストは、いま内容をブラッシュアップしています</div></div><div class="card"><p class="lead">もう少しだけ、おまちください☺️ 準備ができたら、あらためてカルテでご案内します。</p></div><footer style="margin-top:24px;"><a href="index.html">← カルテにもどる</a></footer>';
     document.getElementById("timer").style.display="none";

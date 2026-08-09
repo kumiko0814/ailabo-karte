@@ -496,7 +496,7 @@ function loadAll(){
     var qs=(typeof UID!=="undefined"&&UID?("?u="+UID+"&name="+encodeURIComponent(typeof NAME!=="undefined"?(NAME||""):"")):"");
     var bookUrl="textbook.html"+qs;
     html+='<div class="curwk"><span class="wn">📖</span><span class="wt"><b><a href="'+bookUrl+'" style="color:#bd7886;">AIらぼの教科書を読む</a></b>みんなの悩みから作った、AIの使い方ぜんぶ</span></div>';
-    // 第1回テストはくみこが内容を作り直し中のため一時停止（再開時にこの行を戻す）
+    html+='<div class="curwk" style="background:linear-gradient(135deg,#fbeef1,#f1eaf7);"><span class="wn">📝</span><span class="wt"><b><a href="shiken.html'+qs+'" style="color:#bd7886;">第1回 考える力チェックを受ける</a></b>15分・提出式。AIに聞く？先生に聞く？の判断力テスト</span></div>';
   } else {
     html='<div style="text-align:center; padding:26px 10px;">'
       +'<div style="font-size:34px;">🎁</div>'
@@ -520,9 +520,20 @@ function loadAll(){
     var box=document.getElementById("ntcMsg");
     box.textContent="";
     var qs=(typeof UID!=="undefined"&&UID?("?u="+UID+"&name="+encodeURIComponent(typeof NAME!=="undefined"?(NAME||""):"")):"");
+    msg=String(msg);
+    // カリキュラムをスタート済みか（この端末での足あとで判定）
+    var started=false;
+    try{
+      if(localStorage.getItem("ailab_cur_seen_"+UID)||localStorage.getItem("ailab_book_seen_"+UID)) started=true;
+      if(!started){ for(var ki=0;ki<localStorage.length;ki++){ var kk=localStorage.key(ki); if(kk&&kk.indexOf("ailab_ch_"+UID+"_")===0){ started=true; break; } } }
+    }catch(e){}
+    // {{START}}…{{/START}} は開始済みの人だけ・{{NOTYET}}…{{/NOTYET}} は未スタートの人だけに表示
+    if(started){ msg=msg.replace(/\{\{NOTYET\}\}[\s\S]*?\{\{\/NOTYET\}\}/g,""); }
+    else { msg=msg.replace(/\{\{START\}\}[\s\S]*?\{\{\/START\}\}/g,""); }
+    msg=msg.replace(/\{\{\/?(START|NOTYET)\}\}/g,"");
     // {TEST}=第1回テスト個別リンク・{BOOK}=教科書個別リンク をこのページの持ち主のURLに差し替える
-    msg=String(msg).replace(/\{TEST\}/g, location.href.replace(/[^/]*$/,"")+"shiken.html"+qs)
-                   .replace(/\{BOOK\}/g, location.href.replace(/[^/]*$/,"")+"textbook.html"+qs);
+    msg=msg.replace(/\{TEST\}/g, location.href.replace(/[^/]*$/,"")+"shiken.html"+qs)
+           .replace(/\{BOOK\}/g, location.href.replace(/[^/]*$/,"")+"textbook.html"+qs);
     msg.split(/(https?:\/\/[^\s]+)/g).forEach(function(part){
       if(/^https?:\/\//.test(part)){
         var a=document.createElement("a");
