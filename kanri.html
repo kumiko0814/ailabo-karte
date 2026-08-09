@@ -736,8 +736,8 @@ loadNotices();
   };
 })();
 var CHAPS=[["CH1","みんなの悩みマップ"],["CH2","3つのAIの性格"],["CH3","ChatGPT"],["CH4","Gemini・スプシ・GAS"],["CH5","Claude"],["CH6","GitHub"],["CH7","無料で賢く使う"],["CH8","悩み別・解決レシピ集"]];
-function scoreColor(s){ return s>=8?"#c9a227":(s>=6?"#3f7d63":(s>=4?"#c9922e":"#c0607a")); }
-function scoreEmoji(s){ return s>=8?"💯":(s>=6?"🌸":(s>=4?"☘️":"🌱")); }
+function scoreColor(s,t){ t=t||7; var r=s/t; return r>=1?"#c9a227":(r>=0.71?"#3f7d63":(r>=0.43?"#c9922e":"#c0607a")); }
+function scoreEmoji(s,t){ t=t||7; var r=s/t; return r>=1?"💯":(r>=0.71?"🌸":(r>=0.43?"☘️":"🌱")); }
 function loadProgress(){
   if(!document.getElementById("prgChaps")) return;
   if(DEMO){
@@ -767,7 +767,7 @@ function loadProgress(){
         if(!x.want) return;
         var d; try{ d=JSON.parse(x.worry||"{}"); }catch(e){ d={}; }
         names[x.want]=x.member_name||names[x.want]||x.want;
-        testByUser[x.want]={score:(d.score!=null?d.score:null), total:(d.total||8), b:d.b||[], at:x.created_at};
+        testByUser[x.want]={score:(d.score!=null?d.score:null), total:(d.total||7), b:d.b||[], read:!!d.read, at:x.created_at};
       });
 
       var starters={};
@@ -786,17 +786,20 @@ function loadProgress(){
       /* ===== テストのサマリー（視認性重視） ===== */
       var tUsers=Object.keys(testByUser);
       var scores=tUsers.map(function(u){return testByUser[u].score;}).filter(function(s){return s!=null;});
+      var TT=7;
       var tHtml="";
       if(scores.length){
         var avg=Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length*10)/10;
-        var follow=scores.filter(function(s){return s<4;}).length;
-        var perfect=scores.filter(function(s){return s>=8;}).length;
+        var follow=scores.filter(function(s){return s/TT<0.43;}).length;
+        var perfect=scores.filter(function(s){return s>=TT;}).length;
+        var readN=tUsers.filter(function(u){return testByUser[u].read;}).length;
         tHtml="<div style='display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:linear-gradient(135deg,#fbeef1,#f1eaf7);border-radius:14px;padding:14px 16px;'>"
           +"<div style='font-size:13px;font-weight:800;color:#26405f;'>📝 第1回テスト</div>"
           +"<div style='display:flex;gap:14px;flex-wrap:wrap;margin-left:auto;font-size:12.5px;'>"
           +"<span>受験 <b style='color:#bd7886;font-size:15px;'>"+scores.length+"</b>名</span>"
-          +"<span>平均 <b style='color:"+scoreColor(avg)+";font-size:15px;'>"+avg+"</b>/8</span>"
+          +"<span>平均 <b style='color:"+scoreColor(avg,TT)+";font-size:15px;'>"+avg+"</b>/"+TT+"</span>"
           +"<span>💯満点 <b style='color:#c9a227;font-size:15px;'>"+perfect+"</b></span>"
+          +"<span>解説読了 <b style='color:#3f7d63;font-size:15px;'>"+readN+"</b></span>"
           +"<span>要フォロー <b style='color:#c0607a;font-size:15px;'>"+follow+"</b></span>"
           +"</div></div>";
       } else {
@@ -820,7 +823,7 @@ function loadProgress(){
       var users=Object.keys(starters).map(function(u){
         var n=byUser[u]?Object.keys(byUser[u]).length:0;
         var ts=testByUser[u]?testByUser[u].score:null;
-        return {u:u, n:n, name:names[u]||u, ts:ts, tb:testByUser[u]?testByUser[u].b:null};
+        return {u:u, n:n, name:names[u]||u, ts:ts, tt:testByUser[u]?testByUser[u].total:7, tread:testByUser[u]?testByUser[u].read:false, tb:testByUser[u]?testByUser[u].b:null};
       }).sort(function(a,b){
         var as=(a.ts==null?-1:a.ts), bs=(b.ts==null?-1:b.ts);
         if(bs!==as) return bs-as;
@@ -832,9 +835,9 @@ function loadProgress(){
         var w=Math.round(x.n/CHAPS.length*100);
         var badge;
         if(x.ts!=null){
-          badge="<span style='flex:none;width:52px;text-align:center;font-weight:800;font-size:13px;color:#fff;background:"+scoreColor(x.ts)+";border-radius:999px;padding:3px 0;'>"+scoreEmoji(x.ts)+x.ts+"</span>";
+          badge="<span title='"+(x.tread?"解説読了":"解説まだ")+"' style='flex:none;width:56px;text-align:center;font-weight:800;font-size:13px;color:#fff;background:"+scoreColor(x.ts,x.tt)+";border-radius:999px;padding:3px 0;'>"+scoreEmoji(x.ts,x.tt)+x.ts+"/"+x.tt+(x.tread?"":" ✎")+"</span>";
         } else {
-          badge="<span style='flex:none;width:52px;text-align:center;font-size:10.5px;color:#b0a3aa;border:1px dashed #d9cfe4;border-radius:999px;padding:2px 0;'>未受験</span>";
+          badge="<span style='flex:none;width:56px;text-align:center;font-size:10.5px;color:#b0a3aa;border:1px dashed #d9cfe4;border-radius:999px;padding:2px 0;'>未受験</span>";
         }
         var btn = (x.tb && (x.tb[0]||x.tb[1])) ? "<button class='rl tbtn' data-u='"+esc(x.u)+"' style='flex:none;font-size:10.5px;padding:3px 8px;'>記述</button>" : "";
         mHtml+="<div style='display:flex; align-items:center; gap:8px; font-size:12px; margin-top:6px;'>"

@@ -37,17 +37,16 @@ header .lg i{font-style:normal; color:#cfdcea; font-weight:700; margin-left:6px;
 .namebox input{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; padding:11px 13px; font-size:15px; font-family:inherit; margin-top:6px;}
 
 .btn{display:block; width:100%; border:none; background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff; border-radius:999px; padding:15px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:18px; box-shadow:0 8px 22px rgba(189,120,134,.32);}
-.btn.ghost{background:#fff; color:var(--pink2); border:1.5px solid #e8c7d0; box-shadow:none;}
-.btn:disabled{opacity:.5;}
+.btn:disabled{opacity:.45; cursor:default;}
 
 .q{background:#fff; border-radius:18px; padding:18px; margin-top:14px; box-shadow:0 6px 20px rgba(38,64,95,.07);}
 .q .qn{font-size:11.5px; font-weight:800; color:var(--blue); letter-spacing:.1em;}
-.q .qt{font-size:14.5px; font-weight:800; color:var(--navy2); margin-top:4px; line-height:1.7;}
-.q .situ{background:var(--pinkbg); border-radius:12px; padding:11px 14px; font-size:13.5px; margin-top:10px; line-height:1.8;}
+.q .situ{background:var(--pinkbg); border-radius:12px; padding:11px 14px; font-size:13.8px; font-weight:700; color:var(--navy2); margin-top:8px; line-height:1.8;}
 .opt{display:flex; align-items:center; gap:9px; border:1.6px solid #e8e0ef; border-radius:13px; padding:12px 14px; margin-top:9px; cursor:pointer; font-size:13.8px; font-weight:700; color:var(--navy2); transition:all .12s;}
-.opt .em{font-size:19px; flex:none;}
-.opt input{display:none;}
+.opt .em{font-size:18px; flex:none;}
+.opt .no{flex:none; font-weight:800; color:var(--pink2);}
 .opt.sel{border-color:var(--pink2); background:color-mix(in srgb,var(--pink) 9%,#fff);}
+.q .qt{font-size:14.5px; font-weight:800; color:var(--navy2); line-height:1.7;}
 textarea{width:100%; border:1.6px solid #e3e9f0; border-radius:13px; padding:12px 14px; font-size:14px; font-family:inherit; line-height:1.9; min-height:96px; resize:vertical; margin-top:10px;}
 .hint{font-size:11.8px; color:var(--muted); margin-top:8px; line-height:1.8;}
 
@@ -56,19 +55,25 @@ textarea{width:100%; border:1.6px solid #e3e9f0; border-radius:13px; padding:12p
 .prog .fill{height:100%; width:0%; background:linear-gradient(90deg,var(--blue),var(--pink)); border-radius:999px; transition:width .3s;}
 .prog .txt{font-size:11px; color:var(--muted); font-weight:800; text-align:right; margin-top:3px;}
 
-/* 結果 */
-.scorecard{text-align:center; padding:28px 20px;}
-.scorering{position:relative; width:150px; height:150px; margin:6px auto 0;}
+.scorecard{text-align:center; padding:26px 20px;}
+.scorering{position:relative; width:148px; height:148px; margin:6px auto 0;}
 .scorering .big{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
-.scorering .big .n{font-size:44px; font-weight:800; line-height:1;}
+.scorering .big .n{font-size:42px; font-weight:800; line-height:1;}
 .scorering .big .d{font-size:13px; color:var(--muted); font-weight:800;}
-.grade{font-size:20px; font-weight:800; margin-top:12px;}
-.review{margin-top:8px;}
-.rv{background:#fff; border-radius:14px; padding:13px 15px; margin-top:10px; box-shadow:0 4px 14px rgba(38,64,95,.06); font-size:13px; line-height:1.85;}
-.rv .head{font-weight:800; font-size:13px;}
-.rv.ok .head{color:#3f7d63;} .rv.ng .head{color:#c0607a;}
-.rv .exp{margin-top:6px; color:#5c6470;}
-.rv .exp b{color:var(--navy2);}
+.grade{font-size:19px; font-weight:800; margin-top:12px;}
+
+.rv{background:#fff; border-radius:16px; padding:16px; margin-top:12px; box-shadow:0 6px 20px rgba(38,64,95,.06);}
+.rv .rvh{font-size:13.5px; font-weight:800;}
+.rv.ok .rvh{color:#3f7d63;} .rv.ng .rvh{color:#c0607a;}
+.rv .situ2{font-size:13px; color:var(--navy2); background:#faf7fb; border-radius:10px; padding:9px 12px; margin-top:8px; line-height:1.7;}
+.rv .yourans{font-size:12.5px; margin-top:8px;}
+.rv .ansbox{background:#eef7f1; border-radius:10px; padding:10px 13px; margin-top:8px; font-size:13px; font-weight:800; color:#2f6b4f;}
+.rv .mine{background:#eef2fb; border-radius:10px; padding:10px 13px; margin-top:8px; font-size:12.8px; color:#3b5b9a; line-height:1.8;}
+.rv .exp{font-size:13px; margin-top:10px; line-height:1.95; color:#4a4446; white-space:pre-wrap;}
+.rv .exp b{color:var(--pink2);}
+.readck{display:flex; align-items:center; gap:8px; margin-top:12px; padding:10px 12px; border:1.6px dashed #e0cbd3; border-radius:12px; cursor:pointer; font-size:13px; font-weight:800; color:var(--pink2);}
+.readck input{width:18px; height:18px; accent-color:#bd7886;}
+.readck.done{background:#fbeef1; border-style:solid;}
 
 footer{text-align:center; font-size:11px; color:#9aa7b4; margin-top:34px; line-height:2;}
 footer a{color:var(--pink2);}
@@ -94,22 +99,21 @@ footer a{color:var(--pink2);}
 
 <div class="wrap">
 
-  <!-- ===== イントロ ===== -->
   <section id="intro">
     <div class="hero">
       <img src="https://kumiko0814.github.io/kumiko-illust/lab-think.png" alt="" onerror="this.style.display='none'">
       <h1>第1回 考える力チェック</h1>
-      <div class="sub">〜 AIに聞く？ 先生に聞く？ それとも自分で考える？ 〜</div>
+      <div class="sub">〜 Claudeに聞く？ AIカルテ？ 講師？ それとも自分で考える？ 〜</div>
     </div>
     <div class="card">
       <p class="lead">このテストは、暗記の点数を競うものではありません。<br>
       これからAIを相棒にしていくうえで、いちばん大事な<b>「何を・だれに頼るかを見わける力」</b>と、<b>「自分の考えを、自分の言葉にする力」</b>をチェックします☺️</p>
-      <p class="lead" style="margin-top:12px;">正解できなくて大丈夫。今の自分の考え方を知るためのものです。おわると、その場で解説が出ます✨</p>
+      <p class="lead" style="margin-top:12px;">正解できなくて大丈夫。おわると<b>くみこの解説</b>が出るので、そこがいちばんの学びです。解説を読んだら「読みました」にチェックしてくださいね✨</p>
       <ul class="rules">
-        <li>ぜんぶで <b>10問</b>（選ぶ問題8問＋書く問題2問）</li>
+        <li>ぜんぶで <b>9問</b>（選ぶ問題7問＋書く問題2問）</li>
         <li>制限時間は <b>15分</b>（スタートを押すと始まります）</li>
-        <li>提出すると、点数と解説がすぐ出ます</li>
-        <li>スマホだけでOK。とちゅう保存はないので、始めたら最後までどうぞ</li>
+        <li>提出すると、点数と<b>くみこの解説</b>が出ます</li>
+        <li>解説を読んだら、各問の「読みました」にチェック→最後に完了ボタン</li>
       </ul>
       <div class="namebox">
         <label>お名前（LINE名）</label>
@@ -120,51 +124,46 @@ footer a{color:var(--pink2);}
     <footer><a href="index.html">← カルテにもどる</a></footer>
   </section>
 
-  <!-- ===== 試験 ===== -->
   <section id="exam" class="hide">
-    <div class="prog"><div class="bar"><div class="fill" id="fill"></div></div><div class="txt" id="ptxt">0 / 10</div></div>
-
+    <div class="prog"><div class="bar"><div class="fill" id="fill"></div></div><div class="txt" id="ptxt">0 / 9</div></div>
     <div class="card" style="margin-top:10px;">
       <p style="font-size:13px;"><b>PART 1｜だれに頼る？</b><br>次の場面、あなたならどうしますか？ いちばん近いものを1つ選んでください。</p>
     </div>
     <div id="partA"></div>
-
     <div class="card" style="margin-top:20px;">
       <p style="font-size:13px;"><b>PART 2｜あなたの言葉で</b><br>ここは正解のない問題です。AIに丸投げせず、あなた自身の言葉で書いてください☺️</p>
     </div>
     <div id="partB"></div>
-
     <button class="btn" id="submitBtn">答えを提出する</button>
-    <p class="hint" style="text-align:center;">※ 提出すると、その場で点数と解説が出ます。</p>
+    <p class="hint" style="text-align:center;">※ 提出すると、その場で点数とくみこの解説が出ます。</p>
   </section>
 
-  <!-- ===== 結果 ===== -->
   <section id="result" class="hide">
     <div class="card scorecard">
       <div class="sub" style="color:var(--pink2); font-weight:800; font-size:12px;">PART 1（だれに頼る？）の結果</div>
       <div class="scorering">
-        <svg width="150" height="150" viewBox="0 0 42 42">
+        <svg width="148" height="148" viewBox="0 0 42 42">
           <circle cx="21" cy="21" r="15.9" fill="none" stroke="#f1ecf5" stroke-width="4.5"/>
           <circle id="ring" cx="21" cy="21" r="15.9" fill="none" stroke="#cf8f9c" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="0 100" stroke-dashoffset="25" transform="rotate(-90 21 21)"/>
         </svg>
-        <div class="big"><span class="n" id="scoreN">–</span><span class="d">/ 8問</span></div>
+        <div class="big"><span class="n" id="scoreN">–</span><span class="d">/ 7問</span></div>
       </div>
       <div class="grade" id="grade"></div>
       <p id="gradeMsg" style="font-size:13px; margin-top:6px;"></p>
+      <p style="font-size:12.5px; color:var(--pink2); font-weight:800; margin-top:14px;">↓ ここからが本番。解説をぜんぶ読んでね</p>
     </div>
 
-    <div class="card" style="margin-top:14px;">
-      <p style="font-size:13px;"><b>ひとつずつ、ふりかえり</b></p>
-      <div class="review" id="review"></div>
-    </div>
+    <div id="review"></div>
 
     <div class="card" style="margin-top:14px;">
-      <p style="font-size:13px;"><b>あなたの言葉（PART 2）</b></p>
+      <p style="font-size:13px;"><b>あなたが書いた言葉（PART 2）</b></p>
       <div id="bfb" style="font-size:13px; margin-top:8px; line-height:1.9;"></div>
-      <p class="hint">この2問は、くみこが直接読みます。あなたの考え方は、これからのアドバイスに活かしますね☺️</p>
+      <p class="hint">この2問は、くみこが直接読みます☺️</p>
     </div>
 
-    <a class="btn" href="index.html">カルテにもどる</a>
+    <button class="btn" id="finishBtn" disabled>解説をぜんぶ読み終えました（完了）</button>
+    <p class="hint" id="finishHint" style="text-align:center;">※ 各問の「読みました」に全部チェックすると押せます。</p>
+    <div id="thanks" class="hide"></div>
     <footer>Merone AI活用ラボ｜第1回 考える力チェック</footer>
   </section>
 
@@ -193,61 +192,70 @@ footer a{color:var(--pink2);}
   var P=new URLSearchParams(location.search);
   var UID=(P.get("u")||"").replace(/[^a-zA-Z0-9_\-]/g,"").slice(0,40);
   var NAME=(P.get("name")||"").slice(0,30);
-  var DEMO=P.get("demo")==="1"||!U||!UID;
+  var DEMO=P.get("demo")==="1"||P.get("preview")==="1"||!U||!UID;
 
-  /* ===== 問題データ ===== */
+  /* ===== 問題（PART1・くみこ作成の7問） ===== */
   var QA=[
-    {t:"メルカリに出す服の説明文を、もっと売れそうな魅力的な文章にしたい。",a:"ai",
-     exp:"文章づくりは<b>AIの得意分野</b>です。写真と最低限の情報を渡せば、何パターンでも作ってくれます。まずAIで下書き→自分で最終チェック、が黄金の流れです。"},
-    {t:"仕入れた古い着物が、本物のブランド品かどうか見分けたい。",a:"sensei",
-     exp:"真贋（本物か偽物か）は、<b>経験と専門知識がいる先生の領域</b>です。AIの見た目判断はあてになりません。判断を誤ると損につながるので、必ず先生・専門家に確認を。"},
-    {t:"受講料を払ったのに、オープンチャットに入れなくて困っている。",a:"sensei",
-     exp:"スクール固有の手続き・トラブルは、<b>運営や先生に聞くのが正解</b>です。AIはあなたの決済状況を知らないので答えられません。こういう事務のことは、まず運営へ。"},
-    {t:"5年後、自分がどんな暮らしをしていたいのか、なかなか決まらない。",a:"jibun",
-     exp:"「どう生きたいか」の答えは<b>自分の中にしかありません</b>。AIは考えを整理する壁打ち相手にはなりますが、決めるのはあなた。ここを人に丸投げしないことが、いちばん大事です。"},
-    {t:"1週間分の夕食の献立と、買い物リストを作りたい。",a:"ai",
-     exp:"毎回の献立決めのような<b>くり返しの考えごとは、AIにお任せ</b>。家族構成や好みを渡せば一瞬です。浮いた時間を、自分や家族のために使いましょう。"},
-    {t:"2歳の子どもの言葉の発達が、少しゆっくりな気がして心配。",a:"sensei",
-     exp:"健康や発達の心配ごとは、<b>まずお医者さん・専門機関へ</b>。AIは記録の整理は手伝えますが、診断はできません。専門家に「大丈夫」と言ってもらう安心が何より大切です。"},
-    {t:"頭の中にやることが渋滞している。まず全部書き出して整理したい。",a:"ai",
-     exp:"バラバラのタスクを<b>書き出して仕分ける</b>のは、AIがとても得意。Typelessで喋って「優先順位をつけて、私がやらなくていいものに印をつけて」と頼めば一気に片づきます。"},
-    {t:"物販を続けるか、思いきってやめて別の道に進むか、人生の岐路で迷っている。",a:"jibun",
-     exp:"大きな人生の決断は、<b>最後は自分で</b>。AIは選択肢を並べたり気持ちを整理する手伝いはできますが、あなたの人生の責任は取れません。壁打ちに使い、決断は自分の手で。"}
+    { situ:"時間の使い方がどうやったら改善するのか迷ったとき、あなたは何をすればいい？",
+      opts:["🤖 Claudeに聞く","📋 AIカルテに相談する","💭 まずは自分で考えてみる"], correct:0,
+      mine:"1. Claudeに聞く。まずは自分の相棒（Claude）に直接相談。それでもわからないときにAIカルテへ、が自立への近道です。",
+      exp:"あくまでAIカルテに相談するのは、何をどうやって聞いていいかわからないときであって、本質的に自立して考えるようになるためには、Claudeに自分自身で相談して、それでもわからなければAIカルテに聞くというのが最善です。" },
+    { situ:"メルカリ出品をするとき、画像がうまく撮れない・写真がきれいに映らない。まずどうすればいい？",
+      opts:["💭 自分で考えてみる","🧑‍🏫 講師に相談する","🤖 ClaudeやAIカルテに聞く"], correct:1,
+      mine:"2. 講師に相談する。写真や撮り方の“生きたコツ”は、AIやGoogleではなくスクールの中にしかありません。",
+      exp:"こういったことをClaudeやAIカルテに聞いて解決するのであれば、何のためにスクールに入ったのでしょう。生きた情報というのは、AIやGoogleではなく、スクール内にしか存在しません。\n\n講師がわかることをきちんと自分自身で質問するために、「どうやって質問すればいいのかわからないときの文章」をAIに作ってもらう、というような形で活用してください。\n\nこれをすべてAIに聞くというふうにしてしまうと、結局AIはそういった一次情報や最新の情報を持っているわけではないので、間違った情報を提供される場合が多いです。\n\nこれでは本質的に自立ではなく、ただ自分の頭で考えずにAIへ丸投げしているだけになってしまいます。それでは、副業として他人に何かを買ってもらうための「役務提供」をしているとは言えません。自分自身がきちんと労働してお金をいただく、という行為から逸脱していると私は思うのです。\n\nきちんと心を込めて販売するという心すらなくしてしまうのは、リセラーとしては反することです。ここはこだわりとプライドを持って、AIに代替できないためのスキルをつけてください。" },
+    { situ:"1週間ごとの献立と買い物リスト。これにすごく悩んでいるが、どうしたらいい？",
+      opts:["🤖 Claudeに聞く","📋 AIカルテに聞く","👨‍👩‍👧 家族に相談"], correct:0,
+      mine:"1. Claudeに聞く。自分じゃなくても大丈夫なことこそ、迷わずAIにお任せです。",
+      exp:"こういった自分ではなくても大丈夫、問題ないことこそAIにお任せすべきものです！" },
+    { situ:"自分で作ったアプリをみんなに使ってもらいたいが、どうしていいかわからない。こういう場合どうしたらいい？",
+      opts:["🤖 Claudeに聞く","📋 AIカルテに聞く","💭 自分で考える"], correct:0,
+      mine:"1. Claudeに聞く。欲しい答えが返ってこないのは「質問の仕方」のサイン。まずClaudeと磨きましょう。",
+      exp:"作ったものができない場合、そしてAIに質問してもうまく欲しい答えが返ってこない場合、質問の仕方が100%悪いと思った方がいいです。\n\nこれは誰かのせいとか、自分自身の能力がないのではなく、AIとはそもそもあくまで人工知能なのであって、正しい情報を入れ込まないと欲しい答えは100%返ってきません。\n\nなので、自分自身がきちんと他人に伝わる文章を送れているのかどうかのチェックにも使えるというわけです。欲しい情報が返ってこないということは、「日々あなたが人間に伝えて質問している情報も、ほぼほぼ伝わっていない」と認識するための答え合わせにしてほしいです。" },
+    { situ:"自分自身で物販をやるべきか、それとも会社で本業を頑張るべきか。目指すべき方向性が分からなくなったとき。",
+      opts:["🤖 ClaudeなどAIに聞く","📋 AIカルテに聞く","💭 自分で考える"], correct:2,
+      mine:"3. 自分で考える。人生の方向は、AIに委ねた瞬間、あなたの人生ではなくなります。",
+      exp:"ここまで結局、AIに任せてしまうという選択をした場合、LINEで見ていただいた1本目の動画のように、知らぬ間に自分自身の選択を、AIだけではなく他の人の意見や世論に流されるまま決定しているという傾向があるのではないかなと思います。\n\n自分自身が自分の足で立って自立するために必要なことは、自分がどうなりたいかという本当の理想を、自分自身で明確にすることです。これはAIに過信をするのではなく、自分自身でしっかりと時間を取って考えることです。\n\nここまでAIに任せてしまうのであれば、それはあなたの人生ではありません。" },
+    { situ:"何かわからないことがあるので、AIラボの活用方法について質問をしようと、今あなたは悩んでいる。",
+      opts:["📱 公式LINEの方で私に質問する","🤖 AI（Claude、ChatGPTなど）に聞く","📋 AIカルテに聞く"], correct:2,
+      mine:"3. AIカルテに聞く。ラボの使い方はClaudeにはわからないのでAIカルテへ。公式LINEは契約関連のみです。",
+      exp:"これはClaudeに聞いてもわからないので、AIカルテに聞くというのが正解になります。公式LINEの方では、基本的に契約関連のことのみのやり取りとさせていただいています。\n\n何でもそうですし、毎回オンボーディングでも伝えていますが、結局何かで成果を出したり、うまくいく人に共通している項目は「ルールを把握できるかどうか」ということです。\n\nメルカリもそうですよね。出品していいもの、してはいけないもののルールを知ることによって、正しく出品することができる。それって結局、自分自身がそこで勝つためにはどういう条件のもとでやらなければならないのか、ということの把握につながるということですね。\n\n焦って成果を出したいのはわかるのですが、それって誰のための焦りなんでしょうか？\n\n本当に自分自身を勝たせてあげるためには、まずどういう条件で、どういうふうにすればいいのかということを、きちんと確認した上で進めましょう。そのために、まだAIのコンテンツを第8章まで全部見ていないにもかかわらず、AIの相談を中心にしている方は、進め方が間違っています。\n\nまず、カリキュラムをすべて見ましょう。" },
+    { situ:"メルカリの説明文を、魅力的なものにしたい。",
+      opts:["🤖 AIに聞く（Claude、ChatGPTなど）","📋 AIカルテに聞く","🧑‍🏫 講師やスクールの先輩に聞く"], correct:-1,
+      mine:"どれを選んでも正解です。ただし自分でAIに聞くなら、最低3ヶ月分のデータ（在庫管理表・販売データ・出品数）を読み込ませてから。",
+      exp:"正直、これは講師やスクールの先輩に聞くのでもオッケーですし、どれを選んでも正解になります。\n\nですが、結局自分でAIに聞くとなった時に、AIは正解を持っていません。なぜならば、売れているデータをあなたがChatGPTやClaudeに入れているわけではないからです。\n\n私自身が、なぜメルカリの説明文をAIに入れるだけで「この商品ページが売れるかどうか」という判定ができるのかというと、結局、生徒全員の売上・販売個数だったり、最初の1ヶ月間の皆さんの出品状況だったりなど、何万個以上の数字をAIに覚えさせているからです。\n\n何の情報も入れずにただ壁打ちをするだけなのであれば、それはあくまで「それっぽい回答」をしているだけに過ぎません。それは正解ではないのです。\n\nなので、AIに質問する前提として、まずは条件を整えましょう。具体的には、以下のような最低でも3ヶ月分のデータをしっかりと読み込ませた上で質問するのです：\n・自分自身の在庫管理表のデータ\n・自分の販売データ\n・出品数\n\nこれらを入力した上で質問すれば、正しい答えが返ってくる可能性が60〜70%ぐらいになります。しかし、これらを入れていないのであれば、ただそれっぽい回答が返ってくるだけで、本質的な解決には何も繋がりません。\n\nですので、まずは自分自身がどのぐらい出品しているのか、どのぐらいできているのかを客観的に把握しましょう。スクールに入った時にもらう「リッシュのカルテ」を活用して、そのデータをAIに読み込んでもらうことからスタートしてください。\n\nここでも、自己流で勝手にGeminiに読み込ませたりはせず、まずはClaudeにしっかりとデータを覚えさせて、分析してもらうようにしましょう。" }
   ];
-  var LABELS={ai:{em:"🤖",t:"AIに聞く"},sensei:{em:"🧑‍🏫",t:"先生・専門家に聞く"},jibun:{em:"💭",t:"まず自分で考える"}};
-  var ORDER=["ai","sensei","jibun"];
   var QB=[
-    {t:"「部屋を片づけたい」という言葉だけでは、AIはうまく動けません。AIがすぐ動けるように、あなたの言葉で "+"「1文の頼み方」に書き直してください。",
+    {t:"「部屋を片づけたい」という言葉だけでは、AIはうまく動けません。AIがすぐ動けるように、あなたの言葉で「1文の頼み方」に書き直してください。",
      hint:"ヒント：だれが・何を・どうしたいか を入れると、AIは的確に動けます。（例）わたしのリビングのテーブルの上を、15分で片づく手順に分けて教えて"},
     {t:"あなたの毎日をふりかえって、「これはAIに任せる」ことと「これは自分で考える」ことを、1つずつ、理由と一緒に書いてください。",
      hint:"ヒント：主語（わたしは）から書き始めると、自分の考えがはっきりします。"}
   ];
 
-  /* ===== 状態 ===== */
-  var ansA={}, started=false, tLeft=15*60, tId=null, submitted=false;
+  var ansA={}, started=false, tLeft=15*60, tId=null, submitted=false, postedId=null, readSet={};
+  var TOTAL=QA.filter(function(q){return q.correct!==-1;}).length + QA.filter(function(q){return q.correct===-1;}).length; // =7
 
-  /* ===== レンダリング ===== */
   var pa=document.getElementById("partA");
   QA.forEach(function(q,i){
     var d=document.createElement("div"); d.className="q";
-    var opts=ORDER.map(function(k){
-      return '<label class="opt" data-q="'+i+'" data-k="'+k+'"><span class="em">'+LABELS[k].em+'</span><span>'+LABELS[k].t+'</span><input type="radio" name="qa'+i+'"></label>';
+    var opts=q.opts.map(function(o,oi){
+      return '<label class="opt" data-q="'+i+'" data-o="'+oi+'"><span class="no">'+(oi+1)+'.</span><span>'+o+'</span></label>';
     }).join("");
-    d.innerHTML='<div class="qn">Q'+(i+1)+' / 8</div><div class="situ">'+q.t+'</div>'+opts;
+    d.innerHTML='<div class="qn">Q'+(i+1)+' / 7</div><div class="situ">'+q.situ+'</div>'+opts;
     pa.appendChild(d);
   });
   var pb=document.getElementById("partB");
   QB.forEach(function(q,i){
     var d=document.createElement("div"); d.className="q";
-    d.innerHTML='<div class="qn">Q'+(i+9)+' / 10</div><div class="qt">'+q.t+'</div><textarea id="qb'+i+'" maxlength="600" placeholder="ここに書いてください"></textarea><div class="hint">'+q.hint+'</div>';
+    d.innerHTML='<div class="qn">記述 '+(i+1)+' / 2</div><div class="qt">'+q.t+'</div><textarea id="qb'+i+'" maxlength="600" placeholder="ここに書いてください"></textarea><div class="hint">'+q.hint+'</div>';
     pb.appendChild(d);
   });
 
   document.querySelectorAll(".opt").forEach(function(o){
     o.addEventListener("click",function(){
-      var qi=o.getAttribute("data-q"), k=o.getAttribute("data-k");
+      var qi=o.getAttribute("data-q"), oi=parseInt(o.getAttribute("data-o"),10);
       document.querySelectorAll('.opt[data-q="'+qi+'"]').forEach(function(x){x.classList.remove("sel");});
-      o.classList.add("sel"); ansA[qi]=k; updateProg();
+      o.classList.add("sel"); ansA[qi]=oi; updateProg();
     });
   });
   document.querySelectorAll("#partB textarea").forEach(function(t){ t.addEventListener("input",updateProg); });
@@ -255,12 +263,11 @@ footer a{color:var(--pink2);}
   function updateProg(){
     var done=Object.keys(ansA).length;
     QB.forEach(function(_,i){ if((document.getElementById("qb"+i).value||"").trim().length>=5) done++; });
-    var pct=Math.round(done/10*100);
+    var pct=Math.round(done/9*100);
     document.getElementById("fill").style.width=pct+"%";
-    document.getElementById("ptxt").textContent=done+" / 10";
+    document.getElementById("ptxt").textContent=done+" / 9";
   }
 
-  /* ===== タイマー ===== */
   function fmt(s){ var m=Math.floor(s/60), x=s%60; return "⏱ "+m+":"+("0"+x).slice(-2); }
   function tick(){
     tLeft--;
@@ -283,17 +290,15 @@ footer a{color:var(--pink2);}
 
   document.getElementById("submitBtn").onclick=function(){
     var done=Object.keys(ansA).length;
-    if(done<8){
-      if(!confirm("まだ選んでいない問題が "+(8-done)+" 問あります。このまま提出しますか？")) return;
-    }
+    if(done<7){ if(!confirm("まだ選んでいない問題が "+(7-done)+" 問あります。このまま提出しますか？")) return; }
     doSubmit(false);
   };
 
   function grade(score){
-    if(score>=8) return {g:"💯 パーフェクト！",c:"#c9a227",m:"「だれに頼るか」の判断、完ぺきです。もうAIに振り回されません！"};
-    if(score>=6) return {g:"🌸 とてもいい感じ！",c:"#3f7d63",m:"判断の軸ができています。まちがえた問題の解説だけ、そっと確認を☺️"};
-    if(score>=4) return {g:"☘️ ここから伸びます！",c:"#c9922e",m:"半分クリア。解説を読むと「あ、そういうことか」が増えますよ！"};
-    return {g:"🌱 いっしょに育てよう",c:"#bd7886",m:"今の自分を知れたのが第一歩。解説を読めば、ぐっと見わけられるようになります！"};
+    if(score>=7) return {g:"💯 パーフェクト！",c:"#c9a227",m:"「だれに頼るか」の判断、完ぺきです。もうAIに振り回されません！"};
+    if(score>=5) return {g:"🌸 とてもいい感じ！",c:"#3f7d63",m:"判断の軸ができています。まちがえた問題の解説を、じっくり読んでみてね☺️"};
+    if(score>=3) return {g:"☘️ ここから伸びます！",c:"#c9922e",m:"解説を読むと「あ、そういうことか」が増えますよ！ここが伸びしろです。"};
+    return {g:"🌱 いっしょに育てよう",c:"#bd7886",m:"今の自分を知れたのが第一歩。解説がいちばんの学びなので、ゆっくり読んでね！"};
   }
 
   function doSubmit(auto){
@@ -301,53 +306,84 @@ footer a{color:var(--pink2);}
     if(tId) clearInterval(tId);
     var score=0, detail=[];
     QA.forEach(function(q,i){
-      var picked=ansA[i]||null;
-      var ok=picked===q.a;
+      var picked=(ansA[i]!=null)?ansA[i]:null;
+      var ok=(q.correct===-1)?(picked!=null):(picked===q.correct);
       if(ok) score++;
-      detail.push({q:q.t, picked:picked, correct:q.a, ok:ok});
+      detail.push({picked:picked, ok:ok});
     });
     var bTexts=QB.map(function(_,i){ return (document.getElementById("qb"+i).value||"").trim(); });
 
-    /* 結果表示 */
     document.getElementById("exam").classList.add("hide");
     document.getElementById("result").classList.remove("hide");
     document.getElementById("timer").style.display="none";
-    var gr=grade(score);
-    var pct=Math.round(score/8*100);
+    var gr=grade(score), pct=Math.round(score/7*100);
     var ring=document.getElementById("ring");
-    ring.setAttribute("stroke-dasharray", pct+" "+(100-pct));
-    ring.setAttribute("stroke", gr.c);
-    document.getElementById("scoreN").textContent=score;
-    document.getElementById("scoreN").style.color=gr.c;
+    ring.setAttribute("stroke-dasharray", pct+" "+(100-pct)); ring.setAttribute("stroke", gr.c);
+    document.getElementById("scoreN").textContent=score; document.getElementById("scoreN").style.color=gr.c;
     var gEl=document.getElementById("grade"); gEl.textContent=gr.g; gEl.style.color=gr.c;
     document.getElementById("gradeMsg").textContent=gr.m;
+
     var rv=document.getElementById("review"); rv.innerHTML="";
-    detail.forEach(function(d,i){
+    QA.forEach(function(q,i){
+      var d=detail[i];
+      var pickedTxt=(d.picked!=null)?q.opts[d.picked]:"（未回答）";
+      var ansTxt=(q.correct===-1)?"どれを選んでもOK":q.opts[q.correct];
       var el=document.createElement("div"); el.className="rv "+(d.ok?"ok":"ng");
-      var pickedTxt=d.picked?LABELS[d.picked].em+LABELS[d.picked].t:"（未回答）";
-      el.innerHTML='<div class="head">'+(d.ok?"◎ 正解":"△ おしい")+' Q'+(i+1)+'</div>'+
-        '<div class="exp">'+QA[i].t+'<br>あなた：'+pickedTxt+' ／ 答え：'+LABELS[d.correct].em+LABELS[d.correct].t+'<br>'+QA[i].exp+'</div>';
+      el.innerHTML=
+        '<div class="rvh">'+(d.ok?"◎ 正解":"△ おしい")+'　Q'+(i+1)+'</div>'+
+        '<div class="situ2">'+q.situ+'</div>'+
+        '<div class="yourans">あなたの回答：<b>'+pickedTxt+'</b></div>'+
+        '<div class="ansbox">✔ 答え：'+ansTxt+'</div>'+
+        '<div class="mine">💡 わたしの考え：'+q.mine+'</div>'+
+        '<div class="exp"><b>くみこの解説</b>\n'+q.exp+'</div>'+
+        '<label class="readck" data-i="'+i+'"><input type="checkbox"> 解説を読みました</label>';
       rv.appendChild(el);
     });
+    document.querySelectorAll(".readck input").forEach(function(c){
+      c.addEventListener("change",function(){
+        var lab=c.closest(".readck"), i=lab.getAttribute("data-i");
+        if(c.checked){ readSet[i]=1; lab.classList.add("done"); } else { delete readSet[i]; lab.classList.remove("done"); }
+        var all=Object.keys(readSet).length>=QA.length;
+        document.getElementById("finishBtn").disabled=!all;
+        document.getElementById("finishHint").textContent=all?"準備OK！完了ボタンを押してね":"※ 各問の「読みました」に全部チェックすると押せます。（あと"+(QA.length-Object.keys(readSet).length)+"問）";
+      });
+    });
+
     var bfb=document.getElementById("bfb");
     bfb.innerHTML=bTexts.map(function(t,i){
       var fb;
       if(!t){ fb='<span style="color:#c0607a;">（未記入）</span>'; }
       else if(t.length<15){ fb='<span style="color:#c9922e;">書けました！次はもう少しくわしく書くと、AIがもっと動きやすくなります。</span>'; }
       else { fb='<span style="color:#3f7d63;">しっかり自分の言葉で書けています！この調子です☺️</span>'; }
-      return '<div style="background:#faf7fb;border-radius:12px;padding:11px 14px;margin-top:8px;"><b>Q'+(i+9)+'</b><br>'+(t?t.replace(/</g,"&lt;"):"")+'<br>'+fb+'</div>';
+      return '<div style="background:#faf7fb;border-radius:12px;padding:11px 14px;margin-top:8px;"><b>記述'+(i+1)+'</b><br>'+(t?t.replace(/</g,"&lt;"):"")+'<br>'+fb+'</div>';
     }).join("");
     window.scrollTo(0,0);
 
-    /* 送信 */
+    /* 提出（解説を読む前の状態で一度記録。read:false） */
     if(!DEMO){
       var payload={member_id:"test1", member_name:NAME||UID, mood:"テスト", want:UID,
-        worry:JSON.stringify({t:1, score:score, total:8, auto:!!auto, a:detail.map(function(d){return d.picked;}), b:bTexts})};
-      fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},body:JSON.stringify(payload)}).catch(function(){});
+        worry:JSON.stringify({t:1, score:score, total:7, auto:!!auto, read:false, a:detail.map(function(d){return d.picked;}), b:bTexts})};
+      fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(payload)})
+        .then(function(r){return r.json();}).then(function(rows){ if(rows&&rows[0]) postedId=rows[0].id; }).catch(function(){});
     }
+    window._lastResult={score:score,detail:detail,b:bTexts};
   }
 
-  /* バグ報告 */
+  document.getElementById("finishBtn").onclick=function(){
+    var b=this; b.disabled=true;
+    document.getElementById("finishHint").classList.add("hide");
+    var th=document.getElementById("thanks");
+    th.classList.remove("hide");
+    th.innerHTML='<div class="card" style="text-align:center;background:linear-gradient(165deg,#fff,#fbeef1);"><div style="font-size:30px;">🩷</div><p style="font-size:14px;font-weight:800;color:#1d3149;margin-top:6px;">おつかれさまでした！</p><p style="font-size:13px;margin-top:6px;">解説をぜんぶ読んでくれてありがとう。この「だれに頼るか」の感覚が、これからのあなたを助けます☺️</p></div>';
+    /* 解説読了を記録（read:true） */
+    if(!DEMO && postedId && window._lastResult){
+      var r=window._lastResult;
+      var body={worry:JSON.stringify({t:1, score:r.score, total:7, read:true, a:r.detail.map(function(d){return d.picked;}), b:r.b})};
+      fetch(U+"?id=eq."+postedId,{method:"PATCH",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},body:JSON.stringify(body)}).catch(function(){});
+    }
+    th.scrollIntoView({behavior:"smooth"});
+  };
+
   var M=document.getElementById("bugM");
   document.getElementById("bugL").onclick=function(){ M.classList.add("on"); };
   document.getElementById("bugC").onclick=function(){ M.classList.remove("on"); document.getElementById("bugD").style.display="none"; };
@@ -361,7 +397,6 @@ footer a{color:var(--pink2);}
       .then(function(){ done(); }).catch(function(){ b.disabled=false; alert("送信できませんでした。"); });
   };
 
-  /* 名前プリセット */
   if(NAME) document.getElementById("nm").value=NAME;
 })();
 </script>
