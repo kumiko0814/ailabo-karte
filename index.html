@@ -496,7 +496,7 @@ function loadAll(){
     var qs=(typeof UID!=="undefined"&&UID?("?u="+UID+"&name="+encodeURIComponent(typeof NAME!=="undefined"?(NAME||""):"")):"");
     var bookUrl="textbook.html"+qs;
     html+='<div class="curwk"><span class="wn">📖</span><span class="wt"><b><a href="'+bookUrl+'" style="color:#bd7886;">AIらぼの教科書を読む</a></b>みんなの悩みから作った、AIの使い方ぜんぶ</span></div>';
-    html+='<div class="curwk" style="background:linear-gradient(135deg,#fbeef1,#f1eaf7);"><span class="wn">📝</span><span class="wt"><b><a href="shiken.html'+qs+'" style="color:#bd7886;">第1回 考える力チェックを受ける</a></b>15分・提出式。AIに聞く？先生に聞く？の判断力テスト</span></div>';
+    // 第1回テストはくみこが内容を作り直し中のため一時停止（再開時にこの行を戻す）
   } else {
     html='<div style="text-align:center; padding:26px 10px;">'
       +'<div style="font-size:34px;">🎁</div>'
