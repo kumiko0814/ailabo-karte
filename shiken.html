@@ -110,7 +110,7 @@ footer a{color:var(--pink2);}
       これからAIを相棒にしていくうえで、いちばん大事な<b>「何を・だれに頼るかを見わける力」</b>と、<b>「自分の考えを、自分の言葉にする力」</b>をチェックします☺️</p>
       <p class="lead" style="margin-top:12px;">正解できなくて大丈夫。おわると<b>くみこの解説</b>が出るので、そこがいちばんの学びです。解説を読んだら「読みました」にチェックしてくださいね✨</p>
       <ul class="rules">
-        <li>ぜんぶで <b>9問</b>（選ぶ問題7問＋書く問題2問）</li>
+        <li>ぜんぶで <b>10問</b>（選ぶ問題7問＋書く問題3問）</li>
         <li>制限時間は <b>15分</b>（スタートを押すと始まります）</li>
         <li>提出すると、点数と<b>くみこの解説</b>が出ます</li>
         <li>解説を読んだら、各問の「読みました」にチェック→最後に完了ボタン</li>
@@ -125,7 +125,7 @@ footer a{color:var(--pink2);}
   </section>
 
   <section id="exam" class="hide">
-    <div class="prog"><div class="bar"><div class="fill" id="fill"></div></div><div class="txt" id="ptxt">0 / 9</div></div>
+    <div class="prog"><div class="bar"><div class="fill" id="fill"></div></div><div class="txt" id="ptxt">0 / 10</div></div>
     <div class="card" style="margin-top:10px;">
       <p style="font-size:13px;"><b>PART 1｜だれに頼る？</b><br>次の場面、あなたならどうしますか？ いちばん近いものを1つ選んでください。</p>
     </div>
@@ -229,7 +229,10 @@ footer a{color:var(--pink2);}
     {t:"「部屋を片づけたい」という言葉だけでは、AIはうまく動けません。AIがすぐ動けるように、あなたの言葉で「1文の頼み方」に書き直してください。",
      hint:"ヒント：だれが・何を・どうしたいか を入れると、AIは的確に動けます。（例）わたしのリビングのテーブルの上を、15分で片づく手順に分けて教えて"},
     {t:"あなたの毎日をふりかえって、「これはAIに任せる」ことと「これは自分で考える」ことを、1つずつ、理由と一緒に書いてください。",
-     hint:"ヒント：主語（わたしは）から書き始めると、自分の考えがはっきりします。"}
+     hint:"ヒント：主語（わたしは）から書き始めると、自分の考えがはっきりします。"},
+    {t:"あなたがAIカルテに送った相談の中で、自分自身の課題を、どうやったらAIで解決できると思いますか？　また、それを解決するために「どんなアプリ」を作ったら、自分自身の時間が生み出せると思いますか？",
+     lead:"AIは、すべての人生を豊かにしてくれる魔法ではなく、まず「自分自身の課題」を浮き彫りにするためのツールです。もしまだ課題がはっきり浮かんでいなくても大丈夫。いま感じている困りごとや「こんなものを作ってみたい」を、自分なりの言葉で、なんでもいいので書いてください☺️",
+     hint:"ヒント：①いまの課題　②AIでどう解決できそうか　③作りたいアプリ　の順で書くと考えがまとまります。"}
   ];
 
   var ansA={}, started=false, tLeft=15*60, tId=null, submitted=false, postedId=null, readSet={};
@@ -247,7 +250,8 @@ footer a{color:var(--pink2);}
   var pb=document.getElementById("partB");
   QB.forEach(function(q,i){
     var d=document.createElement("div"); d.className="q";
-    d.innerHTML='<div class="qn">記述 '+(i+1)+' / 2</div><div class="qt">'+q.t+'</div><textarea id="qb'+i+'" maxlength="600" placeholder="ここに書いてください"></textarea><div class="hint">'+q.hint+'</div>';
+    var lead=q.lead?'<div class="situ" style="background:#eef2fb;">'+q.lead+'</div>':'';
+    d.innerHTML='<div class="qn">記述 '+(i+1)+' / '+QB.length+'</div><div class="qt">'+q.t+'</div>'+lead+'<textarea id="qb'+i+'" maxlength="800" placeholder="ここに書いてください"></textarea><div class="hint">'+q.hint+'</div>';
     pb.appendChild(d);
   });
 
@@ -261,11 +265,12 @@ footer a{color:var(--pink2);}
   document.querySelectorAll("#partB textarea").forEach(function(t){ t.addEventListener("input",updateProg); });
 
   function updateProg(){
+    var TOT=QA.length+QB.length;
     var done=Object.keys(ansA).length;
     QB.forEach(function(_,i){ if((document.getElementById("qb"+i).value||"").trim().length>=5) done++; });
-    var pct=Math.round(done/9*100);
+    var pct=Math.round(done/TOT*100);
     document.getElementById("fill").style.width=pct+"%";
-    document.getElementById("ptxt").textContent=done+" / 9";
+    document.getElementById("ptxt").textContent=done+" / "+TOT;
   }
 
   function fmt(s){ var m=Math.floor(s/60), x=s%60; return "⏱ "+m+":"+("0"+x).slice(-2); }

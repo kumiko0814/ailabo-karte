@@ -839,7 +839,7 @@ function loadProgress(){
         } else {
           badge="<span style='flex:none;width:56px;text-align:center;font-size:10.5px;color:#b0a3aa;border:1px dashed #d9cfe4;border-radius:999px;padding:2px 0;'>未受験</span>";
         }
-        var btn = (x.tb && (x.tb[0]||x.tb[1])) ? "<button class='rl tbtn' data-u='"+esc(x.u)+"' style='flex:none;font-size:10.5px;padding:3px 8px;'>記述</button>" : "";
+        var btn = (x.tb && (x.tb[0]||x.tb[1]||x.tb[2])) ? "<button class='rl tbtn' data-u='"+esc(x.u)+"' style='flex:none;font-size:10.5px;padding:3px 8px;'>記述</button>" : "";
         mHtml+="<div style='display:flex; align-items:center; gap:8px; font-size:12px; margin-top:6px;'>"
           +badge
           +"<span style='flex:none; width:120px; color:#4a4446; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;'>"+esc(x.name)+"</span>"
@@ -847,10 +847,11 @@ function loadProgress(){
           +"<span style='flex:none; width:40px; text-align:right; font-weight:800; color:#26405f;'>"+x.n+"章</span>"
           +btn
           +"</div>";
-        if(x.tb && (x.tb[0]||x.tb[1])){
+        if(x.tb && (x.tb[0]||x.tb[1]||x.tb[2])){
           mHtml+="<div class='tbody' id='tb_"+esc(x.u)+"' style='display:none;background:#faf7fb;border-radius:10px;padding:10px 12px;margin:4px 0 0 60px;font-size:12px;line-height:1.8;'>"
-            +"<div><b>Q9 頼み方の書き直し：</b><br>"+esc(x.tb[0]||"（未記入）")+"</div>"
-            +"<div style='margin-top:6px;'><b>Q10 AIに任せる/自分で考える：</b><br>"+esc(x.tb[1]||"（未記入）")+"</div></div>";
+            +"<div><b>記述1 頼み方の書き直し：</b><br>"+esc(x.tb[0]||"（未記入）")+"</div>"
+            +"<div style='margin-top:6px;'><b>記述2 AIに任せる/自分で考える：</b><br>"+esc(x.tb[1]||"（未記入）")+"</div>"
+            +"<div style='margin-top:6px;'><b>記述3 自分の課題とつくりたいアプリ：</b><br>"+esc(x.tb[2]||"（未記入）")+"</div></div>";
         }
       });
       document.getElementById("prgMembers").innerHTML=mHtml;
