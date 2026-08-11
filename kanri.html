@@ -640,7 +640,7 @@ function loadInbox(){
     var all=Array.isArray(res[0])?res[0]:[];
     var bugs=all.filter(function(n){ return (n.member_id||"").indexOf("bug_")===0; });
     var lines=all.filter(function(n){ return (n.member_id||"").indexOf("line_")===0; });
-    var rest=all.filter(function(n){ var m=(n.member_id||""); return m.indexOf("bug_")!==0 && m.indexOf("line_")!==0 && m.indexOf("svy_")!==0 && m.indexOf("notice_")!==0 && m.indexOf("read_")!==0 && m.indexOf("test")!==0 && m.indexOf("namefix")!==0 && n.mood!=="テスト"; });
+    var rest=all.filter(function(n){ var m=(n.member_id||""); return m.indexOf("bug_")!==0 && m.indexOf("line_")!==0 && m.indexOf("svy_")!==0 && m.indexOf("notice_")!==0 && m.indexOf("read_")!==0 && m.indexOf("test")!==0 && m.indexOf("namefix")!==0 && m.indexOf("name_")!==0 && n.mood!=="テスト" && n.mood!=="改名"; });
     var apps=rest.filter(function(n){ return n.mood==="申込"; });
     var regs=rest.filter(function(n){ return n.mood==="登録"; });
     var notes=rest.filter(function(n){ return n.mood!=="登録" && n.mood!=="申込"; });
