@@ -9,7 +9,7 @@
 :root{ --bg:#f6f1f9; --blue:#8f9fd8; --navy:#26405f; --navy2:#1d3149; --pink:#cf8f9c; --pink2:#bd7886; --pinkbg:#fbeef1; --text:#4a4446; --muted:#8a97a5; --line:#e8e0ef; }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif; background:linear-gradient(168deg,#f1eaf7 0%,#faf7fb 46%,#fbeef1 100%); color:var(--text); line-height:1.95; -webkit-font-smoothing:antialiased; padding-bottom:60px;}
+body{font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif; background:linear-gradient(168deg,#f1eaf7 0%,#faf7fb 46%,#fbeef1 100%); color:var(--text); line-height:1.95; -webkit-font-smoothing:antialiased; padding-bottom:calc(96px + env(safe-area-inset-bottom, 0px));}
 .wrap{max-width:600px; margin:0 auto; padding:0 16px;}
 header{background:var(--navy2); color:#fff; padding:12px 18px; text-align:center; position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;}
 header .lg{font-size:12.5px; font-weight:800; letter-spacing:.12em; color:#f3cdd7;}
@@ -306,9 +306,7 @@ footer a{color:var(--pink2);}
     return {g:"🌱 いっしょに育てよう",c:"#bd7886",m:"今の自分を知れたのが第一歩。解説がいちばんの学びなので、ゆっくり読んでね！"};
   }
 
-  function doSubmit(auto){
-    if(submitted) return; submitted=true;
-    if(tId) clearInterval(tId);
+  function computeScore(){
     var score=0, detail=[];
     QA.forEach(function(q,i){
       var picked=(ansA[i]!=null)?ansA[i]:null;
@@ -316,8 +314,11 @@ footer a{color:var(--pink2);}
       if(ok) score++;
       detail.push({picked:picked, ok:ok});
     });
-    var bTexts=QB.map(function(_,i){ return (document.getElementById("qb"+i).value||"").trim(); });
+    return {score:score, detail:detail};
+  }
 
+  function renderResult(score, detail, bTexts){
+    document.getElementById("intro").classList.add("hide");
     document.getElementById("exam").classList.add("hide");
     document.getElementById("result").classList.remove("hide");
     document.getElementById("timer").style.display="none";
@@ -330,7 +331,7 @@ footer a{color:var(--pink2);}
 
     var rv=document.getElementById("review"); rv.innerHTML="";
     QA.forEach(function(q,i){
-      var d=detail[i];
+      var d=detail[i]||{picked:null,ok:false};
       var pickedTxt=(d.picked!=null)?q.opts[d.picked]:"（未回答）";
       var ansTxt=(q.correct===-1)?"どれを選んでもOK":q.opts[q.correct];
       var el=document.createElement("div"); el.className="rv "+(d.ok?"ok":"ng");
@@ -355,7 +356,7 @@ footer a{color:var(--pink2);}
     });
 
     var bfb=document.getElementById("bfb");
-    bfb.innerHTML=bTexts.map(function(t,i){
+    bfb.innerHTML=(bTexts||[]).map(function(t,i){
       var fb;
       if(!t){ fb='<span style="color:#c0607a;">（未記入）</span>'; }
       else if(t.length<15){ fb='<span style="color:#c9922e;">書けました！次はもう少しくわしく書くと、AIがもっと動きやすくなります。</span>'; }
@@ -363,6 +364,14 @@ footer a{color:var(--pink2);}
       return '<div style="background:#faf7fb;border-radius:12px;padding:11px 14px;margin-top:8px;"><b>記述'+(i+1)+'</b><br>'+(t?t.replace(/</g,"&lt;"):"")+'<br>'+fb+'</div>';
     }).join("");
     window.scrollTo(0,0);
+  }
+
+  function doSubmit(auto){
+    if(submitted) return; submitted=true;
+    if(tId) clearInterval(tId);
+    var res=computeScore(), score=res.score, detail=res.detail;
+    var bTexts=QB.map(function(_,i){ return (document.getElementById("qb"+i).value||"").trim(); });
+    renderResult(score, detail, bTexts);
 
     /* 提出（解説を読む前の状態で一度記録。read:false） */
     if(!DEMO){
@@ -372,6 +381,15 @@ footer a{color:var(--pink2);}
         .then(function(r){return r.json();}).then(function(rows){ if(rows&&rows[0]) postedId=rows[0].id; }).catch(function(){});
     }
     window._lastResult={score:score,detail:detail,b:bTexts};
+  }
+
+  /* 受験ずみの人が、前回の点数と解説をいつでも見返せる（受け直し不要） */
+  function showPrevResult(saved){
+    ansA={}; ((saved&&saved.a)||[]).forEach(function(p,i){ if(p!=null) ansA[i]=p; });
+    var res=computeScore();
+    var score=(saved&&typeof saved.score==="number")?saved.score:res.score;
+    submitted=true;
+    renderResult(score, res.detail, (saved&&saved.b)||[]);
   }
 
   document.getElementById("finishBtn").onclick=function(){
@@ -403,6 +421,27 @@ footer a{color:var(--pink2);}
   };
 
   if(NAME) document.getElementById("nm").value=NAME;
+
+  /* 受験ずみチェック：前回の記録があれば「受け直し不要＋結果を見返す」導線を出す */
+  if(!DEMO){
+    fetch(U+"?member_id=eq.test1&want=eq."+encodeURIComponent(UID)+"&order=created_at.desc&limit=1",{headers:{apikey:K,Authorization:"Bearer "+K}})
+      .then(function(r){return r.json();})
+      .then(function(rows){
+        if(!rows||!rows[0]) return;
+        var saved; try{ saved=JSON.parse(rows[0].worry); }catch(e){ return; }
+        var sc=(saved&&typeof saved.score==="number")?saved.score:null;
+        var intro=document.getElementById("intro");
+        if(!intro||intro.classList.contains("hide")) return;
+        var box=document.createElement("div");
+        box.className="card";
+        box.style.cssText="border:1.6px solid #e0cbd3;background:linear-gradient(165deg,#fff,#fbeef1);";
+        box.innerHTML='<p style="font-size:14px;font-weight:800;color:#1d3149;">☑ このテストは受験ずみです'+(sc!=null?'（前回：'+sc+' / 7）':'')+'</p>'
+          +'<p class="lead" style="margin-top:8px;">もう一度受けなくて大丈夫です。前回の点数とくみこの解説は、下のボタンからいつでも見返せます☺️</p>'
+          +'<button class="btn" id="prevBtn" style="margin-top:12px;">前回の結果と解説を見る</button>';
+        intro.insertBefore(box, intro.firstChild);
+        document.getElementById("prevBtn").onclick=function(){ showPrevResult(saved); };
+      }).catch(function(){});
+  }
 })();
 </script>
 </body>

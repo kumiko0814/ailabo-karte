@@ -761,6 +761,12 @@ document.getElementById("nmsave").onclick=function(){
     var my=JSON.parse(localStorage.getItem("ailab_my")||"{}");
     if(my && my.id===UID){ my.name=v; my.url=location.origin+location.pathname+"?u="+UID+"&name="+encodeURIComponent(v); localStorage.setItem("ailab_my",JSON.stringify(my)); }
   }catch(e){}
+  /* サーバにも保存：別の端末・LINE内ブラウザで開いても元の名前に戻らないように */
+  NAME=v;
+  var w1=document.getElementById("who"), w2=document.getElementById("who2");
+  if(w1) w1.textContent=v+"さんの専用ページ";
+  if(w2) w2.textContent=v+"さんの専用ページ";
+  if(!DEMO && UID){ sb("ailab_notes",{method:"POST",body:JSON.stringify({member_id:"name_"+UID, member_name:v, mood:"改名", worry:v, want:UID})}).catch(function(){}); }
   document.getElementById("nmok").style.display="block";
   var u=new URL(location.href); u.searchParams.set("name", v);
   setTimeout(function(){ location.href=u.toString(); }, 900);
@@ -793,6 +799,24 @@ document.querySelectorAll(".mn,.ni[data-v]").forEach(function(n){
   n.onclick=function(){ switchView(n.getAttribute("data-v")); };
 });
 window.switchView=switchView;
+
+/* サーバに保存された「呼ばれたい名前」を最優先で反映（別端末・LINE内ブラウザで開いても元に戻らない） */
+if(!DEMO && UID){
+  sb("ailab_notes?member_id=eq.name_"+UID+"&order=created_at.desc&limit=1")
+    .then(function(r){return r.json();})
+    .then(function(rows){
+      if(rows&&rows[0]&&rows[0].worry){
+        var sv=String(rows[0].worry).trim().slice(0,20);
+        if(sv&&sv!==NAME){
+          NAME=sv;
+          try{ localStorage.setItem("ailab_name_"+UID,sv); }catch(e){}
+          var w1=document.getElementById("who"), w2=document.getElementById("who2");
+          if(w1) w1.textContent=NAME+"さんの専用ページ";
+          if(w2) w2.textContent=NAME+"さんの専用ページ";
+        }
+      }
+    }).catch(function(){});
+}
 
 loadAll();
 })();
