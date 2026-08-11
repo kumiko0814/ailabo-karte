@@ -404,6 +404,56 @@ var NAME=(P.get("name")||"").slice(0,20);
 try{ var __nm=localStorage.getItem("ailab_name_"+(P.get("u")||"")); if(__nm) NAME=__nm.slice(0,20); }catch(e){}
 var DEMO=P.get("demo")==="1"||!UID||!(typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.enabled);
 
+/* ===== 名前一致お願いロック（オプチャ名と不一致の方は、名前変更だけできる一時ロック） ===== */
+var NAMEFIX_UIDS=["mtxni7b1s8g","meqieaqda2h","m18trg9chz1m","mfh22v51ahg","mfwpc9516jm","mj8ifm61dz7","mim25tmqx77","m3a7cp1m49n","motmmwf1q5q","msxq2lo1615","m19mdu891057"];
+if(!DEMO && UID && NAMEFIX_UIDS.indexOf(UID)>=0){
+  (function(){
+    var SB=SUPABASE_CONFIG.url+"/rest/v1/ailab_notes", KY=SUPABASE_CONFIG.anonKey;
+    function hdr(){ return {apikey:KY,Authorization:"Bearer "+KY,"Content-Type":"application/json"}; }
+    function gate(){
+      var ov=document.createElement("div");
+      ov.id="nameGate";
+      ov.style.cssText="position:fixed;inset:0;background:linear-gradient(168deg,#f1eaf7,#fbeef1);display:flex;align-items:center;justify-content:center;z-index:120;padding:22px;overflow:auto;";
+      ov.innerHTML='<div style="background:#fff;border-radius:22px;padding:26px 22px;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(29,49,73,.25);text-align:center;">'
+        +'<div style="font-size:32px;">🙏</div>'
+        +'<h3 style="font-size:16px;color:#1d3149;margin-top:8px;line-height:1.7;">お名前の確認をお願いします</h3>'
+        +'<p style="font-size:13px;color:#6b7684;line-height:2;margin-top:10px;text-align:left;">オープンチャットのお名前と、このカルテのお名前を<b>そろえてください</b>。だれの相談か分かるようにするための大切なお願いです。<br>お名前を変更すると、カルテがまた使えるようになります☺️</p>'
+        +'<div style="text-align:left;margin-top:14px;">'
+        +'<label style="font-size:12px;font-weight:800;color:#26405f;">オープンチャットと同じお名前</label>'
+        +'<input id="ngIn" type="text" maxlength="30" placeholder="例）山田花子" style="width:100%;border:1.5px solid #e3e9f0;border-radius:12px;padding:12px 13px;font-size:15px;font-family:inherit;margin-top:6px;">'
+        +'</div>'
+        +'<button id="ngBtn" style="width:100%;border:none;background:linear-gradient(135deg,#c76e85,#cf8f9c);color:#fff;border-radius:999px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:16px;">この名前に変更する</button>'
+        +'<div id="ngMsg" style="display:none;font-size:13px;color:#3f7d63;font-weight:800;margin-top:10px;"></div>'
+        +'</div>';
+      document.body.appendChild(ov);
+      document.getElementById("ngBtn").onclick=function(){
+        var v=(document.getElementById("ngIn").value||"").trim();
+        if(!v){ document.getElementById("ngIn").focus(); return; }
+        var b=this; b.disabled=true; b.textContent="変更中…";
+        try{ localStorage.setItem("ailab_name_"+UID, v.slice(0,20)); localStorage.setItem("ailab_namefixed_"+UID,"1"); }catch(e){}
+        var old=(NAME||UID);
+        /* 完了マーカー（再ロック防止・他端末でも解除） */
+        fetch(SB,{method:"POST",headers:hdr(),body:JSON.stringify({member_id:"namefix_done",member_name:v.slice(0,30),mood:"確認済み",worry:"名前変更完了："+old+" → "+v,want:UID})}).catch(function(){});
+        /* 管理側（バグチェッカー）へお知らせ */
+        fetch(SB,{method:"POST",headers:hdr(),body:JSON.stringify({member_id:"bug_名前変更",member_name:"名前変更のお知らせ",mood:"バグ報告",worry:"【名前変更 完了】「"+old+"」→「"+v+"」（uid: "+UID+"）",want:UID})}).catch(function(){});
+        var msg=document.getElementById("ngMsg"); msg.style.display="block";
+        msg.textContent="ありがとうございます！お名前を変更しました。カルテがまた使えるようになります☺️";
+        setTimeout(function(){ location.reload(); }, 1600);
+      };
+    }
+    /* すでに変更済みなら開かない（localStorage or DBマーカー） */
+    var doneLocal=false; try{ doneLocal=!!localStorage.getItem("ailab_namefixed_"+UID); }catch(e){}
+    if(doneLocal) return;
+    function run(){ gate(); }
+    if(document.readyState==="loading"){ document.addEventListener("DOMContentLoaded",run); } else { run(); }
+    /* 他端末で変更済みかDB確認→済んでいたらゲートを消す */
+    fetch(SB+"?member_id=eq.namefix_done&want=eq."+encodeURIComponent(UID)+"&select=id&limit=1",{headers:hdr()})
+      .then(function(r){return r.json();}).then(function(j){
+        if(Array.isArray(j)&&j.length){ try{localStorage.setItem("ailab_namefixed_"+UID,"1");}catch(e){} var g=document.getElementById("nameGate"); if(g) g.remove(); }
+      }).catch(function(){});
+  })();
+}
+
 /* u=（カルテの鍵）が欠けたURLで開いた人への防御画面（デモ指定は除く） */
 if(!UID && P.get("demo")!=="1" && (typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.enabled)){
   (function(){
