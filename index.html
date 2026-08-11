@@ -340,6 +340,10 @@ footer{text-align:center; font-size:11px; color:#9aa7b4; padding:34px 16px 10px;
             <h2>ラボのカリキュラム</h2>
             <div id="curpage"></div>
           </div>
+          <div class="card" id="testCard" style="padding-bottom:20px; margin-top:14px;">
+            <h2>📝 第1回テストの結果</h2>
+            <div id="testResult"><div class="empty">読み込み中…</div></div>
+          </div>
         </div>
 
         <!-- settings -->
@@ -533,6 +537,72 @@ function loadAll(){
     else if(cur>=0){ lbl.textContent="いま"+WEEKS[cur][0]; }
     else if(now<starts[0].getTime()){ lbl.textContent="8/8 開講"; }
   }
+})();
+
+/* ===== 第1回テストの結果＆解説を常設（カリキュラムから見られる・いつでも見返せる） ===== */
+(function(){
+  var QA=[
+    {situ:"時間の使い方がどうやったら改善するのか迷ったとき、あなたは何をすればいい？",opts:["🤖 Claudeに聞く","📋 AIカルテに相談する","💭 まずは自分で考えてみる"],correct:0,
+     exp:"あくまでAIカルテに相談するのは、何をどうやって聞いていいかわからないときであって、本質的に自立して考えるようになるためには、Claudeに自分自身で相談して、それでもわからなければAIカルテに聞くというのが最善です。"},
+    {situ:"メルカリ出品をするとき、画像がうまく撮れない・写真がきれいに映らない。まずどうすればいい？",opts:["💭 自分で考えてみる","🧑‍🏫 講師に相談する","🤖 ClaudeやAIカルテに聞く"],correct:1,
+     exp:"生きた情報というのは、AIやGoogleではなく、スクール内にしか存在しません。講師がわかることをきちんと自分で質問するために、「どうやって質問すればいいかわからないときの文章」をAIに作ってもらう、という形で活用してください。すべてAIに聞くと、一次情報や最新情報を持たないAIから間違った情報が返ることが多く、自立ではなく丸投げになってしまいます。"},
+    {situ:"1週間ごとの献立と買い物リスト。これにすごく悩んでいるが、どうしたらいい？",opts:["🤖 Claudeに聞く","📋 AIカルテに聞く","👨‍👩‍👧 家族に相談"],correct:0,
+     exp:"こういった、自分ではなくても大丈夫・問題ないことこそ、AIにお任せすべきものです。"},
+    {situ:"自分で作ったアプリをみんなに使ってもらいたいが、どうしていいかわからない。こういう場合どうしたらいい？",opts:["🤖 Claudeに聞く","📋 AIカルテに聞く","💭 自分で考える"],correct:0,
+     exp:"AIに質問しても欲しい答えが返ってこない場合、質問の仕方が100%悪いと思った方がいいです。AIは、正しい情報を入れ込まないと欲しい答えは返ってきません。欲しい情報が返ってこない＝人に伝えている情報もほぼ伝わっていない、の答え合わせとして使ってください。"},
+    {situ:"自分自身で物販をやるべきか、それとも会社で本業を頑張るべきか。目指すべき方向性が分からなくなったとき。",opts:["🤖 ClaudeなどAIに聞く","📋 AIカルテに聞く","💭 自分で考える"],correct:2,
+     exp:"自分が自分の足で立って自立するために必要なのは、自分がどうなりたいかという本当の理想を、自分自身で明確にすることです。AIに過信せず、時間を取って自分で考える。ここまでAIに任せてしまうなら、それはあなたの人生ではありません。"},
+    {situ:"何かわからないことがあるので、AIラボの活用方法について質問をしようと、今あなたは悩んでいる。",opts:["📱 公式LINEの方で私に質問する","🤖 AI（Claude、ChatGPTなど）に聞く","📋 AIカルテに聞く"],correct:2,
+     exp:"これはClaudeに聞いてもわからないので、AIカルテに聞くのが正解です。公式LINEは基本的に契約関連のみ。うまくいく人の共通点は「ルールを把握できるか」。まだ第8章まで見ていないのにAI相談中心になっている方は、進め方が逆です。まずカリキュラムをすべて見ましょう。"},
+    {situ:"メルカリの説明文を、魅力的なものにしたい。",opts:["🤖 AIに聞く（Claude、ChatGPTなど）","📋 AIカルテに聞く","🧑‍🏫 講師やスクールの先輩に聞く"],correct:-1,
+     exp:"どれを選んでも正解です。ただし自分でAIに聞くなら、AIは正解（売れているデータ）を持っていません。最低3ヶ月分のデータ（在庫管理表・販売データ・出品数）を読み込ませて初めて、正しい答えが返る可能性が60〜70%になります。まずは自分の出品状況を客観的に把握し、リッシュのカルテのデータをまずClaudeに覚えさせて分析してもらうところからスタートしましょう。"}
+  ];
+  function scoreColor(s,t){ t=t||7; var r=s/t; return r>=1?"#c9a227":(r>=0.71?"#3f7d63":(r>=0.43?"#c9922e":"#bd7886")); }
+  function grade(s,t){ t=t||7; var r=s/t; return r>=1?"💯 パーフェクト！":(r>=0.71?"🌸 とてもいい感じ！":(r>=0.43?"☘️ ここから伸びます！":"🌱 いっしょに育てよう")); }
+  function render(rec){
+    var box=document.getElementById("testResult"); if(!box) return;
+    if(!rec){
+      var qs=(UID?("?u="+UID+"&name="+encodeURIComponent(NAME||"")):"");
+      box.innerHTML='<div style="text-align:center; padding:14px 6px;">'
+        +'<div style="font-size:13.5px; color:#4a4446; line-height:1.9;">まだ第1回テストを受けていません。<br>15分・提出式です。受けると、点数とくみこの解説がここにずっと残ります☺️</div>'
+        +'<a href="shiken.html'+qs+'" style="display:inline-block; margin-top:12px; background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff; border-radius:999px; padding:12px 26px; font-size:14px; font-weight:800; text-decoration:none;">テストを受ける</a></div>';
+      return;
+    }
+    var d; try{ d=JSON.parse(rec.worry||"{}"); }catch(e){ d={}; }
+    var a=d.a||[], sc=(d.score!=null?d.score:0), tot=d.total||7, b=d.b||[];
+    var col=scoreColor(sc,tot);
+    var h='<div style="text-align:center; padding:6px 0 10px;">'
+      +'<div style="font-size:40px; font-weight:800; color:'+col+'; line-height:1;">'+sc+'<span style="font-size:15px; color:#8a97a5;"> / '+tot+'</span></div>'
+      +'<div style="font-size:15px; font-weight:800; color:'+col+'; margin-top:6px;">'+grade(sc,tot)+'</div>'
+      +'<div style="font-size:11.5px; color:#8a97a5; margin-top:4px;">いつでもここで見返せます</div></div>';
+    QA.forEach(function(q,i){
+      var picked=(a[i]!=null?a[i]:null);
+      var ok=(q.correct===-1)?(picked!=null):(picked===q.correct);
+      var pickedTxt=(picked!=null&&q.opts[picked])?q.opts[picked]:"（未回答）";
+      var ansTxt=(q.correct===-1)?"どれを選んでもOK":q.opts[q.correct];
+      h+='<div style="background:#fff; border:1px solid #f1ecf5; border-radius:14px; padding:13px 14px; margin-top:10px;">'
+        +'<div style="font-size:12.5px; font-weight:800; color:'+(ok?"#3f7d63":"#c0607a")+';">'+(ok?"◎ 正解":"△ おしい")+'　Q'+(i+1)+'</div>'
+        +'<div style="font-size:12.8px; color:#26405f; background:#faf7fb; border-radius:9px; padding:8px 11px; margin-top:7px; line-height:1.7;">'+q.situ+'</div>'
+        +'<div style="font-size:12px; margin-top:7px;">あなたの回答：<b>'+pickedTxt+'</b></div>'
+        +'<div style="font-size:12.5px; font-weight:800; color:#2f6b4f; background:#eef7f1; border-radius:9px; padding:8px 11px; margin-top:6px;">✔ 答え：'+ansTxt+'</div>'
+        +'<div style="font-size:12.5px; margin-top:8px; line-height:1.9; color:#4a4446;"><b style="color:#bd7886;">くみこの解説</b><br>'+q.exp+'</div></div>';
+    });
+    if(b[0]||b[1]||b[2]){
+      h+='<div style="background:#faf7fb; border-radius:12px; padding:12px 14px; margin-top:12px; font-size:12.5px; line-height:1.9;"><b style="color:#26405f;">あなたが書いた言葉</b>';
+      var labels=["頼み方の書き直し","AIに任せる／自分で考える","自分の課題とつくりたいアプリ"];
+      b.forEach(function(t,i){ if(t) h+='<div style="margin-top:6px;"><b>'+labels[i]+'：</b><br>'+String(t).replace(/</g,"&lt;")+'</div>'; });
+      h+='</div>';
+    }
+    box.innerHTML=h;
+  }
+  function load(){
+    var tc=document.getElementById("testCard"); if(!tc) return;
+    if(DEMO){ render({worry:JSON.stringify({t:1,score:6,total:7,read:true,a:[0,1,0,2,2,2,0],b:["リビングのテーブルの上を15分で片づく手順に分けて教えて","献立はAIに任せる。子どもの進路は自分で考える","時間管理が課題。1日の予定を毎朝出すアプリを作りたい"]})}); return; }
+    sb("ailab_notes?member_id=eq.test1&mood=eq.テスト&want=eq."+encodeURIComponent(UID)+"&order=created_at.desc&limit=1").then(function(r){return r.json();})
+      .then(function(j){ render(Array.isArray(j)&&j.length?j[0]:null); })
+      .catch(function(){ var box=document.getElementById("testResult"); if(box) box.innerHTML='<div class="empty">読み込めませんでした。リロードしてください。</div>'; });
+  }
+  load();
 })();
 
 /* ===== くみこからのメッセージ（1人1回表示） ===== */
