@@ -441,16 +441,17 @@ if(!DEMO && UID && NAMEFIX_UIDS.indexOf(UID)>=0){
         setTimeout(function(){ location.reload(); }, 1600);
       };
     }
-    /* すでに変更済みなら開かない（localStorage or DBマーカー） */
+    /* すでに名前を入力した人はロックしない。①この端末の記録 ②DBの完了記録 を先に確認してから判断 */
     var doneLocal=false; try{ doneLocal=!!localStorage.getItem("ailab_namefixed_"+UID); }catch(e){}
     if(doneLocal) return;
-    function run(){ gate(); }
-    if(document.readyState==="loading"){ document.addEventListener("DOMContentLoaded",run); } else { run(); }
-    /* 他端末で変更済みかDB確認→済んでいたらゲートを消す */
+    function run(){ if(!document.getElementById("nameGate")) gate(); }
+    /* DBに完了記録があれば＝もう入力済み→ゲートを出さない。無ければゲート表示 */
     fetch(SB+"?member_id=eq.namefix_done&want=eq."+encodeURIComponent(UID)+"&select=id&limit=1",{headers:hdr()})
       .then(function(r){return r.json();}).then(function(j){
         if(Array.isArray(j)&&j.length){ try{localStorage.setItem("ailab_namefixed_"+UID,"1");}catch(e){} var g=document.getElementById("nameGate"); if(g) g.remove(); }
-      }).catch(function(){});
+        else { if(document.readyState==="loading"){ document.addEventListener("DOMContentLoaded",run); } else { run(); } }
+      })
+      .catch(function(){ /* 通信失敗時は安全側＝カルテを使えるままにする（誤ロック防止） */ });
   })();
 }
 
