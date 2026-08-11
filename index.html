@@ -193,6 +193,14 @@ footer{text-align:center; font-size:11px; color:#9aa7b4; padding:34px 16px 10px;
 .curwk .wt b{color:var(--navy2); display:block; font-size:13px;}
 .curwk.now{background:linear-gradient(90deg,#fbeef1,transparent); margin:0 -18px; padding:9px 18px; border-radius:8px;}
 .curwk.now .wn{color:var(--pink2);}
+.curwk.acc{cursor:pointer; transition:background .15s;}
+.curwk.acc:active{background:#faf5f8;}
+.curwk .cv{flex:none; margin-left:auto; width:22px; height:22px; border-radius:50%; background:var(--pinkbg); color:var(--pink2); font-weight:800; font-size:15px; line-height:1; display:flex; align-items:center; justify-content:center; transition:transform .22s;}
+.curwk.acc.open .cv{transform:rotate(45deg);}
+.curdt{max-height:0; overflow:hidden; transition:max-height .28s ease; font-size:12.5px; line-height:1.9; color:#5a6472;}
+.curdt.open{max-height:500px;}
+.curdt .in{padding:0 4px 12px 74px;}
+.curwk.now+.curdt .in{padding-left:74px;}
 /* くみこからのメッセージ */
 #ntcOv{position:fixed; inset:0; background:rgba(29,49,73,.5); display:none; align-items:center; justify-content:center; z-index:80; padding:22px;}
 #ntcOv.on{display:flex;}
@@ -477,12 +485,12 @@ function loadAll(){
   var CUR_OPEN=new Date("2026-08-05T09:00:00+09:00").getTime();
   var opened=Date.now()>=CUR_OPEN;
   var WEEKS=[
-    ["第1週","8/8〜","AIに自分を覚えさせる＋タスクの仕分け","STEP0-1"],
-    ["第2週","8/15〜","頼み方5点セット（題材：メルカリ説明文）","STEP2"],
-    ["第3週","8/22〜","3つのAIの使い分け（題材：献立・家族の予定）","STEP3"],
-    ["第4週","8/29〜","時短レシピ12（暮らし編・仕事編）","STEP4"],
-    ["第5週","9/5〜","くり返し作業を自分のアプリに","STEP5"],
-    ["第6週","9/12〜","最終ミッション：アプリ2つで卒業","STEP6"]
+    ["第1週","8/8〜","AIに自分を覚えさせる＋タスクの仕分け","STEP0-1","まずは新しいカルテに、いまの状況や困りごとを話してAIに『あなた』を覚えてもらいます。そのうえで、毎日のやることを『自分でやること／AIに頼ること』に仕分けする練習をします☺️"],
+    ["第2週","8/15〜","頼み方5点セット（題材：メルカリ説明文）","STEP2","AIに上手に頼むための『5点セット』を、メルカリの商品説明文づくりを題材に身につけます。そのまま出品にも使える実践の週です。"],
+    ["第3週","8/22〜","3つのAIの使い分け（題材：献立・家族の予定）","STEP3","Claude・AIカルテなど、3つのAIそれぞれの得意分野を、献立づくりや家族の予定管理を題材に使い分けていきます。"],
+    ["第4週","8/29〜","時短レシピ12（暮らし編・仕事編）","STEP4","暮らし編・仕事編、それぞれで明日からそのまま使える『AI時短レシピ』を12個ストックします。"],
+    ["第5週","9/5〜","くり返し作業を自分のアプリに","STEP5","毎回くり返している作業を、あなた専用の小さなアプリにまとめて、まるごとラクにしていきます。"],
+    ["第6週","9/12〜","最終ミッション：アプリ2つで卒業","STEP6","学んだことを総動員して、自分のアプリを2つ作って卒業です。これまでの集大成となる最終ミッションの週🩷"]
   ];
   var starts=[new Date("2026-08-08"),new Date("2026-08-15"),new Date("2026-08-22"),new Date("2026-08-29"),new Date("2026-09-05"),new Date("2026-09-12"),new Date("2026-09-20")];
   var now=Date.now(), cur=-1;
@@ -490,7 +498,9 @@ function loadAll(){
   var html="";
   if(opened){
     WEEKS.forEach(function(w,i){
-      html+='<div class="curwk'+(i===cur?" now":"")+'"><span class="wn">'+w[0]+'<br>'+w[1]+'</span><span class="wt"><b>'+w[2]+(i===cur?"　←いまここ":"")+'</b>'+w[3]+'</span></div>';
+      var op=(i===cur);
+      html+='<div class="curwk acc'+(i===cur?" now":"")+(op?" open":"")+'" data-acc><span class="wn">'+w[0]+'<br>'+w[1]+'</span><span class="wt"><b>'+w[2]+(i===cur?"　←いまここ":"")+'</b>'+w[3]+'</span><span class="cv">＋</span></div>';
+      html+='<div class="curdt'+(op?" open":"")+'"><div class="in">'+w[4]+'</div></div>';
     });
     html+='<div class="curwk"><span class="wn">勉強会</span><span class="wt"><b>8/11（火）・8/16（日）・8/28（金）</b>すべてアーカイブつき</span></div>';
     var qs=(typeof UID!=="undefined"&&UID?("?u="+UID+"&name="+encodeURIComponent(typeof NAME!=="undefined"?(NAME||""):"")):"");
@@ -506,6 +516,17 @@ function loadAll(){
   }
   var box=document.getElementById("curbody"); if(box) box.innerHTML=html;
   var page=document.getElementById("curpage"); if(page) page.innerHTML=html;
+  /* 各週をタップで開閉（クリックで詳細が展開する） */
+  [box,page].forEach(function(cont){
+    if(!cont) return;
+    cont.querySelectorAll(".curwk.acc").forEach(function(h){
+      h.addEventListener("click",function(){
+        var dt=h.nextElementSibling;
+        var isOpen=h.classList.toggle("open");
+        if(dt&&dt.classList.contains("curdt")) dt.classList.toggle("open", isOpen);
+      });
+    });
+  });
   var lbl=document.getElementById("curnow");
   if(lbl){
     if(!opened){ lbl.textContent="8/5 あさ9時オープン"; }
