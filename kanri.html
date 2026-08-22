@@ -288,6 +288,11 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
       <div class="ilist" style="padding:20px 22px;" id="trend"><div class="empty2">カルテが届くと、ここに全体の傾向が表示されます。</div></div>
     </div>
 
+    <div class="inboxwrap" id="sec-survey">
+      <div class="ihead"><h2>📣 これからのラボ アンケート結果</h2><span class="cnt" id="svycnt"></span></div>
+      <div class="ilist" style="padding:16px 22px;" id="svyresult"><div class="empty2">回答が届くと、ここに集計が表示されます。</div></div>
+    </div>
+
     <div class="inboxwrap" id="sec-bugs">
       <div class="ihead"><h2>バグ報告</h2><span class="cnt" id="bugcnt"></span></div>
       <div class="ilist" style="padding:8px 22px 16px;" id="buglist"><div class="empty2">報告はありません。</div></div>
@@ -883,6 +888,45 @@ document.getElementById("bakbtn").onclick=function(){
 };
 document.querySelectorAll(".ihead .rl").forEach(function(b){ if(b.id!=="csvbtn") b.onclick=loadInbox; });
 loadInbox();
+})();
+
+/* ===== これからのラボ アンケート集計 ===== */
+(function(){
+  var Q1L=["自分専用アプリを本格的に","デザイン・見た目をきれいに","管理を自動化","時間・タスク・優先順位","家事・献立・子育て","頼み方・使い分け(判断力)","複数AI連携","仕事・副業(提案文/メール等)"];
+  var Q2L=["基本を覚え中","日常で少し使える","アプリ/仕組みを作り始め","かなり使いこなせる"];
+  var box=document.getElementById("svyresult"), cnt=document.getElementById("svycnt");
+  if(!box) return;
+  function esc(s){ var d=document.createElement("div"); d.textContent=s||""; return d.innerHTML; }
+  function render(rows){
+    var byU={};
+    rows.forEach(function(n){ var u=n.want||n.member_id; if(!byU[u]) byU[u]=n; });
+    var subs=Object.keys(byU).map(function(u){ try{return JSON.parse(byU[u].worry||"{}");}catch(e){return {};} });
+    var N=subs.length;
+    if(cnt) cnt.textContent=N+"名回答";
+    if(!N){ box.innerHTML='<div class="empty2">回答が届くと、ここに集計が表示されます。</div>'; return; }
+    var q1=Q1L.map(function(){return 0;}), q2=Q2L.map(function(){return 0;}), tsu=[], tsuk=[];
+    subs.forEach(function(s){
+      (s.q1||[]).forEach(function(i){ if(q1[i]!==undefined) q1[i]++; });
+      if(typeof s.q2==="number"&&q2[s.q2]!==undefined) q2[s.q2]++;
+      if(s.tsumazuki) tsu.push(s.tsumazuki);
+      if(s.tsukuritai) tsuk.push(s.tsukuritai);
+    });
+    var max1=Math.max.apply(null,q1.concat([1]));
+    var h='<div style="font-weight:800; color:#26405f; font-size:13.5px; margin-bottom:8px;">Q1｜次に教わりたいこと（複数回答・多い順）</div>';
+    q1.map(function(v,i){return [v,i];}).sort(function(a,b){return b[0]-a[0];}).forEach(function(x){
+      h+='<div style="display:flex; align-items:center; gap:8px; margin:5px 0; font-size:12.5px;"><span style="width:180px; color:#1d3149;">'+Q1L[x[1]]+'</span><span style="flex:1; background:#f1eaf7; border-radius:6px; height:15px; position:relative;"><span style="position:absolute; left:0; top:0; bottom:0; width:'+Math.round(x[0]/max1*100)+'%; background:linear-gradient(90deg,#8f9fd8,#bd7886); border-radius:6px;"></span></span><b style="width:32px; text-align:right; color:#bd7886;">'+x[0]+'</b></div>';
+    });
+    h+='<div style="font-weight:800; color:#26405f; font-size:13.5px; margin:16px 0 8px;">Q2｜レベル感</div>';
+    q2.forEach(function(v,i){ h+='<div style="font-size:12.5px; margin:3px 0;">'+Q2L[i]+'：<b style="color:#bd7886;">'+v+'名</b></div>'; });
+    h+='<div style="font-weight:800; color:#26405f; font-size:13.5px; margin:16px 0 8px;">Q3｜いま躓いていること（'+tsu.length+'件）</div>';
+    h+=tsu.length?tsu.map(function(t){return '<div style="font-size:12.5px; background:#fbeef1; border-radius:8px; padding:7px 10px; margin:5px 0; color:#4a4446;">'+esc(t)+'</div>';}).join(""):'<div class="empty2" style="font-size:12px;">まだありません。</div>';
+    h+='<div style="font-weight:800; color:#26405f; font-size:13.5px; margin:16px 0 8px;">Q4｜作りたいもの（'+tsuk.length+'件）</div>';
+    h+=tsuk.length?tsuk.map(function(t){return '<div style="font-size:12.5px; background:#eef4ff; border-radius:8px; padding:7px 10px; margin:5px 0; color:#4a4446;">'+esc(t)+'</div>';}).join(""):'<div class="empty2" style="font-size:12px;">まだありません。</div>';
+    box.innerHTML=h;
+  }
+  if(typeof DEMO!=="undefined"&&DEMO){ render([]); return; }
+  sb("ailab_notes?member_id=like.svy_*&order=created_at.desc&limit=1000").then(function(r){return r.json();})
+    .then(function(j){ if(Array.isArray(j)) render(j); }).catch(function(){});
 })();
 </script>
 </body>

@@ -4,92 +4,173 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>学びたいことアンケート｜Merone AI活用ラボ</title>
+<title>これからのラボ アンケート｜Merone AI活用ラボ</title>
 <style>
-:root{ --navy:#26405f; --navy2:#1d3149; --pink:#cf8f9c; --pink2:#bd7886; --pinkbg:#fbeef1; --text:#4a4446; }
+:root{ --bg:#f6f1f9; --blue:#8f9fd8; --navy:#26405f; --navy2:#1d3149; --pink:#cf8f9c; --pink2:#bd7886; --pinkbg:#fbeef1; --text:#4a4446; --muted:#8a97a5; --line:#e8e0ef; }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif; background:linear-gradient(168deg,#f1eaf7 0%,#faf7fb 46%,#fbeef1 100%); color:var(--text); line-height:1.95; -webkit-font-smoothing:antialiased; padding-bottom:60px;}
-.wrap{max-width:560px; margin:0 auto; padding:0 18px;}
-header{background:var(--navy2); color:#fff; padding:14px 18px; text-align:center;}
-header .lg{font-size:13px; font-weight:800; letter-spacing:.14em; color:#f3cdd7;}
-header .lg i{font-style:normal; color:#cfdcea; font-weight:700; margin-left:6px; letter-spacing:.08em;}
-.hero{text-align:center; padding:28px 0 8px;}
-.hero img{width:104px;}
-.hero h1{font-size:clamp(19px,5.4vw,24px); color:var(--navy2); margin-top:4px;}
-.hero p{font-size:12.5px; color:#8a97a5; margin-top:6px;}
-.card{background:#fff; border-radius:18px; padding:20px; margin-top:16px; box-shadow:0 6px 20px rgba(38,64,95,.07);}
-.q{font-size:14px; font-weight:800; color:var(--navy2); margin-bottom:8px;}
-.q small{color:var(--pink2); font-size:11px; margin-left:6px;}
-.opt{display:block; background:#faf7fb; border:1.5px solid #e8e0ef; border-radius:12px; padding:11px 14px; font-size:13.5px; margin-top:8px; cursor:pointer;}
-.opt input{margin-right:8px; accent-color:#bd7886;}
-input[type=text],textarea{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; padding:11px 13px; font-size:14px; font-family:inherit; margin-top:4px;}
-textarea{min-height:80px; resize:vertical; line-height:1.8;}
-.send{display:block; width:100%; border:none; background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff; border-radius:999px; padding:15px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:20px; box-shadow:0 8px 22px rgba(189,120,134,.35);}
-#done{display:none; text-align:center; padding:40px 0;}
-#done h2{color:var(--navy2); font-size:19px;}
-#done p{font-size:13.5px; margin-top:8px;}
-footer{text-align:center; font-size:11px; color:#9aa7b4; margin-top:36px;}
+html{scroll-behavior:smooth;}
+body{font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif; background:linear-gradient(168deg,#f1eaf7 0%,#faf7fb 46%,#fbeef1 100%); color:var(--text); line-height:1.9; -webkit-font-smoothing:antialiased; padding-bottom:40px;}
+.wrap{max-width:600px; margin:0 auto; padding:0 16px;}
+header{background:var(--navy2); color:#fff; padding:12px 18px; text-align:center; position:sticky; top:0; z-index:50;}
+header .lg{font-size:12.5px; font-weight:800; letter-spacing:.12em; color:#f3cdd7;}
+.hero{text-align:center; padding:24px 8px 6px;}
+.hero h1{font-size:21px; color:var(--navy2); letter-spacing:.04em;}
+.hero p{font-size:13px; color:var(--muted); margin-top:8px;}
+.card{background:#fff; border-radius:18px; box-shadow:0 8px 26px rgba(38,64,95,.08); padding:18px 18px 20px; margin-top:16px;}
+.q{font-size:15px; font-weight:800; color:var(--navy2); margin-bottom:4px;}
+.qsub{font-size:12px; color:var(--muted); margin-bottom:12px;}
+.opt{display:flex; align-items:flex-start; gap:10px; border:1.5px solid var(--line); border-radius:13px; padding:12px 14px; margin-top:9px; cursor:pointer; transition:.15s; background:#fdfbff;}
+.opt:hover{border-color:var(--pink);}
+.opt.on{border-color:var(--pink2); background:var(--pinkbg);}
+.opt input{margin-top:3px; accent-color:var(--pink2); width:17px; height:17px; flex:none;}
+.opt span{font-size:13.8px; color:var(--navy2); font-weight:600;}
+textarea{width:100%; border:1.5px solid var(--line); border-radius:13px; padding:12px 14px; font-size:14px; line-height:1.8; color:var(--navy2); background:#fdfbff; font-family:inherit; resize:vertical; min-height:80px; margin-top:6px;}
+textarea:focus{outline:none; border-color:var(--pink);}
+.sub{display:block; width:100%; border:none; background:linear-gradient(135deg,var(--pink),var(--pink2)); color:#fff; border-radius:999px; padding:15px; font-size:15.5px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:22px; box-shadow:0 8px 20px rgba(189,120,134,.32);}
+.sub:disabled{opacity:.5; cursor:default;}
+.note{font-size:11.5px; color:var(--muted); text-align:center; margin-top:12px; line-height:1.8;}
+.done{display:none; text-align:center; padding:38px 16px;}
+.done .em{font-size:44px;}
+.done h2{font-size:18px; color:var(--navy2); margin-top:10px;}
+.done p{font-size:13.5px; color:var(--muted); margin-top:10px; line-height:2;}
+.bugline{text-align:center; margin-top:22px;}
+.bugline a{font-size:11.5px; color:var(--muted); text-decoration:underline; cursor:pointer;}
+.bugbox{display:none; margin-top:12px;}
+.bugbox textarea{min-height:64px;}
+.bugbox button{border:1.5px solid #dcc3ce; background:#fff; color:var(--pink2); border-radius:999px; padding:8px 20px; font-size:12.5px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:8px;}
+.demoband{background:#fff4d6; color:#8a6a1a; text-align:center; font-size:11.5px; padding:6px; font-weight:700;}
 </style>
 </head>
 <body>
-<header><span class="lg">Merone<i>AI活用ラボ</i></span></header>
+<header><span class="lg">Merone AI活用ラボ <i>これからのアンケート</i></span></header>
+<div id="demoband" class="demoband" style="display:none;">プレビュー表示中（回答は保存されません）</div>
+
 <div class="wrap">
-  <div class="hero">
-    <img src="https://kumiko0814.github.io/kumiko-illust/lab-think.png" alt="" onerror="this.style.display='none'">
-    <h1>学びたいことアンケート</h1>
-    <p>1分で終わります。カリキュラムはみなさんの声で育ちます</p>
-  </div>
-
   <div id="form">
-    <div class="card">
-      <div class="q">お名前（LINE名）<small>必須</small></div>
-      <input type="text" id="nm" maxlength="30" placeholder="例）ゆき">
+    <div class="hero">
+      <h1>これからのラボを、一緒に決めさせてください☺️</h1>
+      <p>次にどんなことを深めたいか、教えてください。<br>2〜3分・あなたの声がそのまま次のカリキュラムになります。</p>
     </div>
+
     <div class="card">
-      <div class="q">いま一番学びたいことは？<small>必須・1つ</small></div>
-      <label class="opt"><input type="radio" name="q1" value="時間管理・タスク整理">時間管理・やることの整理</label>
-      <label class="opt"><input type="radio" name="q1" value="物販の効率化">物販の効率化（説明文・在庫・値付け）</label>
-      <label class="opt"><input type="radio" name="q1" value="家庭・献立・子ども">家庭のこと（献立・子どもの習慣・家族の予定）</label>
-      <label class="opt"><input type="radio" name="q1" value="お金の管理">お金の管理（経費・家計・支払い）</label>
-      <label class="opt"><input type="radio" name="q1" value="アプリづくり">自分のアプリを作れるようになりたい</label>
-      <label class="opt"><input type="radio" name="q1" value="発信・仕事効率">発信・お仕事の効率化</label>
+      <div class="q">Q1｜次にラボで深く教わりたいのは？</div>
+      <div class="qsub">あてはまるものを、いくつでも選んでください（複数OK）</div>
+      <div id="q1"></div>
     </div>
+
     <div class="card">
-      <div class="q">AIはどれくらい使っていますか？<small>必須</small></div>
-      <label class="opt"><input type="radio" name="q2" value="はじめて">ほぼはじめて</label>
-      <label class="opt"><input type="radio" name="q2" value="少し">少し触ったことがある</label>
-      <label class="opt"><input type="radio" name="q2" value="毎日">毎日使っている</label>
+      <div class="q">Q2｜いまの自分のレベル感は？</div>
+      <div class="qsub">近いものをひとつ選んでください</div>
+      <div id="q2"></div>
     </div>
+
     <div class="card">
-      <div class="q">このAIらぼで、何を学びたいですか？<small>具体的に書いてください</small></div>
-      <textarea id="free" maxlength="500" placeholder="例）メルカリの説明文づくりを任せられるようになりたい／子どもの歯みがき表アプリを自分で作りたい　など、具体的にどうぞ"></textarea>
+      <div class="q">Q3｜いま、何に躓いていますか？</div>
+      <div class="qsub">つまずいていること・むずかしいと感じることを、そのまま書いてください</div>
+      <textarea id="q4" placeholder="例）思ったデザインにならない／どこまでAIに任せていいか分からない／続けるのがむずかしい など"></textarea>
     </div>
-    <button class="send" id="send">送信する</button>
+
+    <div class="card">
+      <div class="q">Q4｜いま、いちばん作りたいもの・やりたいことは？<span style="font-weight:600; color:var(--muted); font-size:12px;">（任意）</span></div>
+      <div class="qsub">ざっくりで大丈夫です</div>
+      <textarea id="q3" placeholder="例）子どものお小遣いアプリ／献立の自動提案／家計の管理 など"></textarea>
+    </div>
+
+    <button class="sub" id="submit">この内容で送る</button>
+    <div class="note">送っていただいた声は、くみこが全部読んで、次のカリキュラムづくりに使わせていただきます。</div>
+
+    <div class="bugline">
+      <a id="bugOpen">うまく動かない時はこちら</a>
+      <div class="bugbox" id="bugbox">
+        <textarea id="bugT" placeholder="例）送信ボタンを押しても反応しませんでした（iPhone/Safari）"></textarea>
+        <button id="bugSend">不具合を報告する</button>
+      </div>
+    </div>
   </div>
 
-  <div id="done">
-    <h2>ありがとうございます</h2>
-    <p>いただいた声は、勉強会とカリキュラムにそのまま反映していきます。<br>お楽しみに☺️</p>
+  <div id="done" class="done">
+    <div class="em">🌸</div>
+    <h2>ありがとうございます！</h2>
+    <p>あなたの声、しっかり受け取りました。<br>次のカリキュラムに活かしますね。<br>楽しみにしていてください☺️</p>
   </div>
-
-  <footer>Merone AI活用ラボ</footer>
 </div>
+
+<script src="supabase_config.js"></script>
 <script>
-document.getElementById("send").onclick=function(){
-  var nm=(document.getElementById("nm").value||"").trim();
-  var q1=document.querySelector('input[name=q1]:checked');
-  var q2=document.querySelector('input[name=q2]:checked');
-  if(!nm){ document.getElementById("nm").focus(); return; }
-  if(!q1||!q2){ alert("選択の質問に答えてください"); return; }
-  var free=(document.getElementById("free").value||"").trim();
-  var btn=this; btn.disabled=true;
-  fetch("https://inrvprlyobghviklulcv.supabase.co/rest/v1/ailab_notes",{method:"POST",
-    headers:{apikey:"sb_publishable_ZrCNcsRHMci-l7Fns8QtIA_X22XZGJp",Authorization:"Bearer sb_publishable_ZrCNcsRHMci-l7Fns8QtIA_X22XZGJp","Content-Type":"application/json"},
-    body:JSON.stringify({member_id:"svy_"+Date.now().toString(36),member_name:nm,mood:"アンケート",
-      worry:"学びたい: "+q1.value+"／AI歴: "+q2.value, want:free})})
-    .then(function(){ document.getElementById("form").style.display="none"; document.getElementById("done").style.display="block"; window.scrollTo(0,0); })
-    .catch(function(){ btn.disabled=false; alert("送信できませんでした。通信環境をご確認ください。"); });
-};
+(function(){
+  var U=(typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.enabled)?SUPABASE_CONFIG.url+"/rest/v1/ailab_notes":"";
+  var K=(typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.anonKey)||"";
+  var P=new URLSearchParams(location.search);
+  var UID=(P.get("u")||"").replace(/[^a-zA-Z0-9_\-]/g,"").slice(0,40);
+  var NAME=(P.get("name")||"").slice(0,30);
+  var DEMO=P.get("demo")==="1"||P.get("preview")==="1"||!U||!UID;
+  if(DEMO) document.getElementById("demoband").style.display="block";
+
+  var Q1=[
+    "自分専用アプリを“もっと本格的”に作る",
+    "アプリのデザイン・見た目をきれいにする",
+    "在庫・売上・利益の“管理を自動化”する（AIで集計・可視化）",
+    "時間管理・タスク・優先順位づけ",
+    "家事・献立・子育ての時短",
+    "AIの頼み方・使い分けの基礎（判断力）",
+    "複数AIの連携（ChatGPT × Claude × Gemini）",
+    "仕事・副業での活用（提案文・メール・資料）"
+  ];
+  var Q2=[
+    "まだ基本の使い方を覚えている最中",
+    "日常や仕事で、少し使えている",
+    "自分でアプリや仕組みを作り始めている",
+    "かなり使いこなせている（人に教えられそう）"
+  ];
+  var picked=[]; var lvl=-1;
+  var q1box=document.getElementById("q1");
+  Q1.forEach(function(t,i){
+    var d=document.createElement("label"); d.className="opt";
+    d.innerHTML='<input type="checkbox" value="'+i+'"><span>'+t+'</span>';
+    var cb=d.querySelector("input");
+    cb.addEventListener("change",function(){
+      d.classList.toggle("on",cb.checked);
+      picked=Array.prototype.map.call(q1box.querySelectorAll("input:checked"),function(x){return +x.value;});
+    });
+    q1box.appendChild(d);
+  });
+  var q2box=document.getElementById("q2");
+  Q2.forEach(function(t,i){
+    var d=document.createElement("label"); d.className="opt";
+    d.innerHTML='<input type="radio" name="lvl" value="'+i+'"><span>'+t+'</span>';
+    var rb=d.querySelector("input");
+    rb.addEventListener("change",function(){
+      lvl=i;
+      Array.prototype.forEach.call(q2box.querySelectorAll(".opt"),function(o){o.classList.remove("on");});
+      d.classList.add("on");
+    });
+    q2box.appendChild(d);
+  });
+
+  document.getElementById("submit").addEventListener("click",function(){
+    var q3=(document.getElementById("q3").value||"").trim();
+    var q4=(document.getElementById("q4").value||"").trim();
+    if(!picked.length && lvl<0 && !q3 && !q4){ alert("ひとつでも選ぶか、書いてから送ってくださいね☺️"); return; }
+    var btn=this; btn.disabled=true; btn.textContent="送信中…";
+    var worry=JSON.stringify({q1:picked, q1t:picked.map(function(i){return Q1[i];}), q2:lvl, q2t:(lvl>=0?Q2[lvl]:""), tsumazuki:q4, tsukuritai:q3});
+    if(DEMO){ show(); return; }
+    fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+      body:JSON.stringify({member_id:"svy_"+UID, member_name:NAME||UID, mood:"アンケート", want:UID, worry:worry})})
+      .then(function(){ show(); }).catch(function(){ btn.disabled=false; btn.textContent="この内容で送る"; alert("うまく送れませんでした。もう一度お試しください。"); });
+  });
+  function show(){ document.getElementById("form").style.display="none"; document.getElementById("done").style.display="block"; window.scrollTo(0,0); }
+
+  /* 不具合報告 */
+  document.getElementById("bugOpen").addEventListener("click",function(){
+    var b=document.getElementById("bugbox"); b.style.display=b.style.display==="block"?"none":"block";
+  });
+  document.getElementById("bugSend").addEventListener("click",function(){
+    var t=(document.getElementById("bugT").value||"").trim(); if(!t){ return; }
+    if(!DEMO){ fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+      body:JSON.stringify({member_id:"bug_アンケート", member_name:NAME||UID||"匿名", mood:"バグ報告", worry:"【アンケート】"+t, want:UID})}).catch(function(){}); }
+    document.getElementById("bugbox").innerHTML='<p style="font-size:12.5px; color:var(--pink2); font-weight:800; text-align:center;">ありがとうございます。すぐ確認します。</p>';
+  });
+})();
 </script>
 </body>
 </html>
