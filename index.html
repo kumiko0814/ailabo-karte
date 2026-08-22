@@ -713,18 +713,27 @@ function loadAll(){
     if(started){ msg=msg.replace(/\{\{NOTYET\}\}[\s\S]*?\{\{\/NOTYET\}\}/g,""); }
     else { msg=msg.replace(/\{\{START\}\}[\s\S]*?\{\{\/START\}\}/g,""); }
     msg=msg.replace(/\{\{\/?(START|NOTYET)\}\}/g,"");
-    // {TEST}=第1回テスト個別リンク・{BOOK}=教科書個別リンク をこのページの持ち主のURLに差し替える
-    msg=msg.replace(/\{TEST\}/g, location.href.replace(/[^/]*$/,"")+"shiken.html"+qs)
-           .replace(/\{BOOK\}/g, location.href.replace(/[^/]*$/,"")+"textbook.html"+qs);
+    // {TEST}/{BOOK}/{SURVEY} をこのページの持ち主のURLに差し替える
+    var base=location.href.replace(/[^/]*$/,"");
+    msg=msg.replace(/\{TEST\}/g, base+"shiken.html"+qs)
+           .replace(/\{BOOK\}/g, base+"textbook.html"+qs)
+           .replace(/\{SURVEY\}/g, base+"survey.html"+qs);
+    // {{CTA:ラベル|リンク}} があれば、下の大ボタンをそのリンクに変える（無ければ従来の「よんだよ」）
+    var cta=null, cm=msg.match(/\{\{CTA:([^|]+)\|([^}]+)\}\}/);
+    if(cm){ cta={label:cm[1].trim(), url:cm[2].trim()}; msg=msg.replace(cm[0],""); }
+    msg=msg.replace(/\s+$/,"");
     msg.split(/(https?:\/\/[^\s]+)/g).forEach(function(part){
       if(/^https?:\/\//.test(part)){
         var a=document.createElement("a");
         a.href=part; a.target="_blank"; a.rel="noopener";
-        a.textContent=/shiken/.test(part)?"▶ テストを受ける":(/textbook/.test(part)?"▶ 教科書をひらく":part);
+        a.textContent=/shiken/.test(part)?"▶ テストを受ける":(/textbook/.test(part)?"▶ 教科書をひらく":(/survey/.test(part)?"▶ アンケートに答える":part));
         a.style.cssText="display:inline-block;color:#fff;background:linear-gradient(135deg,#c76e85,#cf8f9c);font-weight:800;border-radius:999px;padding:8px 18px;margin:4px 0;text-decoration:none;word-break:break-all;";
         box.appendChild(a);
       } else if(part){ box.appendChild(document.createTextNode(part)); }
     });
+    var cbtn=document.getElementById("ntcClose");
+    if(cta){ cbtn.textContent=cta.label; cbtn.onclick=function(){ location.href=cta.url; }; }
+    else { cbtn.textContent="よんだよ 🩷"; cbtn.onclick=function(){ document.getElementById("ntcOv").classList.remove("on"); }; }
     document.getElementById("ntcOv").classList.add("on");
   }
   function init(){
