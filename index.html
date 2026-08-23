@@ -750,7 +750,7 @@ function loadAll(){
         var a=document.createElement("a");
         a.href=part; a.target="_blank"; a.rel="noopener";
         a.textContent=/shiken/.test(part)?"▶ テストを受ける":(/textbook/.test(part)?"▶ 教科書をひらく":(/survey/.test(part)?"▶ アンケートに答える":part));
-        a.style.cssText="display:inline-block;color:#fff;background:linear-gradient(135deg,#c76e85,#cf8f9c);font-weight:800;border-radius:999px;padding:8px 18px;margin:4px 0;text-decoration:none;word-break:break-all;";
+        a.style.cssText="display:block;width:100%;box-sizing:border-box;text-align:center;color:#fff;background:linear-gradient(135deg,#c76e85,#cf8f9c);font-weight:800;border-radius:999px;padding:11px 18px;margin:10px 0;text-decoration:none;word-break:break-all;";
         box.appendChild(a);
       } else if(part){ box.appendChild(document.createTextNode(part)); }
     });
