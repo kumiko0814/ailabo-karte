@@ -293,6 +293,11 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
       <div class="ilist" style="padding:16px 22px;" id="svyresult"><div class="empty2">回答が届くと、ここに集計が表示されます。</div></div>
     </div>
 
+    <div class="inboxwrap" id="sec-react">
+      <div class="ihead"><h2>💬 みんなのリアクション</h2><span class="cnt" id="reactcnt"></span></div>
+      <div class="ilist" style="padding:12px 22px;" id="reactlist"><div class="empty2">スタンプが届くと、ここに表示されます。</div></div>
+    </div>
+
     <div class="inboxwrap" id="sec-bugs">
       <div class="ihead"><h2>バグ報告</h2><span class="cnt" id="bugcnt"></span></div>
       <div class="ilist" style="padding:8px 22px 16px;" id="buglist"><div class="empty2">報告はありません。</div></div>
@@ -645,7 +650,7 @@ function loadInbox(){
     var all=Array.isArray(res[0])?res[0]:[];
     var bugs=all.filter(function(n){ return (n.member_id||"").indexOf("bug_")===0; });
     var lines=all.filter(function(n){ return (n.member_id||"").indexOf("line_")===0; });
-    var rest=all.filter(function(n){ var m=(n.member_id||""); return m.indexOf("bug_")!==0 && m.indexOf("line_")!==0 && m.indexOf("svy_")!==0 && m.indexOf("notice_")!==0 && m.indexOf("read_")!==0 && m.indexOf("test")!==0 && m.indexOf("namefix")!==0 && m.indexOf("name_")!==0 && n.mood!=="テスト" && n.mood!=="改名"; });
+    var rest=all.filter(function(n){ var m=(n.member_id||""); return m.indexOf("bug_")!==0 && m.indexOf("line_")!==0 && m.indexOf("svy_")!==0 && m.indexOf("react_")!==0 && m.indexOf("notice_")!==0 && m.indexOf("read_")!==0 && m.indexOf("test")!==0 && m.indexOf("namefix")!==0 && m.indexOf("name_")!==0 && n.mood!=="テスト" && n.mood!=="改名" && n.mood!=="リアクション"; });
     var apps=rest.filter(function(n){ return n.mood==="申込"; });
     var regs=rest.filter(function(n){ return n.mood==="登録"; });
     var notes=rest.filter(function(n){ return n.mood!=="登録" && n.mood!=="申込"; });
@@ -927,6 +932,27 @@ loadInbox();
   if(typeof DEMO!=="undefined"&&DEMO){ render([]); return; }
   sb("ailab_notes?member_id=like.svy_*&order=created_at.desc&limit=1000").then(function(r){return r.json();})
     .then(function(j){ if(Array.isArray(j)) render(j); }).catch(function(){});
+})();
+
+/* ===== みんなのリアクション ===== */
+(function(){
+  var box=document.getElementById("reactlist"), cnt=document.getElementById("reactcnt");
+  if(!box) return;
+  function esc(s){ var d=document.createElement("div"); d.textContent=s||""; return d.innerHTML; }
+  function fmt(d){ var x=new Date(d); return (x.getMonth()+1)+"/"+x.getDate()+" "+("0"+x.getHours()).slice(-2)+":"+("0"+x.getMinutes()).slice(-2); }
+  if(typeof DEMO!=="undefined"&&DEMO){ cnt.textContent="0件"; return; }
+  sb("ailab_notes?mood=eq."+encodeURIComponent("リアクション")+"&order=created_at.desc&limit=300").then(function(r){return r.json();})
+    .then(function(j){
+      if(!Array.isArray(j)||!j.length){ cnt.textContent="0件"; return; }
+      cnt.textContent=j.length+"件";
+      var EMO={"ありがとうございます":"🙏","うれしい":"❤️","見ました":"👀","やってみます":"✅"};
+      var h="";
+      j.slice(0,80).forEach(function(n){
+        var w=String(n.worry||"").split("|"), label=w[1]||w[0]||"";
+        h+='<div style="display:flex; align-items:center; gap:8px; font-size:12.5px; padding:6px 0; border-bottom:1px solid #f3eef6;"><span style="font-size:16px;">'+(EMO[label]||"💬")+'</span><b style="color:#26405f;">'+esc(n.member_name||"")+'</b><span style="color:#8a97a5;">'+esc(label)+'</span><span style="margin-left:auto; color:#b0a3aa; font-size:11px;">'+fmt(n.created_at)+'</span></div>';
+      });
+      box.innerHTML=h;
+    }).catch(function(){});
 })();
 </script>
 </body>

@@ -516,14 +516,32 @@ function renderHist(list){
     h.appendChild(e);
   });
 }
+var REACTIONS=[["🙏","ありがとうございます"],["❤️","うれしい"],["👀","見ました"],["✅","やってみます"]];
 function renderAdv(list){
   var a=document.getElementById("advlist");
   if(!list.length){ a.innerHTML='<div class="empty"><img src="assets/char-think.png" alt="" style="width:88px; display:block; margin:0 auto 8px;" onerror="this.style.display=\'none\'">カルテを作成すると、ここにくみこからのアドバイスが届きます。</div>'; return; }
   a.innerHTML="";
+  var uid=(typeof UID!=="undefined"?UID:"");
   list.forEach(function(m){
     var e=document.createElement("div"); e.className="adv";
+    var rid=uid+"_"+m.id, chosen=null; try{ chosen=localStorage.getItem("ailab_react_"+rid); }catch(_){}
+    var bar='<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:11px; align-items:center;">';
+    REACTIONS.forEach(function(r){
+      var on=(chosen===r[1]);
+      bar+='<button type="button" class="rbtn" data-l="'+r[1]+'" style="border:1.5px solid '+(on?"#cf8f9c":"#ecd9e0")+'; background:'+(on?"#fbeef1":"#fff")+'; color:#a75d76; border-radius:999px; padding:6px 12px; font-size:12px; font-weight:800; cursor:pointer; font-family:inherit;">'+r[0]+" "+r[1]+'</button>';
+    });
+    bar+='<span class="rthx" style="display:'+(chosen?"inline":"none")+'; font-size:11.5px; color:#bd7886; font-weight:800; margin-left:2px;">送りました！</span></div>';
     e.innerHTML='<div class="head"><img class="av" src="assets/char-typing.png" alt="" onerror="this.style.display=\'none\'"><div><div class="nm">'+esc(m.author_name||"くみこ")+'</div><div class="dt">'+fmt(m.created_at)+'</div></div></div>'+
-      '<div class="body">'+esc(m.message)+'</div>';
+      '<div class="body">'+esc(m.message)+'</div>'+bar;
+    e.querySelectorAll(".rbtn").forEach(function(btn){
+      btn.addEventListener("click",function(){
+        try{ if(localStorage.getItem("ailab_react_"+rid)) return; localStorage.setItem("ailab_react_"+rid,btn.getAttribute("data-l")); }catch(_){}
+        e.querySelectorAll(".rbtn").forEach(function(b){ b.style.borderColor="#ecd9e0"; b.style.background="#fff"; });
+        btn.style.borderColor="#cf8f9c"; btn.style.background="#fbeef1";
+        var thx=e.querySelector(".rthx"); if(thx) thx.style.display="inline";
+        if(typeof DEMO==="undefined"||!DEMO){ try{ sb("ailab_notes",{method:"POST",body:JSON.stringify({member_id:"react_"+uid, member_name:((typeof NAME!=="undefined"&&NAME)?NAME:uid).slice(0,30), mood:"リアクション", worry:m.id+"|"+btn.getAttribute("data-l"), want:uid})}); }catch(_){} }
+      });
+    });
     a.appendChild(e);
   });
 }
