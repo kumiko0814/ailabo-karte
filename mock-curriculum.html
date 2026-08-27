@@ -49,6 +49,7 @@ function render(box,lv,tsu,tsuk){
     h+='<div style="font-size:11.5px; color:#3f7d63; font-weight:700; margin-top:8px;">✔ クリア条件：'+esc(s.c)+'</div></div>';
   });
   h+='<div style="font-size:12px; color:#6a7684; line-height:1.9; background:#f6f1f9; border-radius:11px; padding:11px 13px; margin-top:4px;"><b style="color:#1d3149;">どのレベルも、土台はこの3つ：</b><br>①頼み方5点セット（教科書CHAPTER9）②毎日5分・1つだけ ③「これはAI／これは自分／これは Re:che 講師」の線引き。<br>物販の値付け・売り方は Re:che 講師へ。AIでの管理・集計・アプリ化はラボで。</div>';
+  h+='<div style="border:2px solid #f3d9e0; background:#fff6f8; border-radius:14px; padding:14px 15px; margin-top:14px;"><div style="font-size:14px; font-weight:800; color:#bd7886;">📤 できたら、AIカルテに提出しよう</div><div style="font-size:12px; color:#6a7684; margin:6px 0 9px; line-height:1.85;">やりっぱなしにせず、“どう作ったか”を言葉にすると、ぐっと力になります。1〜2行でOK。くみこが読んでお返事しますね。</div><textarea placeholder="例）STEP2まで進みました。献立アプリを作って、材料を入れると3案出るように。ボタンの色でつまずいたけど“言葉で色を指定”で解決！" style="width:100%; box-sizing:border-box; border:1.5px solid #e6d5ec; border-radius:11px; padding:10px 12px; font-size:13.5px; font-family:inherit; line-height:1.7; min-height:84px; resize:vertical; background:#fff;"></textarea><button style="border:none; background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff; border-radius:999px; padding:11px 26px; font-size:13.5px; font-weight:800; font-family:inherit; margin-top:9px;">AIカルテに提出する</button></div>';
   box.innerHTML=h;
 }
 var lv=parseInt(new URLSearchParams(location.search).get("lv")||"0",10);
