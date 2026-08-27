@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<style>
+body{margin:0;background:#f6f1f9;font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif;color:#4a4446;line-height:1.7;}
+.wrap{max-width:600px;margin:0 auto;padding:16px 16px 40px;}
+.tag{display:inline-block;background:#1d3149;color:#fff;font-size:11.5px;font-weight:800;border-radius:999px;padding:5px 14px;margin-bottom:12px;letter-spacing:.04em;}
+.card{background:#fff;border-radius:18px;box-shadow:0 8px 26px rgba(38,64,95,.08);padding:16px 17px 18px;}
+.card h2{font-size:17px;color:#1d3149;margin:0 0 14px;}
+.empty{color:#8a97a5;font-size:13px;text-align:center;padding:20px;}
+</style></head><body><div class="wrap">
+<span class="tag" id="tag"></span>
+<div class="card"><h2>🎁 あなた専用カリキュラム</h2><div id="myCur"><div class="empty">…</div></div></div>
+</div>
+<script>
+var LVL=["①基本を覚え中","②少し使える","③作り始め","④使いこなせる"];
+var LCOL=["#6f8bd0","#4f9e86","#cf9a4e","#a86ac0"];
+var CUR={
+  0:{ns:"はじめての“自分の道具”を1つ作って、スマホで開く",steps:[
+    {t:"STEP1｜いつもの相談を“1機能アプリ”に",d:"あなたが普段AIに相談していること（献立・今日やること・買い物など）を、ボタン1つの小さなアプリにしてみましょう。すでに相談できているあなたなら、それを“形”にするだけです。",p:"私が普段よく相談する【例：献立／今日やること】を、ボタンを押すだけで使える小さなアプリにして。まずは1機能だけ、シンプルに。",c:"作る題材を1つ決めた"},
+    {t:"STEP2｜5点セットで“作って”と頼む",d:"教科書CHAPTER9の「頼み方5点セット」を“作る用”に使います。",p:"あなたはアプリ開発のプロです。目的＝【例：献立決めを楽にする】。材料＝【困りごと・欲しい機能】。形＝スマホで使える1画面。まず1案ください、あとで一緒に直します。",c:"Claudeに作らせた"},
+    {t:"STEP3｜スマホで開く（保存・ホーム設置）",d:"できたものを、自分のスマホで開けるようにします。分からなければ手順を聞けばOK。",p:"作ったアプリをスマホのホーム画面に置いて、毎日開けるようにしたい。手順を初心者向けに1つずつ教えて。",c:"スマホで開けた"},
+    {t:"STEP4｜“作れた！”を実感 → 次は②へ",d:"1つでも自分の道具を持てたら、あなたはもう“作る人”です。次のレベル②「実用アプリ1つ完成」に進めます。",p:"",c:"自分の道具を1つ持てた"}]},
+  1:{ns:"毎日使える“自分専用アプリ”を1つ、完成させる",steps:[
+    {t:"STEP1｜頼み方を“往復で育てる”",d:"一発完璧を狙わず、「まず1案 → ここを直して」の往復で近づけます。これで“思い通りにならない”が減ります。",p:"まず1案ください。そのあと、私が“ここをこう直して”と伝えるので、一緒に育ててください。",c:"往復で狙いに近づけた"},
+    {t:"STEP2｜作るものを1つに絞る",d:"あなたの“作りたいもの”から、まず1つだけ。欲張らないのがいちばんの近道です。",p:"",c:"題材を1つ決めた"},
+    {t:"STEP3｜最小アプリを動かす（機能1つ）",d:"いちばん欲しい機能を1つだけ、確実に動くものにします。",p:"【作りたいもの】アプリを作って。まずは“【いちばん欲しい1機能】”だけ、確実に動くものを。",c:"動くものができた"},
+    {t:"STEP4｜スマホ設置／保存が消えない設定",d:"“ホームに置けない・保存が消える”は、ここで一緒に解決します（みんながつまずく所です）。",p:"作ったアプリをスマホのホーム画面に置いて、入力した内容が消えないように保存できるようにして。手順を1つずつ、初心者向けに。",c:"スマホで毎日使える"},
+    {t:"STEP5｜見た目を“言葉の仕様”で整える",d:"画像を渡すのではなく、色・文字サイズ・配置を“言葉”で伝えるのがコツです。",p:"背景色は【例：やさしいベージュ】、文字は大きめ、ボタンは丸く、を“言葉の仕様”として反映して。",c:"使える見た目に"}]},
+  2:{ns:"作ったアプリを“実用”に仕上げ、2個目を“型”で作る",steps:[
+    {t:"STEP1｜1個目を“完成”まで",d:"保存・エラー対処・スマホ設置を、自力で越えます。",p:"今作っているアプリの“未完成な部分・動かない所”を洗い出して、1つずつ直す手順にして。",c:"実用レベルに到達"},
+    {t:"STEP2｜デザインを狙って再現",d:"見本を“言葉の仕様書”に変えてから渡すのがコツです（画像のままだと再現できません）。",p:"この見本を、コードで再現できる仕様書にして。色はHEX、余白・文字サイズ・配置も数字で。",c:"思い通りの見た目"},
+    {t:"STEP3｜データを活かす（記録→集計→気づき）",d:"ためたデータから“次の一手”を出させます。※物販の値付け・売り方は Re:che の講師へ。集計・可視化はここで。",p:"このデータ（表）から、傾向と“次にやるべき一手”を3つ出して。",c:"数字から1つ発見"},
+    {t:"STEP4｜2個目を“自分の型”で速く",d:"1個目の学びを再利用して、2個目を速く作ります。",p:"1個目で使った“作り方の型”を箇条書きにまとめて。次のアプリはその型で速く作りたい。",c:"完成2つ＋型を言語化"}]}
+};
+var SAMPLE={0:["自分の課題が見出せず、使い方も曖昧になりがちです","献立の自動提案アプリ"],1:["思ったデザインにならない・作ったアプリの保存が消える","写真とスクショで読み込む家計簿アプリ"],2:["デザイン指示が思い通りにならない","目標を一元管理して達成度が見えるアプリ"]};
+var esc=function(s){var d=document.createElement("div");d.textContent=s==null?"":s;return d.innerHTML;};
+function render(box,lv,tsu,tsuk){
+  var c=CUR[lv],col=LCOL[lv];
+  var h='<div style="background:'+col+'14; border-left:4px solid '+col+'; border-radius:12px; padding:12px 15px; margin-bottom:14px;">'+
+    '<div style="font-size:11.5px; color:'+col+'; font-weight:800; margin-bottom:4px;">あなたの今：'+LVL[lv]+'</div>'+
+    '<div style="font-size:15px; font-weight:800; color:#1d3149; line-height:1.7;">🎯 '+c.ns+'</div>';
+  if(tsuk) h+='<div style="font-size:12.5px; color:#4a4446; margin-top:8px; background:#fff; border-radius:9px; padding:8px 11px;"><b style="color:#bd7886;">あなたの作りたいもの：</b>'+esc(tsuk)+'　→ STEPの題材にしましょう</div>';
+  if(tsu) h+='<div style="font-size:12.5px; color:#4a4446; margin-top:6px; background:#fff; border-radius:9px; padding:8px 11px;"><b style="color:#bd7886;">まず越える躓き：</b>'+esc(tsu)+'</div>';
+  h+='</div>';
+  c.steps.forEach(function(s){
+    h+='<div style="border:1px solid #f1ecf5; border-radius:13px; padding:12px 14px; margin-bottom:11px;"><div style="font-size:13.5px; font-weight:800; color:#1d3149;">'+esc(s.t)+'</div><div style="font-size:12.5px; color:#5a6b7d; line-height:1.85; margin-top:5px;">'+esc(s.d)+'</div>';
+    if(s.p) h+='<div style="font-size:12.5px; color:#26405f; background:#faf7fb; border:1px dashed #e6d5ec; border-radius:9px; padding:9px 11px; margin-top:8px; white-space:pre-wrap; line-height:1.8;">'+esc(s.p)+'</div><button style="border:1.5px solid #dcc3ce; background:#fff; color:#a75d76; border-radius:999px; padding:5px 14px; font-size:11.5px; font-weight:800; font-family:inherit; margin-top:7px;">このお願い文をコピー</button>';
+    h+='<div style="font-size:11.5px; color:#3f7d63; font-weight:700; margin-top:8px;">✔ クリア条件：'+esc(s.c)+'</div></div>';
+  });
+  h+='<div style="font-size:12px; color:#6a7684; line-height:1.9; background:#f6f1f9; border-radius:11px; padding:11px 13px; margin-top:4px;"><b style="color:#1d3149;">どのレベルも、土台はこの3つ：</b><br>①頼み方5点セット（教科書CHAPTER9）②毎日5分・1つだけ ③「これはAI／これは自分／これは Re:che 講師」の線引き。<br>物販の値付け・売り方は Re:che 講師へ。AIでの管理・集計・アプリ化はラボで。</div>';
+  box.innerHTML=h;
+}
+var lv=parseInt(new URLSearchParams(location.search).get("lv")||"0",10);
+document.getElementById("tag").textContent="レベル "+LVL[lv]+" の生徒に表示される例";
+render(document.getElementById("myCur"),lv,SAMPLE[lv][0],SAMPLE[lv][1]);
+</script></body></html>
