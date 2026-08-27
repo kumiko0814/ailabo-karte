@@ -849,7 +849,10 @@ function loadAll(){
       } else if(part){ box.appendChild(document.createTextNode(part)); }
     });
     var cbtn=document.getElementById("ntcClose");
-    if(cta){ cbtn.textContent=cta.label; cbtn.onclick=function(){ location.href=cta.url; }; }
+    if(cta){ cbtn.textContent=cta.label; cbtn.onclick=function(){
+      if(/^view:/.test(cta.url)){ document.getElementById("ntcOv").classList.remove("on"); var v="v_"+cta.url.split(":")[1]; if(window.switchView) window.switchView(v); var el=document.getElementById(v==="v_cur"?"myCurCard":v); if(el&&el.scrollIntoView) el.scrollIntoView({behavior:"smooth",block:"start"}); }
+      else location.href=cta.url;
+    }; }
     else { cbtn.textContent="よんだよ 🩷"; cbtn.onclick=function(){ document.getElementById("ntcOv").classList.remove("on"); }; }
     document.getElementById("ntcOv").classList.add("on");
   }
