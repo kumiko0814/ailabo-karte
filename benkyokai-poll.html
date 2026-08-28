@@ -157,6 +157,14 @@ textarea{min-height:70px;resize:vertical;margin-top:2px;}
     if(!DEMO){ fetch(U,{method:"POST",headers:hdr(),body:JSON.stringify({member_id:"bug_勉強会アンケート",member_name:"勉強会アンケート",mood:"バグ報告",worry:"【勉強会アンケート】"+t,want:location.href.slice(0,160)})}).catch(function(){}); }
     document.getElementById("bugbox").innerHTML='<p style="font-size:12px;color:#bd7886;font-weight:800;text-align:center;">ありがとうございます。すぐ確認します。</p>';
   });
+
+  /* 結果だけを直接見るモード（?results=1） */
+  if(P.get("results")==="1"){
+    document.getElementById("form").style.display="none";
+    document.getElementById("done").style.display="block";
+    var thx=document.querySelector("#done .thx"); if(thx) thx.style.display="none";
+    loadResults();
+  }
 })();
 </script>
 </body>
