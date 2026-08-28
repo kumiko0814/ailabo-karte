@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>今夜のAI勉強会 テーマアンケート｜Merone AI活用ラボ</title>
+<style>
+:root{--bg:#eaf1fb;--bg2:#f3f0fa;--bg3:#fbeef1;--navy:#26405f;--navy2:#1d3149;--pink:#bd7886;--pink2:#cf8f9c;--blue:#8fa8e6;--purple:#a98fce;--ink:#2a3a4d;--muted:#8794a6;--line:#e6ddef;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif;background:linear-gradient(165deg,#eaf1fb 0%,#f3f0fa 52%,#fbeef1 100%);min-height:100vh;color:var(--ink);line-height:1.85;-webkit-font-smoothing:antialiased;padding-bottom:44px;}
+.wrap{max-width:520px;margin:0 auto;padding:0 16px;}
+.hero{text-align:center;padding:30px 10px 6px;}
+.hero .eb{font-size:11.5px;font-weight:800;letter-spacing:.18em;color:var(--purple);}
+.hero .moon{font-size:28px;margin-top:4px;}
+.hero h1{font-size:24px;font-weight:800;color:var(--navy2);letter-spacing:.02em;margin-top:2px;line-height:1.5;}
+.hero p{font-size:13px;color:var(--muted);margin-top:9px;}
+.card{background:#fff;border-radius:20px;box-shadow:0 10px 30px rgba(41,64,110,.09);padding:20px 18px;margin-top:16px;}
+.qh{font-size:15px;font-weight:800;color:var(--navy2);}
+.qs{font-size:12px;color:var(--muted);margin:3px 0 13px;}
+.opt{display:flex;align-items:center;gap:12px;border:1.8px solid var(--line);border-radius:15px;padding:13px 14px;margin-top:10px;cursor:pointer;transition:.15s;background:#fdfbff;}
+.opt:hover{border-color:var(--blue);}
+.opt.on{border-color:var(--pink);background:var(--bg3);}
+.opt .no{flex:none;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.opt.on .no{background:linear-gradient(135deg,var(--pink2),var(--pink));}
+.opt .tx{font-size:14px;font-weight:800;color:var(--navy2);line-height:1.4;}
+.opt .tx small{display:block;font-size:11px;color:var(--muted);font-weight:600;margin-top:1px;}
+.opt input{display:none;}
+input[type=text],textarea{width:100%;border:1.5px solid var(--line);border-radius:13px;padding:11px 13px;font-size:14px;font-family:inherit;color:var(--navy2);background:#fdfbff;line-height:1.7;}
+input[type=text]:focus,textarea:focus{outline:none;border-color:var(--pink);}
+textarea{min-height:70px;resize:vertical;margin-top:2px;}
+.lab{font-size:12.5px;font-weight:800;color:var(--navy);margin:14px 0 5px;}
+.sub{display:block;width:100%;border:none;background:linear-gradient(135deg,var(--pink2),var(--pink));color:#fff;border-radius:999px;padding:15px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:20px;box-shadow:0 8px 22px rgba(189,120,134,.34);}
+.sub:disabled{opacity:.55;}
+.note{text-align:center;font-size:11px;color:var(--muted);margin-top:12px;line-height:1.8;}
+.done{display:none;}
+.done .thx{text-align:center;padding:22px 10px 6px;}
+.done .thx .em{font-size:40px;}
+.done .thx h2{font-size:19px;color:var(--navy2);margin-top:8px;}
+.done .thx p{font-size:13px;color:var(--muted);margin-top:6px;}
+.res .rrow{display:flex;align-items:center;gap:9px;margin:9px 0;font-size:13px;}
+.res .rl{width:150px;flex:none;color:var(--navy2);font-weight:700;font-size:12.5px;line-height:1.35;}
+.res .rt{flex:1;background:#eef1f8;border-radius:7px;height:20px;position:relative;overflow:hidden;}
+.res .rf{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--blue),var(--pink));border-radius:7px;transition:width .5s;}
+.res .rv{width:34px;text-align:right;font-weight:800;color:var(--pink);font-variant-numeric:tabular-nums;}
+.res h3{font-size:13px;color:var(--navy2);margin:16px 0 8px;font-weight:800;}
+.voice{font-size:12.5px;background:var(--bg3);border-radius:9px;padding:8px 11px;margin:6px 0;color:var(--ink);}
+.reload{display:block;margin:14px auto 0;border:1.5px solid #dcc3ce;background:#fff;color:var(--pink);border-radius:999px;padding:8px 20px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;}
+.demoband{background:#fff4d6;color:#8a6a1a;text-align:center;font-size:11.5px;padding:6px;font-weight:700;}
+.buglink{text-align:center;margin-top:18px;}
+.buglink a{font-size:11px;color:var(--muted);text-decoration:underline;cursor:pointer;}
+</style>
+</head>
+<body>
+<div id="demoband" class="demoband" style="display:none;">プレビュー表示中（回答は保存されません）</div>
+<div class="wrap">
+
+  <div id="form">
+    <div class="hero">
+      <div class="eb">MERONE AI活用ラボ</div>
+      <div class="moon">🌙</div>
+      <h1>今夜の勉強会、<br>テーマをみんなで決めよう！</h1>
+      <p>気になるものを選んで送るだけ（30秒）。送ったあと、みんなの結果が見られます☺️</p>
+    </div>
+
+    <div class="card">
+      <div class="qh">今夜いちばん知りたいのは？</div>
+      <div class="qs">いくつ選んでもOK</div>
+      <div id="opts"></div>
+
+      <div class="lab">「その他これが知りたい！」があれば教えてね（任意）</div>
+      <textarea id="other" placeholder="例）作ったアプリをスマホに置く方法／画像がうまく作れない など"></textarea>
+
+      <div class="lab">お名前・ニックネーム（任意）</div>
+      <input type="text" id="nm" maxlength="20" placeholder="例）ゆか">
+
+      <button class="sub" id="send">この内容で送る 🩷</button>
+      <div class="note">結果はリアルタイムで集計されます。みんなの声で今夜の内容を決めます。</div>
+      <div class="buglink"><a id="bugOpen">うまく動かない時はこちら</a>
+        <div id="bugbox" style="display:none;margin-top:10px;">
+          <textarea id="bugT" placeholder="例）送信ボタンが反応しませんでした（iPhone/Safari）"></textarea>
+          <button class="reload" id="bugSend">不具合を報告する</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="done" class="done">
+    <div class="thx"><div class="em">🌸</div><h2>ありがとうございます！</h2><p>あなたの声、受け取りました。<br>下が今の途中結果です👇</p></div>
+    <div class="card res"><div class="qh">みんなの今の結果</div><div id="results" style="margin-top:10px;"></div>
+      <button class="reload" id="reload">結果を更新する</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="supabase_config.js"></script>
+<script>
+(function(){
+  var U=(typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.enabled)?SUPABASE_CONFIG.url+"/rest/v1/ailab_notes":"";
+  var K=(typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.anonKey)||"";
+  var P=new URLSearchParams(location.search);
+  var DEMO=P.get("demo")==="1"||P.get("preview")==="1"||!U;
+  if(DEMO) document.getElementById("demoband").style.display="block";
+  function hdr(extra){var h={apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"};if(extra)for(var k in extra)h[k]=extra[k];return h;}
+
+  var OPTS=[
+    ["自分専用アプリの作り方","実演で、いっしょに1つ作ってみる"],
+    ["AIへの頼み方・プロンプトのコツ","“思い通りにならない”を卒業する"],
+    ["3つのAIの使い分け","ChatGPT・Claude・Gemini"],
+    ["暮らしの自動化","家計簿・献立・タスク管理など"]
+  ];
+  var picked=[];
+  var ob=document.getElementById("opts");
+  OPTS.forEach(function(o,i){
+    var d=document.createElement("label"); d.className="opt";
+    d.innerHTML='<span class="no">'+(i+1)+'</span><span class="tx">'+o[0]+'<small>'+o[1]+'</small></span><input type="checkbox" value="'+i+'">';
+    var cb=d.querySelector("input");
+    cb.addEventListener("change",function(){ d.classList.toggle("on",cb.checked); picked=Array.prototype.map.call(ob.querySelectorAll("input:checked"),function(x){return +x.value;}); });
+    ob.appendChild(d);
+  });
+
+  function bar(label,v,max){ return '<div class="rrow"><span class="rl">'+label+'</span><span class="rt"><span class="rf" style="width:'+(max?Math.round(v/max*100):0)+'%"></span></span><span class="rv">'+v+'</span></div>'; }
+  function esc(s){var d=document.createElement("div");d.textContent=s||"";return d.innerHTML;}
+  function loadResults(){
+    var box=document.getElementById("results"); if(!box) return;
+    if(DEMO){ box.innerHTML=bar(OPTS[0][0],8,8)+bar(OPTS[1][0],5,8)+bar(OPTS[2][0],6,8)+bar(OPTS[3][0],3,8); return; }
+    fetch(U+"?member_id=eq.poll_bk&select=worry&order=id.desc&limit=2000",{headers:hdr()}).then(function(r){return r.json();}).then(function(j){
+      if(!Array.isArray(j)) return;
+      var cnt=[0,0,0,0], voices=[];
+      j.forEach(function(n){ var d={}; try{d=JSON.parse(n.worry||"{}");}catch(e){} (d.opts||[]).forEach(function(i){ if(cnt[i]!==undefined) cnt[i]++; }); if(d.other) voices.push(d.other); });
+      var max=Math.max.apply(null,cnt.concat([1]));
+      var h=""; OPTS.forEach(function(o,i){ h+=bar((i+1)+"．"+o[0],cnt[i],max); });
+      h+='<div style="font-size:11.5px;color:#8794a6;margin-top:8px;">回答数：'+j.length+'名</div>';
+      if(voices.length){ h+='<h3>その他の声（'+voices.length+'）</h3>'+voices.slice(0,30).map(function(v){return '<div class="voice">'+esc(v)+'</div>';}).join(""); }
+      box.innerHTML=h;
+    }).catch(function(){});
+  }
+
+  document.getElementById("send").addEventListener("click",function(){
+    var other=(document.getElementById("other").value||"").trim();
+    var nm=(document.getElementById("nm").value||"").trim();
+    if(!picked.length && !other){ alert("ひとつでも選ぶか、その他を書いてから送ってね☺️"); return; }
+    var btn=this; btn.disabled=true; btn.textContent="送信中…";
+    var worry=JSON.stringify({opts:picked, opts_t:picked.map(function(i){return OPTS[i][0];}), other:other, name:nm});
+    function ok(){ document.getElementById("form").style.display="none"; document.getElementById("done").style.display="block"; window.scrollTo(0,0); loadResults(); }
+    if(DEMO){ ok(); return; }
+    fetch(U,{method:"POST",headers:hdr(),body:JSON.stringify({member_id:"poll_bk",member_name:(nm||"匿名").slice(0,20),mood:"勉強会アンケート",worry:worry,want:"benkyokai_0828"})})
+      .then(ok).catch(function(){ btn.disabled=false; btn.textContent="この内容で送る 🩷"; alert("うまく送れませんでした。もう一度お試しください。"); });
+  });
+  document.getElementById("reload").addEventListener("click",loadResults);
+
+  document.getElementById("bugOpen").addEventListener("click",function(){var b=document.getElementById("bugbox");b.style.display=b.style.display==="block"?"none":"block";});
+  document.getElementById("bugSend").addEventListener("click",function(){
+    var t=(document.getElementById("bugT").value||"").trim(); if(!t) return;
+    if(!DEMO){ fetch(U,{method:"POST",headers:hdr(),body:JSON.stringify({member_id:"bug_勉強会アンケート",member_name:"勉強会アンケート",mood:"バグ報告",worry:"【勉強会アンケート】"+t,want:location.href.slice(0,160)})}).catch(function(){}); }
+    document.getElementById("bugbox").innerHTML='<p style="font-size:12px;color:#bd7886;font-weight:800;text-align:center;">ありがとうございます。すぐ確認します。</p>';
+  });
+})();
+</script>
+</body>
+</html>
