@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex">
+<style>
+body{margin:0;background:#f6f1f9;font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif;color:#4a4446;line-height:1.7;}
+.wrap{max-width:600px;margin:0 auto;padding:16px 16px 40px;}
+.tag{display:inline-block;background:#1d3149;color:#fff;font-size:11.5px;font-weight:800;border-radius:999px;padding:5px 14px;margin-bottom:12px;letter-spacing:.04em;}
+.card{background:#fff;border-radius:18px;box-shadow:0 8px 26px rgba(38,64,95,.08);padding:16px 17px 18px;}
+.card h2{font-size:17px;color:#1d3149;margin:0 0 14px;}
+</style></head><body><div class="wrap">
+<span class="tag">カルテ「カリキュラム」タブ → 一番上</span>
+<div class="card"><h2>🎥 定例勉強会アーカイブ</h2><div id="archiveList"></div></div>
+</div>
+<script>
+var ARCHIVES=[
+  {n:"第2回", date:"8/28（金）", title:"定例勉強会", note:"今回のテーマは、みんなのアンケート投票で決めた回です。",
+   url:"https://us02web.zoom.us/rec/share/DxewRedU9YA8vwepBc5QN68wa2Hck5RHjGTeGuaUS8UQQKQOptJuIKVmbfLvsoOm.ygcxcf2iXc9YKhSE?startTime=1787918489000", pass:"7R*?J0s6"},
+  {n:"第1回", date:"8/11（火）", title:"定例勉強会", note:"AI活用の基礎と、みんなの質問へのお返事回です。",
+   url:"https://us02web.zoom.us/rec/share/nvlu5lD_fnRmywGglpvhQm7tHdbl5ojrTMMIQ-TToOZtW2yMTEfAx3myo0cO7V2O.bBpdM51IdzVPN9jg", pass:"p2=ui3Za"}
+];
+var h="";
+ARCHIVES.forEach(function(a){
+  h+='<div style="border:1.5px solid #f0e3e8; border-radius:14px; padding:14px 16px; margin-bottom:12px; background:#fffafc;">'
+    +'<div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">'
+      +'<span style="background:#bd7886; color:#fff; font-size:11px; font-weight:800; border-radius:999px; padding:3px 10px;">'+a.n+'</span>'
+      +'<span style="font-size:12.5px; color:#8a97a5; font-weight:700;">'+a.date+'</span>'
+    +'</div>'
+    +'<div style="font-size:15px; font-weight:800; color:#1d3149; margin-bottom:8px;">'+a.title+'</div>'
+    +(a.note?'<div style="font-size:12.5px; color:#6a7684; margin-bottom:10px; line-height:1.8;">'+a.note+'</div>':'')
+    +'<a href="'+a.url+'" target="_blank" rel="noopener" style="display:inline-block; background:linear-gradient(135deg,#e6a3b3,#bd7886); color:#fff; font-size:13.5px; font-weight:800; text-decoration:none; border-radius:999px; padding:10px 22px;">▶ 録画を見る</a>'
+    +'<div style="margin-top:10px; font-size:13px; color:#1d3149;">パスコード：<code style="background:#f3e8ee; border-radius:6px; padding:2px 8px; font-weight:800;">'+a.pass+'</code>'
+      +' <button style="border:1.5px solid #dcc3ce; background:#fff; color:#a75d76; border-radius:999px; padding:4px 12px; font-size:11.5px; font-weight:800; font-family:inherit; margin-left:4px;">コピー</button></div>'
+  +'</div>';
+});
+document.getElementById("archiveList").innerHTML=h;
+</script></body></html>
