@@ -256,7 +256,7 @@ input[type=text]{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; pad
     <div class="inboxwrap" id="sec-inbox">
       <div class="ihead">
         <h2>カルテ受信ボックス</h2><span class="cnt">全4件</span>
-        <button class="rl" id="doneToggle" style="margin-left:auto;">回答済みを表示</button><button class="rl" id="csvbtn" style="margin-left:8px;">CSVでダウンロード</button><button class="rl" id="bakbtn" style="margin-left:8px;">全データを保存</button><button class="rl" style="margin-left:8px;">⟳ 最新に更新</button>
+        <button class="rl" id="autoToggle" style="margin-left:auto; border-color:#3f7d63; color:#3f7d63;" title="AIがくみこの文体で自動返信します。OFFにすると下書きだけ入ります">🤖 自動返信：確認中…</button><button class="rl" id="doneToggle" style="margin-left:8px;">回答済みを表示</button><button class="rl" id="csvbtn" style="margin-left:8px;">CSVでダウンロード</button><button class="rl" id="bakbtn" style="margin-left:8px;">全データを保存</button><button class="rl" style="margin-left:8px;">⟳ 最新に更新</button>
       </div>
       <div class="ilist" id="ilist"><div class="empty2">読み込み中…</div></div>
     </div>
@@ -641,6 +641,27 @@ function renderInbox(notes,advMap,drafts){
     box.appendChild(e);
   });
 }
+/* 自動返信スイッチ（member_id=notice_cfg_autoreply の最新行 worry=on/off。notice_ は集計から除外済み） */
+(function(){
+  var btn=document.getElementById("autoToggle"); if(!btn) return;
+  var state="on";
+  function paint(){
+    btn.textContent="🤖 自動返信："+(state==="on"?"ON":"OFF（下書きのみ）");
+    btn.style.borderColor=state==="on"?"#3f7d63":"#b2434f"; btn.style.color=state==="on"?"#3f7d63":"#b2434f";
+  }
+  if(DEMO){ paint(); btn.onclick=function(){ state=state==="on"?"off":"on"; paint(); }; return; }
+  sb("ailab_notes?member_id=eq.notice_cfg_autoreply&order=created_at.desc&limit=1").then(function(r){return r.json();})
+    .then(function(j){ if(Array.isArray(j)&&j.length&&String(j[0].worry||"").trim().toLowerCase()==="off") state="off"; paint(); })
+    .catch(function(){ paint(); });
+  btn.onclick=function(){
+    var next=state==="on"?"off":"on";
+    if(!confirm(next==="off"?"自動返信を止めます。以後は下書きだけ入り、あなたが承認して送る形に戻ります。よろしいですか？":"自動返信を再開します。未返信カルテにAIがくみこの文体で返信し、そのまま届きます。よろしいですか？")) return;
+    btn.disabled=true;
+    sb("ailab_notes",{method:"POST",body:JSON.stringify({member_id:"notice_cfg_autoreply",member_name:"設定",mood:"設定",worry:next,want:"kanri.html"})})
+      .then(function(){ state=next; paint(); btn.disabled=false; })
+      .catch(function(){ alert("切り替えに失敗しました。もう一度お試しください。"); btn.disabled=false; });
+  };
+})();
 function loadInbox(){
   if(DEMO){ lastNotesA=demoNotes.slice(); renderMembers(demoApps,demoRegs,demoNotes,demoAdv); renderInbox(demoNotes,demoAdv,demoDrafts); renderTrend(demoNotes,demoAdv); renderBugs([{id:0,member_name:"マイページ｜demo",mood:"バグ報告",worry:"（デモ）送信ボタンの反応が遅い気がします",want:"https://…／iPhone Safari",created_at:new Date().toISOString()}]); return; }
   Promise.all([
