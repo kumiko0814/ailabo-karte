@@ -678,7 +678,7 @@ function loadInbox(){
     var advMap={}, drafts={};
     (Array.isArray(res[1])?res[1]:[]).forEach(function(a){
       var an=String(a.author_name||"");
-      if(an==="draft"){ if(!drafts[a.target_id]) drafts[a.target_id]=a; return; }
+      if(an==="draft"||an==="draft_hold"){ if(!drafts[a.target_id]) drafts[a.target_id]=a; return; }  /* draft_hold＝自動返信が保留した下書き（本人が読んで承認） */
       if(an.indexOf("draft")===0) return;
       (advMap[a.target_id]=advMap[a.target_id]||[]).push(a);
     });
