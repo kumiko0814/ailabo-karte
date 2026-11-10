@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>【モック】CHAPTER 10 最新AI図鑑｜AIらぼの教科書｜Merone AI活用ラボ</title>
+<style>
+:root{ --bg:#f6f1f9; --blue:#8f9fd8; --navy:#26405f; --navy2:#1d3149; --pink:#cf8f9c; --pink2:#bd7886; --pinkbg:#fbeef1; --text:#4a4446; --muted:#8a97a5; --line:#e8e0ef; }
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif; background:linear-gradient(168deg,#f1eaf7 0%,#faf7fb 46%,#fbeef1 100%); color:var(--text); line-height:2.05; -webkit-font-smoothing:antialiased; padding-bottom:90px;}
+.wrap{max-width:640px; margin:0 auto; padding:0 18px;}
+header{background:var(--navy2); color:#fff; padding:13px 18px; text-align:center; position:sticky; top:0; z-index:50;}
+header .lg{font-size:13px; font-weight:800; letter-spacing:.14em; color:#f3cdd7;}
+header .lg i{font-style:normal; color:#cfdcea; font-weight:700; margin-left:6px; letter-spacing:.08em;}
+
+.hero{text-align:center; padding:34px 0 6px;}
+.hero img{width:110px;}
+.hero .tt{font-size:clamp(22px,6.4vw,30px); font-weight:800; color:var(--navy2); line-height:1.6; margin-top:6px;}
+.hero .st{font-size:13px; color:var(--pink2); font-weight:700; margin-top:8px; letter-spacing:.04em;}
+.hero .lead{font-size:13.5px; color:#6b7684; margin-top:14px; text-align:left; background:#fff; border-radius:16px; padding:16px 18px; box-shadow:0 6px 20px rgba(38,64,95,.07);}
+
+.toc{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:18px;}
+.toc a{font-size:12px; font-weight:800; color:var(--navy); background:#fff; border:1.5px solid var(--line); border-radius:999px; padding:7px 13px; text-decoration:none;}
+.toc a:active{background:var(--pinkbg);}
+
+.chap{margin-top:34px; scroll-margin-top:70px;}
+.chapno{font-size:11.5px; font-weight:800; color:var(--blue); letter-spacing:.18em;}
+.chap h2{font-size:clamp(18px,5.2vw,22px); color:var(--navy2); line-height:1.7; margin-top:2px; padding-bottom:8px; border-bottom:2.5px solid #efe3ee;}
+.card{background:#fff; border-radius:18px; padding:20px; margin-top:16px; box-shadow:0 6px 20px rgba(38,64,95,.07);}
+.card h3{font-size:15px; color:var(--navy2); margin-bottom:8px;}
+.card h3 .em{margin-right:5px;}
+.card p{font-size:13.8px; margin-top:8px;}
+.card p b{color:var(--navy2);}
+.card ul,.card ol{font-size:13.8px; padding-left:20px; margin-top:8px;}
+.card li{margin-top:6px;}
+.card li b{color:var(--navy2);}
+.small{font-size:12px; color:var(--muted); margin-top:10px; line-height:1.9;}
+
+.pinkbox{background:var(--pinkbg); border-radius:14px; padding:14px 16px; margin-top:12px; font-size:13.5px;}
+.pinkbox b{color:var(--pink2);}
+.bluebox{background:#eef2fb; border-radius:14px; padding:14px 16px; margin-top:12px; font-size:13.5px;}
+.bluebox b{color:var(--navy);}
+.warn{background:#fdf6ee; border-left:4px solid #e0b184; border-radius:0 12px 12px 0; padding:12px 15px; margin-top:12px; font-size:13px;}
+
+/* 統計バー */
+.bar{margin-top:12px;}
+.bar .bl{display:flex; justify-content:space-between; font-size:13px; font-weight:800; color:var(--navy2);}
+.bar .bl small{color:var(--pink2); font-weight:800;}
+.bar .bt{height:12px; background:#f1ecf5; border-radius:999px; margin-top:4px; overflow:hidden;}
+.bar .bf{height:100%; border-radius:999px; background:linear-gradient(90deg,var(--blue),var(--pink));}
+
+/* 比較表 */
+.tblwrap{overflow-x:auto; margin-top:12px; -webkit-overflow-scrolling:touch;}
+table{border-collapse:collapse; width:100%; min-width:480px; font-size:12.8px; background:#fff;}
+th,td{border:1px solid var(--line); padding:9px 10px; text-align:left; vertical-align:top; line-height:1.8;}
+th{background:#f6f1f9; color:var(--navy2); font-size:12.5px; white-space:nowrap;}
+td b{color:var(--navy2);}
+.hd th:first-child{width:88px;}
+
+/* 図解 */
+.fig{background:#fff; border:1.5px dashed #d9cfe4; border-radius:16px; padding:18px 14px; margin-top:14px; text-align:center;}
+.fig .cap{font-size:11.5px; color:var(--muted); font-weight:800; letter-spacing:.06em; margin-bottom:10px;}
+.fbox{display:inline-block; background:#f6f1f9; border:1.5px solid #d9cfe4; border-radius:12px; padding:9px 13px; font-size:12.8px; font-weight:800; color:var(--navy2); margin:4px; line-height:1.7;}
+.fbox small{display:block; font-size:10.5px; color:var(--muted); font-weight:700;}
+.fbox.pk{background:var(--pinkbg); border-color:#eccfd6;}
+.farrow{display:block; font-size:15px; color:var(--pink2); margin:2px 0; font-weight:800;}
+.farrow.h{display:inline-block; margin:0 2px;}
+.fnote{font-size:11.5px; color:var(--muted); margin-top:8px; line-height:1.8;}
+
+/* プロンプト */
+.prompt{background:#2b3a4e; color:#eef3f8; border-radius:14px; padding:14px 15px; margin-top:12px; font-size:13px; line-height:1.95; position:relative; white-space:pre-wrap; word-break:break-word;}
+.prompt .ph{color:#f3cdd7; font-weight:800;}
+.copy{display:block; width:100%; margin-top:8px; border:none; background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff; border-radius:999px; padding:11px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit;}
+
+/* 事例集 */
+.case{background:#fff; border-radius:18px; margin-top:14px; box-shadow:0 6px 20px rgba(38,64,95,.07); overflow:hidden;}
+.case summary{list-style:none; cursor:pointer; padding:15px 18px; font-size:14px; font-weight:800; color:var(--navy2); display:flex; align-items:center; gap:8px;}
+.case summary::-webkit-details-marker{display:none;}
+.case summary .pct{margin-left:auto; font-size:11px; color:#fff; background:linear-gradient(135deg,var(--blue),var(--pink)); border-radius:999px; padding:3px 10px; white-space:nowrap; font-weight:800;}
+.case .body{padding:0 18px 18px;}
+.voice{background:#faf7fb; border-radius:12px; padding:11px 14px; font-size:12.8px; margin-top:8px; color:#6b7684;}
+.voice::before{content:"💬 "; }
+.steps{margin-top:10px; font-size:13.5px;}
+.steps b{color:var(--pink2);}
+
+.chbtn{display:block; margin:16px auto 0; border:1.5px solid #e8c7d0; background:#fff; color:#bd7886; border-radius:999px; padding:11px 28px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit;}
+.chbtn.done{background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff; border-color:transparent;}
+footer{text-align:center; font-size:11px; color:#9aa7b4; margin-top:44px; line-height:2;}
+footer a{color:var(--pink2);}
+
+/* バグ報告 */
+#bugL{position:fixed; left:12px; bottom:16px; z-index:59; background:rgba(255,255,255,.92); border:1px solid #dfe7ee; color:#8a97a5; font-size:10.5px; font-weight:800; border-radius:999px; padding:5px 12px; cursor:pointer; letter-spacing:.04em; font-family:inherit;}
+#bugM{position:fixed; inset:0; background:rgba(29,49,73,.55); display:none; align-items:center; justify-content:center; z-index:70; padding:24px;}
+#bugM.on{display:flex;}
+#bugM .bx{background:#fff; border-radius:20px; padding:22px 20px; max-width:360px; width:100%;}
+#bugM h3{font-size:14.5px; color:#1d3149; margin-bottom:8px;}
+#bugM textarea{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; padding:11px 13px; font-size:14px; line-height:1.8; color:#1d3149; font-family:inherit; min-height:100px; resize:vertical;}
+#bugM .bb{display:flex; gap:8px; margin-top:12px;}
+#bugM button{flex:1; border:none; border-radius:999px; padding:11px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit;}
+#bugM .c{background:#eef1f5; color:#5c6b7a;}
+#bugM .s{background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff;}
+#bugM .done{display:none; font-size:13px; color:#2e7d32; font-weight:800; margin-top:10px; text-align:center;}
+.toast{position:fixed; left:50%; bottom:80px; transform:translateX(-50%); opacity:0; background:var(--navy2); color:#fff; padding:10px 20px; border-radius:999px; font-size:12.5px; font-weight:800; z-index:200; transition:opacity .3s; pointer-events:none;}
+.toast.show{opacity:1;}
+
+/* 3日間コース */
+.days{margin-top:12px; display:flex; flex-direction:column; gap:10px;}
+.day{border:1.5px solid #e8e0ef; border-radius:14px; padding:12px 14px; background:#fff;}
+.day .dt{font-size:13.5px; font-weight:800; color:var(--navy2);}
+.day .dd{font-size:13px; margin-top:4px; line-height:1.9;}
+.mockbar{background:#1d3149; color:#f3cdd7; font-size:12px; font-weight:800; text-align:center; padding:8px 12px;}
+</style>
+</head>
+<body>
+<div class="mockbar">モック表示｜教科書に追加する前の確認用（くみこ確認中）</div>
+<header><span class="lg">Merone<i>AI活用ラボ</i></span></header>
+<div class="wrap">
+  <div class="hero" style="padding-bottom:0;"><div class="tt">AIらぼの教科書</div><div class="st">新しく追加する章（CHAPTER 10）のプレビュー</div></div>
+  <!-- ======================== 10. 最新AI図鑑 ======================== -->
+  <section class="chap" id="c10">
+    <div class="chapno">CHAPTER 10</div>
+    <h2>2026年秋・AIの新顔図鑑 〜Astra・Muse・新しいClaudeとGemini〜</h2>
+    <div class="card">
+      <h3><span class="em">📡</span>この秋、何が変わった？（2026年11月10日時点）</h3>
+      <p>この数か月で、AIの世界はにぎやかでした。ChatGPTの最上位「<b>GPT-6 Astra</b>」、Metaの新顔「<b>Muse（ミューズ）</b>」が日本上陸、Claudeは<b>文書・スライド・デザインが無料で</b>作れるようになり、Geminiは<b>手描きの絵からアプリ</b>を作れるように。ニュースを追いかける必要はありません。この章で「自分の毎日に関係あるところ」だけ、ざっくりつかんでおきましょう☺️</p>
+      <div class="bluebox"><b>先に結論：らぼの主役はClaudeのまま。</b>新顔は「用事があるときだけ呼ぶ」で十分です。「新しいAIが出た＝乗りかえ」ではなく、<b>「自分の困りごとが1つ楽になるか」</b>だけで判断します。</div>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">🧭</span>新顔4つを、ひと目で</h3>
+      <div class="tblwrap"><table class="hd">
+        <tr><th></th><th>何者？</th><th>らぼ生にうれしい点</th><th>お金・条件</th></tr>
+        <tr><th>GPT-6 Astra<br><span style="font-weight:400;">（ChatGPT）</span></th><td>ChatGPTの最上位モデル。パソコンの画面を見てマウスとキーボードを動かし、資料づくりまで通しでこなす</td><td>「調べて → 資料にまとめる」が一度で終わる。旅行のしおり、A4のお知らせ作りなど</td><td><b>無料プランでは使えません</b>。有料でも回数に上限。PC操作はパソコン版のみ（スマホ不可）</td></tr>
+        <tr><th>Muse<br><span style="font-weight:400;">（Meta）</span></th><td>「答えるAI」ではなく<b>「代わりに動くAI」</b>。Instagram・Gmail・カレンダーとつないで、分析・下書き・投稿までこなす。10/23から日本でも</td><td>インスタの数字（インサイト）を読んで、来月の投稿カレンダーまで作ってくれる。投稿・送信の前に必ず「やっていい？」と聞いてくる</td><td>基本は無料（週の上限あり）。有料は月3,499円〜。18歳以上・Metaアカウントが必要</td></tr>
+        <tr><th>Claude<br><span style="font-weight:400;">（Anthropic）</span></th><td>新モデルが続々（Opus 5.5 → Sonnet 5.5 → Haiku 5.5 → Fable 5.2）。そして<b>Docs・Slides・Design が無料プランでも正式に使える</b>ように</td><td>勉強会の資料、お知らせ文書、スライドが「会話の中で」作れる。アプリづくりは今まで通り主役</td><td>Docs・Slides・Designは<b>無料</b>。「向こうから連絡してくる」Claude Duetは米国で順番待ち中（日本は未定）</td></tr>
+        <tr><th>Gemini<br><span style="font-weight:400;">（Google）</span></th><td>チャットの中でドキュメント・スライド・スプレッドシートを作って直せる。<b>紙に描いたアプリの絵を写真で渡すと、アプリにしてくれる</b>（Canvas）</td><td>在庫表やスプシの相談がさらに楽に。「毎朝8時に今日のやることを送って」のような予定アクションも</td><td>基本は無料。動画づくり（最長15秒）は有料プラン向け。「Gems」は11/17から「Skills」に置きかわります</td></tr>
+      </table></div>
+      <p class="small">※ 各社の提供状況・料金は変わります（2026年11月10日時点の公開情報）。「使えない」と出たら、プランか地域の順番待ちです。あわてなくて大丈夫。</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">🤖</span>GPT-6 Astra 〜「賢い回答」から「作業の代行」へ〜</h3>
+      <p>9月3日に発表された、ChatGPTのいちばん上のモデルです。これまでのAIは「答えを返す」のが仕事でしたが、Astraは<b>パソコンの画面を見ながら、マウスとキーボードを自分で動かして作業を進める</b>のが特徴です（Computer Use）。調べものから資料づくりまで、ひとつづきで頼めます。</p>
+      <ul>
+        <li><b>できること</b> … 「来月の旅行、移動と休憩を入れた案を比べて、大きな文字のしおりにして」「町内会のメモから、日時と場所が目立つA4のお知らせを作って」</li>
+        <li><b>知っておくこと</b> … <b>無料・Goプランでは使えません</b>。Plusでも回数の上限にすぐ届きます。PC操作はパソコン版だけで、スマホからは使えません</li>
+        <li><b>らぼ生の答え</b> … いまは「知っているだけ」で十分。アプリづくりと相談はClaude、画像はChatGPTの無料で困りません。「月額を払ってでも、調べる→資料にする、を毎週やる」人だけ検討を</li>
+      </ul>
+      <div class="warn">⚠️ 代わりに動くAI全般に言えること：「送信・購入・予約は自分で確認する」と最初に伝えておきましょう。ログインしているサイトを操作されることがあるので、触ってほしくないサイトはログアウトしておくと安心です。</div>
+      <p class="small">おまけ：11月4日からChatGPTの画像づくりが新しくなり（Images 2.6）、作るのが速く、<b>動く画像（GIF）</b>も作れます。インスタのストーリーに使えそうですね。</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">🪄</span>Muse（ミューズ）〜Metaの「代わりに動く」AI、日本上陸〜</h3>
+      <p>Instagramを運営するMetaが作ったAIで、<b>10月23日から日本でも使えるようになりました</b>（北米の次に日本）。iPhone・Android・ブラウザ（muse.ai）から、Metaアカウントで始められます。</p>
+      <p>Museのいちばんの違いは、<b>「目標を伝えると、計画を立てて、最後までやってくれる」</b>こと。アプリを閉じても作業を続け、投稿・メール送信・購入のような大事な場面では<b>必ず「やっていい？」と確認</b>してきます。OKを押すまで、勝手に投稿されることはありません。</p>
+      <ul>
+        <li><b>つなげるもの</b> … Instagram（数字の分析は<b>プロアカウント</b>が必要）・Threads・Facebook・Gmail・Googleカレンダー。日本では<b>メルカリ・マネーフォワード ME</b>との連携も準備中と案内されています</li>
+        <li><b>得意なこと</b> … インサイト（数字）を読んで改善点を出す／来月の投稿カレンダー作り／投稿文の下書き／DMの仕分け（返信文の下書きつき）／「毎週月曜9時に先週の成果をまとめて」のような定期の仕事</li>
+        <li><b>お金</b> … 基本は無料（1週間ごとの上限あり）。有料は月3,499円と16,990円（10/26時点の表示）</li>
+      </ul>
+      <div class="pinkbox"><b>最初にやる3つ：</b>①設定の「AIモデルの改善に協力」をオフにする（最初はオンになっています）②つなぐのは<b>お店・副業用のアカウントだけ</b>。個人のInstagramはつながない ③慣れるまで「承認」は毎回自分で押す。</div>
+      <div class="prompt" id="p-muse1">直近30日のInstagramのインサイトから、プロフィールへのアクセス・リンクのタップ・保存数の動きをまとめてください。
+いいねの数ではなく、「見に来てくれた・保存してくれた」動きを中心に見て、改善点を3つ出してください。
+投稿や返信はしないで、読むだけでお願いします。</div>
+      <button class="copy" data-c="p-muse1">このお願い文をコピーする</button>
+      <div class="warn">⚠️ Museが作る画像・動画は<b>文字が崩れやすい</b>ので、文字はあとから自分で入れるのがおすすめ。商品や料理は、生成画像ではなく実物の写真で。コメントへの返信はまだできません。</div>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">💜</span>Claude 〜モデル名は気にしない。「Docs・Slides・Design」が無料に〜</h3>
+      <p>この秋、Claudeは新しいモデルが立て続けに出ました（Opus 5.5・Sonnet 5.5・Haiku 5.5、そして11月9日に Fable 5.2）。名前がたくさんあって迷いますが、<b>らぼ生がやることは何も変わりません</b>。頼み方（CHAPTER 9の5点セット）が良ければ、どのモデルでもちゃんと動きます。選ぶ画面で迷ったら、いちばん上のものを選べば大丈夫。</p>
+      <p>それより大きいのは、10月8日の発表。<b>Docs（文書）・Slides（スライド）・Design（デザイン）が、無料プランでも正式に使える</b>ようになりました。「会話の中で、資料ができる」ので、らぼ生にはいちばん実用的なニュースです。</p>
+      <ul>
+        <li><b>Docs</b> … お知らせ文、手順書、自己紹介シート。「このメモを、A4一枚のお知らせにして」</li>
+        <li><b>Slides</b> … 勉強会の発表、家族会議の資料。「作ったアプリの紹介を、5枚のスライドにして」</li>
+        <li><b>Design</b> … インスタ投稿の下書き、チラシの案。「やさしいピンクで、文字は大きく」</li>
+        <li><b>Claude Duet</b>（10/21発表）… 朝に要約を送ってきたり、離席中に下調べを進めたりする「向こうから連絡してくるClaude」。いまは米国の有料プランで順番待ち。日本はまだです</li>
+      </ul>
+      <div class="prompt" id="p-cl1">あなたは発表資料づくりのプロです。
+私が作ったアプリ【例：旅行の持ち物リスト】を、らぼの勉強会で紹介します。
+Slidesで5枚のスライドにしてください。構成は「①困りごと ②作ったもの ③頼み方の工夫 ④使ってみた変化 ⑤次にやること」。文字は大きく、1枚に伝えることは1つ。
+まず1案ください。あとで一緒に直します。</div>
+      <button class="copy" data-c="p-cl1">このお願い文をコピーする</button>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">🟦</span>Gemini 〜スプシの秘書が、資料も作れるように〜</h3>
+      <ul>
+        <li><b>資料がチャットの中で作れる</b>（10/29〜）… ドキュメント・スライド・スプレッドシートを作って、その場で直せます。在庫表の相談のあと「これを表にして」がそのまま通ります</li>
+        <li><b>手描きの絵がアプリになる</b>（11/6〜）… 紙に描いたアプリの画面を写真で渡し、ツールで「Canvas」を選んで「このアプリのコードを生成して」。色や文字もその場で調整できます。※らぼでのアプリづくりの本命はClaudeのまま。Geminiは「絵から試す」入口として</li>
+        <li><b>予定したアクション</b> … 「毎朝8時に、今日のやることを3つにしぼって送って」のような、決まった時間の仕事を頼めます</li>
+        <li><b>Gems → Skills</b> … 自分用に作った「Gems」は11月17日から「Skills」に置きかわります（自動で移ります。あわてなくて大丈夫）</li>
+        <li><b>動画づくり</b>（Gemini Omni 1.2 Flash、11/5〜）… 最長15秒の音声つき動画。有料プラン向けなので、まずは知っているだけでOK</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">📱</span>SNS・毎日の用事で「どれを呼ぶ？」早見表</h3>
+      <p>SNS運用の記事を集めて読むと、2026年の共通見解は<b>「1つに絞らず、用事で使い分ける」</b>でした。らぼ流に、無料でできる順に並べています。</p>
+      <div class="tblwrap"><table class="hd">
+        <tr><th>やりたいこと</th><th>呼ぶAI</th><th>ひとこと</th></tr>
+        <tr><td><b>投稿のネタ出し・投稿文</b></td><td><b>ChatGPT</b>（無料）／Claude</td><td>「ターゲット・テーマ・必ず入れる事実・避ける表現」を渡す。数字や実績を勝手に足さない、と添える</td></tr>
+        <tr><td><b>文字入りの投稿画像・動くGIF</b></td><td><b>ChatGPT</b>（画像）</td><td>CHAPTER 3の3点セット（内容・雰囲気・使いみち）で</td></tr>
+        <tr><td><b>インサイト分析 → 来月の投稿カレンダー</b></td><td><b>Muse</b>（Instagramプロアカウント）</td><td>「読むだけ」から始める。投稿は承認を押すまで出ない</td></tr>
+        <tr><td><b>DM・コメントの仕分けと返信の下書き</b></td><td><b>Muse</b></td><td>送るのは自分。お客さまの名前が入るので「学習に使う」はオフ</td></tr>
+        <tr><td><b>リールの台本（冒頭の一言・本題・最後のお願い）</b></td><td><b>Claude</b>／ChatGPT</td><td>2026年は「最後まで見られたか」「保存されたか」が大事。冒頭1〜2秒で興味をつかむ台本に</td></tr>
+        <tr><td><b>お知らせ文書・スライド・チラシ案</b></td><td><b>Claude</b>（Docs・Slides・Design、無料）</td><td>会話の中で完成まで。Geminiでも可</td></tr>
+        <tr><td><b>在庫表・売上の集計、スプシ</b></td><td><b>Gemini</b></td><td>CHAPTER 4の通り。表の作成もチャット内で</td></tr>
+        <tr><td><b>自分用アプリを作る</b></td><td><b>Claude</b>（主役）</td><td>紙に描いた絵から試したいときはGeminiのCanvasも</td></tr>
+        <tr><td><b>調べて、資料にまとめるまで全部代行</b></td><td>GPT-6 Astra（有料・PC）</td><td>いまは「ある」と知っていればOK</td></tr>
+      </table></div>
+      <div class="warn">⚠️ メルカリの説明文の書き方・値付け・リサーチなど<b>物販そのもののコツ</b>は、Re:cheの講師に聞くのがいちばんです。AIには「講師に教わった型」を読み込ませて、自分専用に育てましょう（CHAPTER 8）。</div>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">🗓</span>最新AI 3日間コース 〜読むだけで終わらせない〜</h3>
+      <p>1日15分×3日で、新顔を「自分の道具」にします。終わったら<b>第2回テスト</b>で確かめて、カルテに提出してください。</p>
+      <div class="days"><div class="day"><div class="dt">DAY 1｜Claudeで「資料」を1枚作る（無料）</div><div class="dd">上の「Slides」のお願い文をコピーして、自分の作ったアプリ（まだなら「作りたいもの」）を5枚のスライドに。できたら1枚目のスクショを保存。</div></div><div class="day"><div class="dt">DAY 2｜SNSの投稿を1本、AIで作る</div><div class="dd">ChatGPTで「文字入りの投稿画像」（CHAPTER 3の3点セット）＋投稿文（5点セット）。インスタをしていない人は、家族やお友だちへのお知らせ画像でOK。</div></div><div class="day"><div class="dt">DAY 3｜「代わりに動くAI」を、読むだけで試す</div><div class="dd">Instagramをプロアカウントにしている人は、Museをつないで上の「インサイト分析」のお願い文を送る（投稿はしない）。していない人は、Geminiで「毎朝8時に、今日のやることを3つにしぼって送って」の予定アクションを1つ作る（下のお願い文）。</div></div><div class="day"><div class="dt">提出｜カルテに1〜3行</div><div class="dd">カルテの困りごと欄に<b>【最新AIコース 提出】</b>と書いて、「何を試して・何が楽になったか・つまずいた所」を1〜3行。くみこが読んでお返事します。</div></div></div>
+      <div class="prompt" id="p-gm1">毎朝8時に、私の今日のやることを送ってください。
+やることのメモ：【例：出品3点・保育園の提出物・夕飯の買い物・妹に電話】
+全部ではなく「今日やる3つ」にしぼって、順番と理由を一言ずつ添えてください。</div>
+      <button class="copy" data-c="p-gm1">このお願い文をコピーする</button>
+      <div class="pinkbox"><b>合言葉は「主役はClaude、新顔は用事があるときだけ」。</b>全部を使いこなそうとすると疲れます。3日間で、自分に関係ある1つが見つかれば大成功です☺️</div>
+    </div>
+    <button class="chbtn" data-ch="10">✔ 第10章、ここまで読んだ！</button>
+  </section>
+
+  <footer>Merone AI活用ラボ｜AIらぼの教科書（モック）<br><a href="shiken2.html?preview=1">第2回テストのプレビューを見る</a></footer>
+</div>
+<div class="toast" id="toast">コピーしました</div>
+<script>
+(function(){
+  var U="";
+  var K="sb_publishable_ZrCNcsRHMci-l7Fns8QtIA_X22XZGJp";
+
+  /* 8/5 あさ9時オープン（それまではお楽しみ表示） */
+  var OPEN=new Date("2026-08-05T09:00:00+09:00").getTime();
+  /* 進捗記録（カルテから来た人のみ・1人1回） */
+  try{
+    var q=new URLSearchParams(location.search);
+    var u=(q.get("u")||"").replace(/[^a-zA-Z0-9_\-]/g,"").slice(0,40);
+    var nm=(q.get("name")||"").slice(0,30);
+    if(u && Date.now()>=OPEN && !localStorage.getItem("ailab_book_seen_"+u)){
+      localStorage.setItem("ailab_book_seen_"+u,"1");
+      fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+        body:JSON.stringify({member_id:"read_book",member_name:nm||u,mood:"既読",worry:"教科書を開いた",want:u})});
+    }
+  }catch(e){}
+  if(Date.now()<OPEN){
+    var w=document.querySelector(".wrap");
+    if(w){
+      w.innerHTML='<div class="hero">'
+        +'<img src="https://kumiko0814.github.io/kumiko-illust/lab-think.png" alt="" onerror="this.style.display=\'none\'">'
+        +'<div class="tt">AIらぼの教科書</div>'
+        +'<div class="st">8/5（水）あさ9時にオープンします</div>'
+        +'<div class="lead" style="text-align:center;">みなさんの悩みをぜんぶ読んで、<b>世界にひとつの教科書</b>を準備しています。<br>あさ9時に、くみこからのおたよりと一緒に届きます。おたのしみに🎁</div>'
+        +'</div>';
+    }
+  }
+
+  /* 章ごとの「ここまで読んだ！」（進捗記録） */
+  try{
+    var chKeyU=(typeof u!=="undefined"&&u)?u:"anon";
+    Array.prototype.forEach.call(document.querySelectorAll(".chbtn"),function(btn){
+      var n=btn.getAttribute("data-ch");
+      var key="ailab_ch_"+chKeyU+"_"+n;
+      if(localStorage.getItem(key)){ btn.classList.add("done"); btn.textContent="✔ 第"+n+"章 よんだよ🩷"; }
+      btn.addEventListener("click",function(){
+        if(btn.classList.contains("done")) return;
+        btn.classList.add("done"); btn.textContent="✔ 第"+n+"章 よんだよ🩷";
+        try{ localStorage.setItem(key,"1"); }catch(e){}
+        if(typeof u!=="undefined"&&u){
+          fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+            body:JSON.stringify({member_id:"read_ch",member_name:((typeof nm!=="undefined"&&nm)?nm:u).slice(0,30),mood:"既読",worry:"CH"+n,want:u})});
+        }
+      });
+    });
+  }catch(e){}
+
+  /* コピー */
+  var toast=document.getElementById("toast"), toastT=null;
+  function showToast(){ toast.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(function(){ toast.classList.remove("show"); },1500); }
+  Array.prototype.forEach.call(document.querySelectorAll(".copy"),function(btn){
+    btn.addEventListener("click",function(){
+      var el=document.getElementById(btn.getAttribute("data-c"));
+      if(!el) return;
+      var txt=el.innerText||el.textContent;
+      function ok(){ showToast(); }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(ok).catch(function(){ fallback(); });
+      } else { fallback(); }
+      function fallback(){
+        var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta);
+        ta.select(); try{ document.execCommand("copy"); ok(); }catch(e){} document.body.removeChild(ta);
+      }
+    });
+  });
+
+  /* バグ報告 */
+  /* mock: bug report tool omitted */
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>第2回 最新AIの使い分けチェック｜Merone AI活用ラボ</title>
+<style>
+:root{ --bg:#f6f1f9; --blue:#8f9fd8; --navy:#26405f; --navy2:#1d3149; --pink:#cf8f9c; --pink2:#bd7886; --pinkbg:#fbeef1; --text:#4a4446; --muted:#8a97a5; --line:#e8e0ef; }
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif; background:linear-gradient(168deg,#f1eaf7 0%,#faf7fb 46%,#fbeef1 100%); color:var(--text); line-height:1.95; -webkit-font-smoothing:antialiased; padding-bottom:calc(96px + env(safe-area-inset-bottom, 0px));}
+.wrap{max-width:600px; margin:0 auto; padding:0 16px;}
+header{background:var(--navy2); color:#fff; padding:12px 18px; text-align:center; position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;}
+header .lg{font-size:12.5px; font-weight:800; letter-spacing:.12em; color:#f3cdd7;}
+header .lg i{font-style:normal; color:#cfdcea; font-weight:700; margin-left:6px;}
+#timer{font-size:14px; font-weight:800; color:#fff; background:rgba(255,255,255,.14); border-radius:999px; padding:4px 12px; display:none;}
+#timer.warn{background:#c62828;}
+
+.hero{text-align:center; padding:26px 0 4px;}
+.hero img{width:92px;}
+.hero h1{font-size:clamp(19px,5.6vw,25px); color:var(--navy2); margin-top:4px; line-height:1.5;}
+.hero .sub{font-size:12.5px; color:var(--pink2); font-weight:700; margin-top:6px;}
+
+.card{background:#fff; border-radius:18px; padding:20px; margin-top:16px; box-shadow:0 6px 20px rgba(38,64,95,.07);}
+.card p{font-size:13.6px; margin-top:8px;}
+.card p b{color:var(--navy2);}
+.lead{font-size:13.6px; text-align:left; line-height:2;}
+.lead b{color:var(--pink2);}
+.rules{list-style:none; margin-top:12px;}
+.rules li{font-size:13px; padding:8px 0 8px 26px; position:relative; border-top:1px solid #f1ecf5;}
+.rules li:first-child{border-top:none;}
+.rules li::before{content:"✓"; position:absolute; left:4px; color:var(--pink2); font-weight:800;}
+
+.namebox{margin-top:14px;}
+.namebox label{font-size:12px; font-weight:800; color:var(--navy2);}
+.namebox input{width:100%; border:1.5px solid #e3e9f0; border-radius:12px; padding:11px 13px; font-size:15px; font-family:inherit; margin-top:6px;}
+
+.btn{display:block; width:100%; border:none; background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff; border-radius:999px; padding:15px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; margin-top:18px; box-shadow:0 8px 22px rgba(189,120,134,.32);}
+.btn:disabled{opacity:.45; cursor:default;}
+
+.q{background:#fff; border-radius:18px; padding:18px; margin-top:14px; box-shadow:0 6px 20px rgba(38,64,95,.07);}
+.q .qn{font-size:11.5px; font-weight:800; color:var(--blue); letter-spacing:.1em;}
+.q .situ{background:var(--pinkbg); border-radius:12px; padding:11px 14px; font-size:13.8px; font-weight:700; color:var(--navy2); margin-top:8px; line-height:1.8;}
+.opt{display:flex; align-items:center; gap:9px; border:1.6px solid #e8e0ef; border-radius:13px; padding:12px 14px; margin-top:9px; cursor:pointer; font-size:13.8px; font-weight:700; color:var(--navy2); transition:all .12s;}
+.opt .em{font-size:18px; flex:none;}
+.opt .no{flex:none; font-weight:800; color:var(--pink2);}
+.opt.sel{border-color:var(--pink2); background:color-mix(in srgb,var(--pink) 9%,#fff);}
+.q .qt{font-size:14.5px; font-weight:800; color:var(--navy2); line-height:1.7;}
+textarea{width:100%; border:1.6px solid #e3e9f0; border-radius:13px; padding:12px 14px; font-size:14px; font-family:inherit; line-height:1.9; min-height:96px; resize:vertical; margin-top:10px;}
+.hint{font-size:11.8px; color:var(--muted); margin-top:8px; line-height:1.8;}
+
+.prog{position:sticky; top:46px; z-index:40; background:rgba(246,241,249,.94); backdrop-filter:blur(4px); padding:8px 0; margin-top:8px;}
+.prog .bar{height:7px; background:#eadff0; border-radius:999px; overflow:hidden;}
+.prog .fill{height:100%; width:0%; background:linear-gradient(90deg,var(--blue),var(--pink)); border-radius:999px; transition:width .3s;}
+.prog .txt{font-size:11px; color:var(--muted); font-weight:800; text-align:right; margin-top:3px;}
+
+.scorecard{text-align:center; padding:26px 20px;}
+.scorering{position:relative; width:148px; height:148px; margin:6px auto 0;}
+.scorering .big{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+.scorering .big .n{font-size:42px; font-weight:800; line-height:1;}
+.scorering .big .d{font-size:13px; color:var(--muted); font-weight:800;}
+.grade{font-size:19px; font-weight:800; margin-top:12px;}
+
+.rv{background:#fff; border-radius:16px; padding:16px; margin-top:12px; box-shadow:0 6px 20px rgba(38,64,95,.06);}
+.rv .rvh{font-size:13.5px; font-weight:800;}
+.rv.ok .rvh{color:#3f7d63;} .rv.ng .rvh{color:#c0607a;}
+.rv .situ2{font-size:13px; color:var(--navy2); background:#faf7fb; border-radius:10px; padding:9px 12px; margin-top:8px; line-height:1.7;}
+.rv .yourans{font-size:12.5px; margin-top:8px;}
+.rv .ansbox{background:#eef7f1; border-radius:10px; padding:10px 13px; margin-top:8px; font-size:13px; font-weight:800; color:#2f6b4f;}
+.rv .mine{background:#eef2fb; border-radius:10px; padding:10px 13px; margin-top:8px; font-size:12.8px; color:#3b5b9a; line-height:1.8;}
+.rv .exp{font-size:13px; margin-top:10px; line-height:1.95; color:#4a4446; white-space:pre-wrap;}
+.rv .exp b{color:var(--pink2);}
+.readck{display:flex; align-items:center; gap:8px; margin-top:12px; padding:10px 12px; border:1.6px dashed #e0cbd3; border-radius:12px; cursor:pointer; font-size:13px; font-weight:800; color:var(--pink2);}
+.readck input{width:18px; height:18px; accent-color:#bd7886;}
+.readck.done{background:#fbeef1; border-style:solid;}
+
+footer{text-align:center; font-size:11px; color:#9aa7b4; margin-top:34px; line-height:2;}
+footer a{color:var(--pink2);}
+.hide{display:none;}
+
+#bugL{position:fixed; left:12px; bottom:16px; z-index:59; background:rgba(255,255,255,.92); border:1px solid #dfe7ee; color:#8a97a5; font-size:10.5px; font-weight:800; border-radius:999px; padding:5px 12px; cursor:pointer; font-family:inherit;}
+#bugM{position:fixed; inset:0; background:rgba(29,49,73,.55); display:none; align-items:center; justify-content:center; z-index:70; padding:24px;}
+#bugM.on{display:flex;}
+#bugM .bx{background:#fff; border-radius:20px; padding:22px 20px; max-width:360px; width:100%;}
+#bugM h3{font-size:14px; color:#1d3149; margin-bottom:8px;}
+#bugM textarea{min-height:96px;}
+#bugM .bb{display:flex; gap:8px; margin-top:12px;}
+#bugM button{flex:1; border:none; border-radius:999px; padding:11px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit;}
+#bugM .c{background:#eef1f5; color:#5c6b7a;} #bugM .s{background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff;}
+#bugM .done{display:none; font-size:13px; color:#2e7d32; font-weight:800; margin-top:10px; text-align:center;}
+</style>
+</head>
+<body>
+<header>
+  <span class="lg">Merone<i>AI活用ラボ</i></span>
+  <span id="timer">⏱ 15:00</span>
+</header>
+
+<div class="wrap">
+
+  <section id="intro">
+    <div class="hero">
+      <img src="https://kumiko0814.github.io/kumiko-illust/lab-think.png" alt="" onerror="this.style.display='none'">
+      <h1>第2回 最新AIの使い分けチェック</h1>
+      <div class="sub">〜 Astra・Muse・新しいClaudeとGemini、この用事はだれに頼む？ 〜</div>
+    </div>
+    <div class="card">
+      <p class="lead">このテストは、暗記の点数を競うものではありません。<br>
+      これからAIを相棒にしていくうえで、教科書CHAPTER 10で読んだ<b>「新しいAIを、用事で使い分ける力」</b>と、<b>「代わりに動くAIと、安全につきあう力」</b>をチェックします☺️</p>
+      <p class="lead" style="margin-top:12px;">正解できなくて大丈夫。おわると<b>くみこの解説</b>が出るので、そこがいちばんの学びです。解説を読んだら「読みました」にチェックしてくださいね✨</p>
+      <ul class="rules">
+        <li>ぜんぶで <b>9問</b>（選ぶ問題7問＋書く問題2問）</li>
+        <li>制限時間は <b>15分</b>（スタートを押すと始まります）</li>
+        <li>提出すると、点数と<b>くみこの解説</b>が出ます</li>
+        <li>解説を読んだら、各問の「読みました」にチェック→最後に完了ボタン</li>
+      </ul>
+      <div class="namebox">
+        <label>お名前（LINE名）</label>
+        <input type="text" id="nm" maxlength="30" placeholder="例）ゆき">
+      </div>
+      <button class="btn" id="startBtn">スタートする（15分）</button>
+    </div>
+    <footer><a href="index.html">← カルテにもどる</a></footer>
+  </section>
+
+  <section id="exam" class="hide">
+    <div class="prog"><div class="bar"><div class="fill" id="fill"></div></div><div class="txt" id="ptxt">0 / 9</div></div>
+    <div class="card" style="margin-top:10px;">
+      <p style="font-size:13px;"><b>PART 1｜この用事、だれに頼む？</b><br>次の場面、あなたならどうしますか？ いちばん近いものを1つ選んでください。</p>
+    </div>
+    <div id="partA"></div>
+    <div class="card" style="margin-top:20px;">
+      <p style="font-size:13px;"><b>PART 2｜あなたの言葉で</b><br>ここは正解のない問題です。AIに丸投げせず、あなた自身の言葉で書いてください☺️</p>
+    </div>
+    <div id="partB"></div>
+    <button class="btn" id="submitBtn">答えを提出する</button>
+    <p class="hint" style="text-align:center;">※ 提出すると、その場で点数とくみこの解説が出ます。</p>
+  </section>
+
+  <section id="result" class="hide">
+    <div class="card scorecard">
+      <div class="sub" style="color:var(--pink2); font-weight:800; font-size:12px;">PART 1（この用事、だれに頼む？）の結果</div>
+      <div class="scorering">
+        <svg width="148" height="148" viewBox="0 0 42 42">
+          <circle cx="21" cy="21" r="15.9" fill="none" stroke="#f1ecf5" stroke-width="4.5"/>
+          <circle id="ring" cx="21" cy="21" r="15.9" fill="none" stroke="#cf8f9c" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="0 100" stroke-dashoffset="25" transform="rotate(-90 21 21)"/>
+        </svg>
+        <div class="big"><span class="n" id="scoreN">–</span><span class="d">/ 7問</span></div>
+      </div>
+      <div class="grade" id="grade"></div>
+      <p id="gradeMsg" style="font-size:13px; margin-top:6px;"></p>
+      <p style="font-size:12.5px; color:var(--pink2); font-weight:800; margin-top:14px;">↓ ここからが本番。解説をぜんぶ読んでね</p>
+    </div>
+
+    <div id="review"></div>
+
+    <div class="card" style="margin-top:14px;">
+      <p style="font-size:13px;"><b>あなたが書いた言葉（PART 2）</b></p>
+      <div id="bfb" style="font-size:13px; margin-top:8px; line-height:1.9;"></div>
+      <p class="hint">この2問は、くみこが直接読みます☺️</p>
+    </div>
+
+    <button class="btn" id="finishBtn" disabled>解説をぜんぶ読み終えました（完了）</button>
+    <p class="hint" id="finishHint" style="text-align:center;">※ 各問の「読みました」に全部チェックすると押せます。</p>
+    <div id="thanks" class="hide"></div>
+    <footer>Merone AI活用ラボ｜第2回 最新AIの使い分けチェック</footer>
+  </section>
+
+</div>
+
+<button id="bugL">不具合を報告</button>
+<div id="bugM"><div class="bx">
+  <h3>不具合・気になったことを教えてください</h3>
+  <textarea id="bugT" placeholder="例）提出ボタンが反応しませんでした（iPhone/Safari）"></textarea>
+  <div class="bb"><button class="c" id="bugC">閉じる</button><button class="s" id="bugS">送信する</button></div>
+  <div class="done" id="bugD">届きました。ありがとうございます。すぐ確認します。</div>
+</div></div>
+
+<script src="supabase_config.js"></script>
+<script>
+(function(){
+  /* 第2回：くみこ承認までは非公開（?preview=1 で確認可）。公開時に PAUSED=false にする */
+  var PAUSED=true;
+  if(PAUSED && new URLSearchParams(location.search).get("preview")!=="1"){
+    document.querySelector(".wrap").innerHTML='<div class="hero"><img src="https://kumiko0814.github.io/kumiko-illust/lab-think.png" alt="" onerror="this.style.display=\'none\'"><h1>ただいま準備中です</h1><div class="sub">第2回テストは、いま内容を準備しています</div></div><div class="card"><p class="lead">もう少しだけ、おまちください☺️ 準備ができたら、あらためてカルテでご案内します。</p></div><footer style="margin-top:24px;"><a href="index.html">← カルテにもどる</a></footer>';
+    document.getElementById("timer").style.display="none";
+    return;
+  }
+  var U=(typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.enabled)?SUPABASE_CONFIG.url+"/rest/v1/ailab_notes":"";
+  var K=(typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.anonKey)||"";
+  var P=new URLSearchParams(location.search);
+  var UID=(P.get("u")||"").replace(/[^a-zA-Z0-9_\-]/g,"").slice(0,40);
+  var NAME=(P.get("name")||"").slice(0,30);
+  var DEMO=P.get("demo")==="1"||P.get("preview")==="1"||!U||!UID;
+
+  /* ===== 問題（PART1・第2回：最新AIの使い分け 7問） ===== */
+  var QA=[
+    { situ:"インスタの投稿にのせる「今週の新着！」と文字が入った画像を作りたい。だれに頼む？",
+      opts:["🎨 ChatGPT（画像づくり）","🪄 Muse（Meta）","🤖 GPT-6 Astra"], correct:0,
+      mine:"1. ChatGPT。文字入りの画像は、無料のChatGPTで十分きれいに作れます。CHAPTER 3の3点セット（内容・雰囲気・使いみち）で頼みましょう。",
+      exp:"新しいAIが出ても、画像づくりの担当はChatGPTのままです。Museも画像は作れますが、文字が崩れやすいので「文字はあとで自分で入れる」のが前提になります。GPT-6 Astraは画像づくりの道具ではなく、しかも無料では使えません。\n\n「いちばん新しいもの＝いちばん良い」ではなく、「この用事はだれが得意？」で選ぶ。教科書の最初からずっと言っている、いちばん大事な考え方です。" },
+    { situ:"インスタのインサイト（数字）を見て、来月の投稿カレンダーを作ってほしい。いちばん楽な頼み先は？",
+      opts:["🎨 ChatGPT に数字を打ち込んで頼む","🪄 Muse にInstagramをつないで頼む","💜 Claude にスクショを送って頼む"], correct:1,
+      mine:"2. Muse。Instagramとつなげるので、数字を打ち込まなくても読んでくれます。ただし「読むだけ」から始めるのがコツです。",
+      exp:"ChatGPTやClaudeでもできますが、数字を自分で写す手間がかかります。Museは「代わりに動くAI」なので、プロアカウントのInstagramをつなぐと、インサイトを自分で読んで改善点やカレンダーまで作ってくれます。\n\n最初は「投稿や返信はしないで、読むだけで」と添えてください。慣れてから下書き、そして投稿（承認してから）へ、と段階を上げるのが安全です。" },
+    { situ:"勉強会で、自分の作ったアプリを5枚のスライドで紹介したい。お金はかけたくない。",
+      opts:["💜 Claude の Slides（無料）","🤖 GPT-6 Astra に資料を作らせる","✋ スライドはAIには無理なので手作り"], correct:0,
+      mine:"1. Claude。10月から、Docs・Slides・Designが無料プランでも正式に使えるようになりました。会話の中でそのまま資料が作れます。",
+      exp:"この秋のClaudeのニュースで、らぼ生にいちばん実用的なのがこれです。文書・スライド・デザインが、無料のまま、会話の続きで作れます。\n\nGPT-6 Astraも資料づくりは得意ですが、無料プランでは使えません。「無料でできることを先に使い切る」のが、らぼの作戦（CHAPTER 7）でしたね。" },
+    { situ:"「GPT-6 Astraが最強らしい」と聞いた。あなたは無料プラン。どうする？",
+      opts:["🔄 無料でも使えるはずなので、設定で切りかえる","🙆 無料では使えないので、今の道具（Claude・ChatGPT無料）で十分と判断する","💳 ChatGPT・Claude・Gemini ぜんぶ有料にする"], correct:1,
+      mine:"2. 今の道具で十分。Astraは無料・Goプランでは使えず、有料でも回数の上限があります。「ある」と知っていれば、いまはそれでOKです。",
+      exp:"Astraは「パソコンの画面を見て、マウスとキーボードを動かして作業する」のが特徴で、たしかにすごい道具です。でも、らぼ生の困りごと（献立・在庫表・自分用アプリ）は、無料のClaudeとChatGPTで解決できます。\n\n課金を考えるのは「調べて資料にする、を毎週やる」ようになってから。それも、最初の1つはClaudeです（CHAPTER 7）。流行りに合わせて全部有料にするのが、いちばんもったいない使い方です。" },
+    { situ:"Museに「この写真とキャプションをインスタに投稿して」と頼んだ。このあと何が起きる？",
+      opts:["📤 その場で勝手に投稿される","✅ 承認画面が出て、自分がOKを押すまで投稿されない","🚫 Museは投稿できないので、何も起きない"], correct:1,
+      mine:"2. 承認してから。投稿・送信・購入のような大事な場面では、Museは必ず「やっていい？」と聞いてきます。",
+      exp:"「代わりに動くAI」がこわく感じるのは当然です。でも、Museは投稿・メール送信・購入の前に必ず承認を求める設計で、OKを押すまで動きません。\n\nだからこそ、慣れるまでは「承認は毎回自分で押す」。そして最初にやる3つ（①AI学習への利用をオフ ②つなぐのは副業用アカウントだけ ③承認は自分で）を守れば、安心して任せられます。" },
+    { situ:"Claudeの画面に「Opus 5.5」「Sonnet 5.5」「Fable 5.2」…とモデル名がいっぱい。どうする？",
+      opts:["🧪 全部ためして、いちばん賢いのを調べる","🙂 名前は気にせず、いつも通り5点セットで頼む（迷ったら上のものを選ぶ）","😵 むずかしいので使うのをやめる"], correct:1,
+      mine:"2. 気にしない。頼み方（5点セット）が良ければ、どのモデルでもちゃんと動きます。迷ったら、いちばん上のものを選べば大丈夫。",
+      exp:"この秋、Claudeは新しいモデルが4つも出ました。でも、らぼ生がやることは何ひとつ変わりません。変わるのはAIの中身で、あなたの頼み方ではないからです。\n\n全部ためして比べるのは、時間の使い方としていちばんもったいないです。その時間で、自分のアプリを1つ直すほうが、ずっと力になります。" },
+    { situ:"また新しいAIが発表された。あなたが最初にすることは？",
+      opts:["🏃 すぐ乗りかえて、使い方を全部おぼえる","🔍 「自分の困りごとが1つ楽になるか」だけ、15分ためす","🙈 見なかったことにする"], correct:1,
+      mine:"2. 困りごと1つで、15分だけためす。楽になれば道具箱に入れる。ならなければ、今の道具のままでOK。これが振り回されないコツです。",
+      exp:"ニュースを追いかける必要はありません。でも、完全に無視するのも、もったいない。\n\n基準はひとつだけ。「自分の困りごとが1つ楽になるか」。楽になれば道具箱へ、ならなければ今まで通り。この基準さえ持っていれば、これから何が出てきても、あなたは振り回されません。主役はClaude、新顔は用事があるときだけ、です☺️" }
+  ];
+  var QB=[
+    {t:"あなたの毎日の困りごとを1つ選んで、今回の新顔（GPT-6 Astra／Muse／ClaudeのDocs・Slides／Geminiの新機能）のどれで楽になりそうか、理由と一緒に書いてください。",
+     hint:"ヒント：「わたしは〇〇に困っている。△△なら、□□してくれるので楽になりそう」の形で。「どれも必要ない。今の道具で足りる」も立派な答えです。"},
+    {t:"Museのような「代わりに動くAI」に、あなたが絶対に任せないこと（自分で確認すること）を1つ、理由と一緒に書いてください。",
+     hint:"ヒント：お客さまへの返信、お金の支払い、家族のこと…「ここは自分の手で」と思うものを、自分の言葉で。"}
+  ];
+
+  var ansA={}, started=false, tLeft=15*60, tId=null, submitted=false, postedId=null, readSet={};
+  var TOTAL=QA.filter(function(q){return q.correct!==-1;}).length + QA.filter(function(q){return q.correct===-1;}).length; // =7
+
+  var pa=document.getElementById("partA");
+  QA.forEach(function(q,i){
+    var d=document.createElement("div"); d.className="q";
+    var opts=q.opts.map(function(o,oi){
+      return '<label class="opt" data-q="'+i+'" data-o="'+oi+'"><span class="no">'+(oi+1)+'.</span><span>'+o+'</span></label>';
+    }).join("");
+    d.innerHTML='<div class="qn">Q'+(i+1)+' / 7</div><div class="situ">'+q.situ+'</div>'+opts;
+    pa.appendChild(d);
+  });
+  var pb=document.getElementById("partB");
+  QB.forEach(function(q,i){
+    var d=document.createElement("div"); d.className="q";
+    var lead=q.lead?'<div class="situ" style="background:#eef2fb;">'+q.lead+'</div>':'';
+    d.innerHTML='<div class="qn">記述 '+(i+1)+' / '+QB.length+'</div><div class="qt">'+q.t+'</div>'+lead+'<textarea id="qb'+i+'" maxlength="800" placeholder="ここに書いてください"></textarea><div class="hint">'+q.hint+'</div>';
+    pb.appendChild(d);
+  });
+
+  document.querySelectorAll(".opt").forEach(function(o){
+    o.addEventListener("click",function(){
+      var qi=o.getAttribute("data-q"), oi=parseInt(o.getAttribute("data-o"),10);
+      document.querySelectorAll('.opt[data-q="'+qi+'"]').forEach(function(x){x.classList.remove("sel");});
+      o.classList.add("sel"); ansA[qi]=oi; updateProg();
+    });
+  });
+  document.querySelectorAll("#partB textarea").forEach(function(t){ t.addEventListener("input",updateProg); });
+
+  function updateProg(){
+    var TOT=QA.length+QB.length;
+    var done=Object.keys(ansA).length;
+    QB.forEach(function(_,i){ if((document.getElementById("qb"+i).value||"").trim().length>=5) done++; });
+    var pct=Math.round(done/TOT*100);
+    document.getElementById("fill").style.width=pct+"%";
+    document.getElementById("ptxt").textContent=done+" / "+TOT;
+  }
+
+  function fmt(s){ var m=Math.floor(s/60), x=s%60; return "⏱ "+m+":"+("0"+x).slice(-2); }
+  function tick(){
+    tLeft--;
+    var el=document.getElementById("timer");
+    el.textContent=fmt(Math.max(0,tLeft));
+    if(tLeft<=60) el.classList.add("warn");
+    if(tLeft<=0){ clearInterval(tId); alert("時間になりました。ここまでの答えを提出します。"); doSubmit(true); }
+  }
+
+  document.getElementById("startBtn").onclick=function(){
+    var nm=(document.getElementById("nm").value||NAME||"").trim();
+    if(!nm){ document.getElementById("nm").focus(); return; }
+    NAME=nm; started=true;
+    document.getElementById("intro").classList.add("hide");
+    document.getElementById("exam").classList.remove("hide");
+    document.getElementById("timer").style.display="inline-block";
+    tId=setInterval(tick,1000);
+    window.scrollTo(0,0);
+  };
+
+  document.getElementById("submitBtn").onclick=function(){
+    var done=Object.keys(ansA).length;
+    if(done<7){ if(!confirm("まだ選んでいない問題が "+(7-done)+" 問あります。このまま提出しますか？")) return; }
+    doSubmit(false);
+  };
+
+  function grade(score){
+    if(score>=7) return {g:"💯 パーフェクト！",c:"#c9a227",m:"新しいAIが出ても、もう振り回されません。「用事で使い分ける」が身についています！"};
+    if(score>=5) return {g:"🌸 とてもいい感じ！",c:"#3f7d63",m:"判断の軸ができています。まちがえた問題の解説を、じっくり読んでみてね☺️"};
+    if(score>=3) return {g:"☘️ ここから伸びます！",c:"#c9922e",m:"解説を読むと「あ、そういうことか」が増えますよ！ここが伸びしろです。"};
+    return {g:"🌱 いっしょに育てよう",c:"#bd7886",m:"今の自分を知れたのが第一歩。解説がいちばんの学びなので、ゆっくり読んでね！"};
+  }
+
+  function computeScore(){
+    var score=0, detail=[];
+    QA.forEach(function(q,i){
+      var picked=(ansA[i]!=null)?ansA[i]:null;
+      var ok=(q.correct===-1)?(picked!=null):(picked===q.correct);
+      if(ok) score++;
+      detail.push({picked:picked, ok:ok});
+    });
+    return {score:score, detail:detail};
+  }
+
+  function renderResult(score, detail, bTexts){
+    document.getElementById("intro").classList.add("hide");
+    document.getElementById("exam").classList.add("hide");
+    document.getElementById("result").classList.remove("hide");
+    document.getElementById("timer").style.display="none";
+    var gr=grade(score), pct=Math.round(score/7*100);
+    var ring=document.getElementById("ring");
+    ring.setAttribute("stroke-dasharray", pct+" "+(100-pct)); ring.setAttribute("stroke", gr.c);
+    document.getElementById("scoreN").textContent=score; document.getElementById("scoreN").style.color=gr.c;
+    var gEl=document.getElementById("grade"); gEl.textContent=gr.g; gEl.style.color=gr.c;
+    document.getElementById("gradeMsg").textContent=gr.m;
+
+    var rv=document.getElementById("review"); rv.innerHTML="";
+    QA.forEach(function(q,i){
+      var d=detail[i]||{picked:null,ok:false};
+      var pickedTxt=(d.picked!=null)?q.opts[d.picked]:"（未回答）";
+      var ansTxt=(q.correct===-1)?"どれを選んでもOK":q.opts[q.correct];
+      var el=document.createElement("div"); el.className="rv "+(d.ok?"ok":"ng");
+      el.innerHTML=
+        '<div class="rvh">'+(d.ok?"◎ 正解":"△ おしい")+'　Q'+(i+1)+'</div>'+
+        '<div class="situ2">'+q.situ+'</div>'+
+        '<div class="yourans">あなたの回答：<b>'+pickedTxt+'</b></div>'+
+        '<div class="ansbox">✔ 答え：'+ansTxt+'</div>'+
+        '<div class="mine">💡 わたしの考え：'+q.mine+'</div>'+
+        '<div class="exp"><b>くみこの解説</b>\n'+q.exp+'</div>'+
+        '<label class="readck" data-i="'+i+'"><input type="checkbox"> 解説を読みました</label>';
+      rv.appendChild(el);
+    });
+    document.querySelectorAll(".readck input").forEach(function(c){
+      c.addEventListener("change",function(){
+        var lab=c.closest(".readck"), i=lab.getAttribute("data-i");
+        if(c.checked){ readSet[i]=1; lab.classList.add("done"); } else { delete readSet[i]; lab.classList.remove("done"); }
+        var all=Object.keys(readSet).length>=QA.length;
+        document.getElementById("finishBtn").disabled=!all;
+        document.getElementById("finishHint").textContent=all?"準備OK！完了ボタンを押してね":"※ 各問の「読みました」に全部チェックすると押せます。（あと"+(QA.length-Object.keys(readSet).length)+"問）";
+      });
+    });
+
+    var bfb=document.getElementById("bfb");
+    bfb.innerHTML=(bTexts||[]).map(function(t,i){
+      var fb;
+      if(!t){ fb='<span style="color:#c0607a;">（未記入）</span>'; }
+      else if(t.length<15){ fb='<span style="color:#c9922e;">書けました！次はもう少しくわしく書くと、AIがもっと動きやすくなります。</span>'; }
+      else { fb='<span style="color:#3f7d63;">しっかり自分の言葉で書けています！この調子です☺️</span>'; }
+      return '<div style="background:#faf7fb;border-radius:12px;padding:11px 14px;margin-top:8px;"><b>記述'+(i+1)+'</b><br>'+(t?t.replace(/</g,"&lt;"):"")+'<br>'+fb+'</div>';
+    }).join("");
+    window.scrollTo(0,0);
+  }
+
+  function doSubmit(auto){
+    if(submitted) return; submitted=true;
+    if(tId) clearInterval(tId);
+    var res=computeScore(), score=res.score, detail=res.detail;
+    var bTexts=QB.map(function(_,i){ return (document.getElementById("qb"+i).value||"").trim(); });
+    renderResult(score, detail, bTexts);
+
+    /* 提出（解説を読む前の状態で一度記録。read:false） */
+    if(!DEMO){
+      var payload={member_id:"test2", member_name:NAME||UID, mood:"テスト", want:UID,
+        worry:JSON.stringify({t:2, score:score, total:7, auto:!!auto, read:false, a:detail.map(function(d){return d.picked;}), b:bTexts})};
+      fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(payload)})
+        .then(function(r){return r.json();}).then(function(rows){ if(rows&&rows[0]) postedId=rows[0].id; }).catch(function(){});
+    }
+    window._lastResult={score:score,detail:detail,b:bTexts};
+  }
+
+  /* 受験ずみの人が、前回の点数と解説をいつでも見返せる（受け直し不要） */
+  function showPrevResult(saved){
+    ansA={}; ((saved&&saved.a)||[]).forEach(function(p,i){ if(p!=null) ansA[i]=p; });
+    var res=computeScore();
+    var score=(saved&&typeof saved.score==="number")?saved.score:res.score;
+    submitted=true;
+    renderResult(score, res.detail, (saved&&saved.b)||[]);
+  }
+
+  document.getElementById("finishBtn").onclick=function(){
+    var b=this; b.disabled=true;
+    document.getElementById("finishHint").classList.add("hide");
+    var th=document.getElementById("thanks");
+    th.classList.remove("hide");
+    th.innerHTML='<div class="card" style="text-align:center;background:linear-gradient(165deg,#fff,#fbeef1);"><div style="font-size:30px;">🩷</div><p style="font-size:14px;font-weight:800;color:#1d3149;margin-top:6px;">おつかれさまでした！</p><p style="font-size:13px;margin-top:6px;">解説をぜんぶ読んでくれてありがとう。「主役はClaude、新顔は用事があるときだけ」。この感覚があれば、次に何が出てきても大丈夫です☺️</p></div>';
+    /* 解説読了を記録（read:true） */
+    if(!DEMO && postedId && window._lastResult){
+      var r=window._lastResult;
+      var body={worry:JSON.stringify({t:2, score:r.score, total:7, read:true, a:r.detail.map(function(d){return d.picked;}), b:r.b})};
+      fetch(U+"?id=eq."+postedId,{method:"PATCH",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},body:JSON.stringify(body)}).catch(function(){});
+    }
+    th.scrollIntoView({behavior:"smooth"});
+  };
+
+  var M=document.getElementById("bugM");
+  document.getElementById("bugL").onclick=function(){ M.classList.add("on"); };
+  document.getElementById("bugC").onclick=function(){ M.classList.remove("on"); document.getElementById("bugD").style.display="none"; };
+  document.getElementById("bugS").onclick=function(){
+    var t=document.getElementById("bugT").value.trim(); if(!t){ document.getElementById("bugT").focus(); return; }
+    var b=this; b.disabled=true;
+    function done(){ document.getElementById("bugD").style.display="block"; document.getElementById("bugT").value=""; b.disabled=false; setTimeout(function(){ M.classList.remove("on"); document.getElementById("bugD").style.display="none"; },1800); }
+    if(DEMO){ done(); return; }
+    fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+      body:JSON.stringify({member_id:"bug_テスト2",member_name:"テスト2",mood:"バグ報告",worry:t,want:location.href.slice(0,180)+" ／ "+navigator.userAgent.slice(0,120)})})
+      .then(function(){ done(); }).catch(function(){ b.disabled=false; alert("送信できませんでした。"); });
+  };
+
+  if(NAME) document.getElementById("nm").value=NAME;
+
+  /* 受験ずみチェック：前回の記録があれば「受け直し不要＋結果を見返す」導線を出す */
+  if(!DEMO){
+    fetch(U+"?member_id=eq.test2&want=eq."+encodeURIComponent(UID)+"&order=created_at.desc&limit=1",{headers:{apikey:K,Authorization:"Bearer "+K}})
+      .then(function(r){return r.json();})
+      .then(function(rows){
+        if(!rows||!rows[0]) return;
+        var saved; try{ saved=JSON.parse(rows[0].worry); }catch(e){ return; }
+        var sc=(saved&&typeof saved.score==="number")?saved.score:null;
+        var intro=document.getElementById("intro");
+        if(!intro||intro.classList.contains("hide")) return;
+        var box=document.createElement("div");
+        box.className="card";
+        box.style.cssText="border:1.6px solid #e0cbd3;background:linear-gradient(165deg,#fff,#fbeef1);";
+        box.innerHTML='<p style="font-size:14px;font-weight:800;color:#1d3149;">☑ このテストは受験ずみです'+(sc!=null?'（前回：'+sc+' / 7）':'')+'</p>'
+          +'<p class="lead" style="margin-top:8px;">もう一度受けなくて大丈夫です。前回の点数とくみこの解説は、下のボタンからいつでも見返せます☺️</p>'
+          +'<button class="btn" id="prevBtn" style="margin-top:12px;">前回の結果と解説を見る</button>';
+        intro.insertBefore(box, intro.firstChild);
+        document.getElementById("prevBtn").onclick=function(){ showPrevResult(saved); };
+      }).catch(function(){});
+  }
+})();
+</script>
+</body>
+</html>
