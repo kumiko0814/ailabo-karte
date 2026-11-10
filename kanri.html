@@ -778,7 +778,7 @@ function loadProgress(){
   }
   Promise.all([
     sb("ailab_notes?mood=eq.既読&select=member_id,member_name,worry,want&order=created_at.asc&limit=3000").then(function(r){return r.json();}),
-    sb("ailab_notes?mood=eq.テスト&select=member_name,worry,want,created_at&order=created_at.asc&limit=2000").then(function(r){return r.json();})
+    sb("ailab_notes?mood=eq.テスト&select=member_id,member_name,worry,want,created_at&order=created_at.asc&limit=2000").then(function(r){return r.json();})
   ]).then(function(res){
       var j=Array.isArray(res[0])?res[0]:[];
       var tj=Array.isArray(res[1])?res[1]:[];
@@ -793,12 +793,13 @@ function loadProgress(){
         else if(m.indexOf("read_")===0){ letter[x.want]=1; }
       });
       /* テスト結果（同一人物は最新を採用） */
-      var testByUser={};
+      var testByUser={}, test2ByUser={};
       tj.forEach(function(x){
         if(!x.want) return;
         var d; try{ d=JSON.parse(x.worry||"{}"); }catch(e){ d={}; }
         names[x.want]=x.member_name||names[x.want]||x.want;
-        testByUser[x.want]={score:(d.score!=null?d.score:null), total:(d.total||7), b:d.b||[], read:!!d.read, at:x.created_at};
+        var rec={score:(d.score!=null?d.score:null), total:(d.total||7), b:d.b||[], read:!!d.read, at:x.created_at};
+        if((x.member_id||"")==="test2"||d.t===2){ test2ByUser[x.want]=rec; } else { testByUser[x.want]=rec; }
       });
 
       var starters={};
@@ -806,6 +807,7 @@ function loadProgress(){
       Object.keys(bookOpen).forEach(function(u){ starters[u]=1; });
       Object.keys(curOpen).forEach(function(u){ starters[u]=1; });
       Object.keys(testByUser).forEach(function(u){ starters[u]=1; });
+      Object.keys(test2ByUser).forEach(function(u){ starters[u]=1; });
       var nStart=Object.keys(starters).length;
       var totalRead=0; Object.keys(byUser).forEach(function(u){ totalRead+=Object.keys(byUser[u]).length; });
       var pct = nStart ? Math.round(totalRead/(CHAPS.length*nStart)*100) : 0;
@@ -836,6 +838,26 @@ function loadProgress(){
       } else {
         tHtml="<div style='font-size:12px;color:#8a97a5;background:#faf7fb;border-radius:12px;padding:11px 14px;'>📝 第1回テストは、まだ受験者がいません。カルテの「カリキュラム」から受けられます。</div>";
       }
+      /* 第2回テスト（最新AIの使い分け） */
+      var t2Users=Object.keys(test2ByUser);
+      var scores2=t2Users.map(function(u){return test2ByUser[u].score;}).filter(function(s){return s!=null;});
+      if(scores2.length){
+        var avg2=Math.round(scores2.reduce(function(a,b){return a+b;},0)/scores2.length*10)/10;
+        var follow2=scores2.filter(function(s){return s/TT<0.43;}).length;
+        var perfect2=scores2.filter(function(s){return s>=TT;}).length;
+        var readN2=t2Users.filter(function(u){return test2ByUser[u].read;}).length;
+        tHtml+="<div style='display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:linear-gradient(135deg,#eef4ff,#f1eaf7);border-radius:14px;padding:14px 16px;margin-top:8px;'>"
+          +"<div style='font-size:13px;font-weight:800;color:#26405f;'>📝 第2回テスト（最新AI）</div>"
+          +"<div style='display:flex;gap:14px;flex-wrap:wrap;margin-left:auto;font-size:12.5px;'>"
+          +"<span>受験 <b style='color:#bd7886;font-size:15px;'>"+scores2.length+"</b>名</span>"
+          +"<span>平均 <b style='color:"+scoreColor(avg2,TT)+";font-size:15px;'>"+avg2+"</b>/"+TT+"</span>"
+          +"<span>💯満点 <b style='color:#c9a227;font-size:15px;'>"+perfect2+"</b></span>"
+          +"<span>解説読了 <b style='color:#3f7d63;font-size:15px;'>"+readN2+"</b></span>"
+          +"<span>要フォロー <b style='color:#c0607a;font-size:15px;'>"+follow2+"</b></span>"
+          +"</div></div>";
+      } else {
+        tHtml+="<div style='font-size:12px;color:#8a97a5;background:#faf7fb;border-radius:12px;padding:11px 14px;margin-top:8px;'>📝 第2回テスト（最新AI）は、まだ受験者がいません。</div>";
+      }
       document.getElementById("prgTest").innerHTML=tHtml;
 
       /* 章別 */
@@ -854,7 +876,7 @@ function loadProgress(){
       var users=Object.keys(starters).map(function(u){
         var n=byUser[u]?Object.keys(byUser[u]).length:0;
         var ts=testByUser[u]?testByUser[u].score:null;
-        return {u:u, n:n, name:names[u]||u, ts:ts, tt:testByUser[u]?testByUser[u].total:7, tread:testByUser[u]?testByUser[u].read:false, tb:testByUser[u]?testByUser[u].b:null};
+        return {u:u, n:n, name:names[u]||u, ts:ts, tt:testByUser[u]?testByUser[u].total:7, tread:testByUser[u]?testByUser[u].read:false, tb:testByUser[u]?testByUser[u].b:null, t2:test2ByUser[u]||null};
       }).sort(function(a,b){
         var as=(a.ts==null?-1:a.ts), bs=(b.ts==null?-1:b.ts);
         if(bs!==as) return bs-as;
@@ -871,8 +893,11 @@ function loadProgress(){
           badge="<span style='flex:none;width:56px;text-align:center;font-size:10.5px;color:#b0a3aa;border:1px dashed #d9cfe4;border-radius:999px;padding:2px 0;'>未受験</span>";
         }
         var btn = (x.tb && (x.tb[0]||x.tb[1]||x.tb[2])) ? "<button class='rl tbtn' data-u='"+esc(x.u)+"' style='flex:none;font-size:10.5px;padding:3px 8px;'>記述</button>" : "";
+        var badge2 = x.t2 && x.t2.score!=null
+          ? "<span title='第2回テスト（最新AI）"+(x.t2.read?"・解説読了":"・解説まだ")+"' style='flex:none;width:56px;text-align:center;font-weight:800;font-size:12px;color:#26405f;background:#eef4ff;border:1px solid #c9d6f0;border-radius:999px;padding:3px 0;'>②"+x.t2.score+"/"+x.t2.total+"</span>"
+          : "";
         mHtml+="<div style='display:flex; align-items:center; gap:8px; font-size:12px; margin-top:6px;'>"
-          +badge
+          +badge+badge2
           +"<span style='flex:none; width:120px; color:#4a4446; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;'>"+esc(x.name)+"</span>"
           +"<span style='flex:1; height:9px; background:#f1ecf5; border-radius:99px; overflow:hidden;'><span style='display:block; height:100%; width:"+w+"%; background:linear-gradient(90deg,#cf8f9c,#bd7886); border-radius:99px;'></span></span>"
           +"<span style='flex:none; width:40px; text-align:right; font-weight:800; color:#26405f;'>"+x.n+"章</span>"

@@ -104,6 +104,12 @@ footer a{color:var(--pink2);}
 #bugM .done{display:none; font-size:13px; color:#2e7d32; font-weight:800; margin-top:10px; text-align:center;}
 .toast{position:fixed; left:50%; bottom:80px; transform:translateX(-50%); opacity:0; background:var(--navy2); color:#fff; padding:10px 20px; border-radius:999px; font-size:12.5px; font-weight:800; z-index:200; transition:opacity .3s; pointer-events:none;}
 .toast.show{opacity:1;}
+
+/* 3日間コース（CHAPTER 10） */
+.days{margin-top:12px; display:flex; flex-direction:column; gap:10px;}
+.day{border:1.5px solid #e8e0ef; border-radius:14px; padding:12px 14px; background:#fff;}
+.day .dt{font-size:13.5px; font-weight:800; color:var(--navy2);}
+.day .dd{font-size:13px; margin-top:4px; line-height:1.9;}
 </style>
 </head>
 <body>
@@ -128,6 +134,8 @@ footer a{color:var(--pink2);}
       <a href="#c6">⑥ GitHub</a>
       <a href="#c7">⑦ 無料で賢く使う</a>
       <a href="#c8">⑧ 悩み別・解決レシピ集</a>
+      <a href="#cpro">⑨ 頼み方5点セット</a>
+      <a href="#c10">⑩ 最新AI図鑑・秘書Muse</a>
     </nav>
   </div>
 
@@ -588,6 +596,130 @@ footer a{color:var(--pink2);}
       <p class="small">✨ ワンポイント：この5点セットは、説明文だけでなく、メール・献立・企画書など<b>何を頼むときにも</b>使えます。迷ったらこの5つ、と覚えておいてくださいね。</p>
     </div>
     <button class="chbtn" data-ch="9">✔ 第9章、ここまで読んだ！</button>
+  </section>
+
+  <!-- ======================== 10. 最新AI図鑑 ======================== -->
+  <section class="chap" id="c10">
+    <div class="chapno">CHAPTER 10</div>
+    <h2>2026年秋・AIの新顔図鑑 〜Astra・Muse・新しいClaudeとGemini〜</h2>
+    <div class="card">
+      <h3><span class="em">📡</span>この秋、何が変わった？（2026年11月10日時点）</h3>
+      <p>この数か月で、AIの世界はにぎやかでした。ChatGPTの最上位「<b>GPT-6 Astra</b>」、Metaの新顔「<b>Muse（ミューズ）</b>」が日本上陸、Claudeは<b>文書・スライド・デザインが無料で</b>作れるようになり、Geminiは<b>手描きの絵からアプリ</b>を作れるように。ニュースを追いかける必要はありません。この章で「自分の毎日に関係あるところ」だけ、ざっくりつかんでおきましょう☺️</p>
+      <div class="bluebox"><b>先に結論：らぼの主役はClaudeのまま。</b>新顔は「用事があるときだけ呼ぶ」で十分です。「新しいAIが出た＝乗りかえ」ではなく、<b>「自分の困りごとが1つ楽になるか」</b>だけで判断します。</div>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">🧭</span>新顔4つを、ひと目で</h3>
+      <div class="tblwrap"><table class="hd">
+        <tr><th></th><th>何者？</th><th>らぼ生にうれしい点</th><th>お金・条件</th></tr>
+        <tr><th>GPT-6 Astra<br><span style="font-weight:400;">（ChatGPT）</span></th><td>ChatGPTの最上位モデル。パソコンの画面を見てマウスとキーボードを動かし、資料づくりまで通しでこなす</td><td>「調べて → 資料にまとめる」が一度で終わる。旅行のしおり、A4のお知らせ作りなど</td><td><b>無料プランでは使えません</b>。有料でも回数に上限。PC操作はパソコン版のみ（スマホ不可）</td></tr>
+        <tr><th>Muse<br><span style="font-weight:400;">（Meta）</span></th><td>「答えるAI」ではなく<b>「代わりに動く、あなた専属の秘書」</b>。Googleカレンダー・Gmail・Instagramとつないで、リマインド・買い物リスト・メール整理までこなす。10/23から日本でも</td><td>「毎朝7時に今日の予定と持ち物を教えて」「このレシピから買い物リストを作って」が頼める。送信・購入の前は必ず「やっていい？」と聞いてくる</td><td>基本は無料（週の上限あり）。有料は月3,499円〜。18歳以上・Metaアカウントが必要</td></tr>
+        <tr><th>Claude<br><span style="font-weight:400;">（Anthropic）</span></th><td>新モデルが続々（Opus 5.5 → Sonnet 5.5 → Haiku 5.5 → Fable 5.2）。そして<b>Docs・Slides・Design が無料プランでも正式に使える</b>ように</td><td>勉強会の資料、お知らせ文書、スライドが「会話の中で」作れる。アプリづくりは今まで通り主役</td><td>Docs・Slides・Designは<b>無料</b>。「向こうから連絡してくる」Claude Duetは米国で順番待ち中（日本は未定）</td></tr>
+        <tr><th>Gemini<br><span style="font-weight:400;">（Google）</span></th><td>チャットの中でドキュメント・スライド・スプレッドシートを作って直せる。<b>紙に描いたアプリの絵を写真で渡すと、アプリにしてくれる</b>（Canvas）</td><td>在庫表やスプシの相談がさらに楽に。「毎朝8時に今日のやることを送って」のような予定アクションも</td><td>基本は無料。動画づくり（最長15秒）は有料プラン向け。「Gems」は11/17から「Skills」に置きかわります</td></tr>
+      </table></div>
+      <p class="small">※ 各社の提供状況・料金は変わります（2026年11月10日時点の公開情報）。「使えない」と出たら、プランか地域の順番待ちです。あわてなくて大丈夫。</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">🤖</span>GPT-6 Astra 〜「賢い回答」から「作業の代行」へ〜</h3>
+      <p>9月3日に発表された、ChatGPTのいちばん上のモデルです。これまでのAIは「答えを返す」のが仕事でしたが、Astraは<b>パソコンの画面を見ながら、マウスとキーボードを自分で動かして作業を進める</b>のが特徴です（Computer Use）。調べものから資料づくりまで、ひとつづきで頼めます。</p>
+      <ul>
+        <li><b>できること</b> … 「来月の旅行、移動と休憩を入れた案を比べて、大きな文字のしおりにして」「町内会のメモから、日時と場所が目立つA4のお知らせを作って」</li>
+        <li><b>知っておくこと</b> … <b>無料・Goプランでは使えません</b>。Plusでも回数の上限にすぐ届きます。PC操作はパソコン版だけで、スマホからは使えません</li>
+        <li><b>らぼ生の答え</b> … いまは「知っているだけ」で十分。アプリづくりと相談はClaude、画像はChatGPTの無料で困りません。「月額を払ってでも、調べる→資料にする、を毎週やる」人だけ検討を</li>
+      </ul>
+      <div class="warn">⚠️ 代わりに動くAI全般に言えること：「送信・購入・予約は自分で確認する」と最初に伝えておきましょう。ログインしているサイトを操作されることがあるので、触ってほしくないサイトはログアウトしておくと安心です。</div>
+      <p class="small">おまけ：11月4日からChatGPTの画像づくりが新しくなり（Images 2.6）、作るのが速く、<b>動く画像（GIF）</b>も作れます。インスタのストーリーに使えそうですね。</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">🪄</span>Muse（ミューズ）〜あなた専属の「秘書」。リマインドから買い物まで〜</h3>
+      <p>Instagramを運営するMetaが作ったAIで、<b>10月23日から日本でも使えるようになりました</b>（北米の次に日本）。iPhone・Android・ブラウザ（muse.ai）から、Metaアカウントで始められて、基本は無料です。</p>
+      <p>これまでのAIは「聞けば答える」でした。Museは<b>「頼んでおくと、時間が来たら向こうから動く」</b>のが違いです。アプリを閉じていても働き、投稿・メール送信・購入のような大事な場面では<b>必ず「やっていい？」と確認</b>してきます。OKを押すまで、勝手には動きません。つまり、<b>家に秘書さんが1人来た</b>と思ってください。</p>
+      <h3 style="margin-top:14px;"><span class="em">🏠</span>主婦の毎日で、秘書に頼めること</h3>
+      <ul>
+        <li><b>朝のリマインド</b> … Googleカレンダーとつないで「毎朝7時に、今日の家族の予定と持ち物、ゴミの日を知らせて」。Museのアプリにメッセージで届きます（通知をオンに）</li>
+        <li><b>「覚えておいて」</b> … 家族の人数、子どもの学校行事、アレルギー、夫の苦手な食べもの。一度伝えると、次からそれを前提に提案してくれます（やめたいときは「忘れて」でOK）</li>
+        <li><b>献立 → 買い物リスト</b> … Instagramで保存したレシピ動画から買い物リストを作る、「今週の献立と買い物リストを作って、日曜の夜に送って」</li>
+        <li><b>学校・園からのメール整理</b> … Gmailとつないで「今週、返事や提出が必要なメールだけ一覧にして」。返信は下書きまで。送るのは自分</li>
+        <li><b>家計まわり</b> … 使っていないサブスクの見直し、欲しいものの値下がり追跡。購入の前は必ず確認が入ります</li>
+        <li><b>旅行・予約の下調べ</b> … 宿や観光の候補を比べて表にする。予約も頼めますが、最初は「探すだけ」で</li>
+        <li><b>副業でInstagramをしている人</b> … プロアカウントをつなぐと、インサイト（数字）を読んで改善点や来月の投稿カレンダーまで作ってくれます（くわしくは下の早見表）</li>
+      </ul>
+      <div class="pinkbox"><b>最初にやる3つ：</b>①設定「データコントロール」の「AIモデルの改善に協力」をオフにする（最初はオンになっています）②つなぐのは<b>必要なものだけ</b>（まずGoogleカレンダーから。お店用のInstagramはOK、個人のInstagramはつながない）③慣れるまで「承認」は毎回自分で押す。</div>
+      <p class="small" style="margin-top:12px;"><b>STEP 1｜秘書に自己紹介する（最初の1回だけ）</b></p>
+      <div class="prompt" id="p-muse1">これから、私の秘書として手伝ってください。次のことを覚えておいて。
+・家族：<span class="ph">【例：夫・小2の娘・年中の息子】</span>
+・毎週の予定：<span class="ph">【例：火曜はピアノ、木曜は夫が遅い、燃えるゴミは月・木】</span>
+・食事のこと：<span class="ph">【例：息子は卵アレルギー、夫は魚が苦手】</span>
+・私の仕事：<span class="ph">【例：メルカリで不要品を出品中、午前中が作業時間】</span>
+送信・購入・予約は、必ず私に確認してから。</div>
+      <button class="copy" data-c="p-muse1">このお願い文をコピーする</button>
+      <p class="small" style="margin-top:12px;"><b>STEP 2｜毎朝のリマインドを頼む</b></p>
+      <div class="prompt" id="p-muse2">毎朝7時に、今日の予定を知らせてください。
+Googleカレンダーの家族の予定と、持ちもの・ゴミの日を見て、
+「今日の予定」「持っていくもの」「今日やる3つ」の順に、短くまとめてください。</div>
+      <button class="copy" data-c="p-muse2">このお願い文をコピーする</button>
+      <div class="warn">⚠️ 秘書さんも間違えます。<b>日時はカレンダーで最終確認</b>、送ったメールは取り消せないので<b>返信は自分で送る</b>、「リセット」は履歴も予定も全部消えるので押さない。この3つを守れば安心です。Museが作る画像は文字が崩れやすいので、文字はあとから自分で入れるのがおすすめ。</div>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">💜</span>Claude 〜モデル名は気にしない。「Docs・Slides・Design」が無料に〜</h3>
+      <p>この秋、Claudeは新しいモデルが立て続けに出ました（Opus 5.5・Sonnet 5.5・Haiku 5.5、そして11月9日に Fable 5.2）。名前がたくさんあって迷いますが、<b>らぼ生がやることは何も変わりません</b>。頼み方（CHAPTER 9の5点セット）が良ければ、どのモデルでもちゃんと動きます。選ぶ画面で迷ったら、いちばん上のものを選べば大丈夫。</p>
+      <p>それより大きいのは、10月8日の発表。<b>Docs（文書）・Slides（スライド）・Design（デザイン）が、無料プランでも正式に使える</b>ようになりました。「会話の中で、資料ができる」ので、らぼ生にはいちばん実用的なニュースです。</p>
+      <ul>
+        <li><b>Docs</b> … お知らせ文、手順書、自己紹介シート。「このメモを、A4一枚のお知らせにして」</li>
+        <li><b>Slides</b> … 勉強会の発表、家族会議の資料。「作ったアプリの紹介を、5枚のスライドにして」</li>
+        <li><b>Design</b> … インスタ投稿の下書き、チラシの案。「やさしいピンクで、文字は大きく」</li>
+        <li><b>Claude Duet</b>（10/21発表）… 朝に要約を送ってきたり、離席中に下調べを進めたりする「向こうから連絡してくるClaude」。いまは米国の有料プランで順番待ち。日本はまだです</li>
+      </ul>
+      <div class="prompt" id="p-cl1">あなたは発表資料づくりのプロです。
+私が作ったアプリ【例：旅行の持ち物リスト】を、らぼの勉強会で紹介します。
+Slidesで5枚のスライドにしてください。構成は「①困りごと ②作ったもの ③頼み方の工夫 ④使ってみた変化 ⑤次にやること」。文字は大きく、1枚に伝えることは1つ。
+まず1案ください。あとで一緒に直します。</div>
+      <button class="copy" data-c="p-cl1">このお願い文をコピーする</button>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">🟦</span>Gemini 〜スプシの秘書が、資料も作れるように〜</h3>
+      <ul>
+        <li><b>資料がチャットの中で作れる</b>（10/29〜）… ドキュメント・スライド・スプレッドシートを作って、その場で直せます。在庫表の相談のあと「これを表にして」がそのまま通ります</li>
+        <li><b>手描きの絵がアプリになる</b>（11/6〜）… 紙に描いたアプリの画面を写真で渡し、ツールで「Canvas」を選んで「このアプリのコードを生成して」。色や文字もその場で調整できます。※らぼでのアプリづくりの本命はClaudeのまま。Geminiは「絵から試す」入口として</li>
+        <li><b>予定したアクション</b> … 「毎朝8時に、今日のやることを3つにしぼって送って」のような、決まった時間の仕事を頼めます</li>
+        <li><b>Gems → Skills</b> … 自分用に作った「Gems」は11月17日から「Skills」に置きかわります（自動で移ります。あわてなくて大丈夫）</li>
+        <li><b>動画づくり</b>（Gemini Omni 1.2 Flash、11/5〜）… 最長15秒の音声つき動画。有料プラン向けなので、まずは知っているだけでOK</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">📱</span>毎日の用事・SNSで「どれを呼ぶ？」早見表</h3>
+      <p>SNS運用の記事を集めて読むと、2026年の共通見解は<b>「1つに絞らず、用事で使い分ける」</b>でした。毎日の用事から、副業・SNSまで、らぼ流に並べています（全部無料でできます）。</p>
+      <div class="tblwrap"><table class="hd">
+        <tr><th>やりたいこと</th><th>呼ぶAI</th><th>ひとこと</th></tr>
+        <tr><td><b>毎朝の予定・持ち物・ゴミの日のリマインド</b></td><td><b>Muse</b>（Googleカレンダーとつなぐ）</td><td>Museを入れない人は、Geminiの「予定したアクション」でも</td></tr><tr><td><b>献立 → 買い物リスト（家族の好みを覚えさせて）</b></td><td><b>Muse</b>／ChatGPT</td><td>「覚えておいて」で家族のアレルギーや苦手を先に伝える</td></tr><tr><td><b>学校・園のメールの整理</b></td><td><b>Muse</b>（Gmail）</td><td>「返事が必要なものだけ一覧に」。返信は自分で送る</td></tr><tr><td><b>投稿のネタ出し・投稿文</b></td><td><b>ChatGPT</b>（無料）／Claude</td><td>「ターゲット・テーマ・必ず入れる事実・避ける表現」を渡す。数字や実績を勝手に足さない、と添える</td></tr>
+        <tr><td><b>文字入りの投稿画像・動くGIF</b></td><td><b>ChatGPT</b>（画像）</td><td>CHAPTER 3の3点セット（内容・雰囲気・使いみち）で</td></tr>
+        <tr><td><b>インサイト分析 → 来月の投稿カレンダー</b></td><td><b>Muse</b>（Instagramプロアカウント）</td><td>「読むだけ」から始める。投稿は承認を押すまで出ない</td></tr>
+        <tr><td><b>DM・コメントの仕分けと返信の下書き</b></td><td><b>Muse</b></td><td>送るのは自分。お客さまの名前が入るので「学習に使う」はオフ</td></tr>
+        <tr><td><b>リールの台本（冒頭の一言・本題・最後のお願い）</b></td><td><b>Claude</b>／ChatGPT</td><td>2026年は「最後まで見られたか」「保存されたか」が大事。冒頭1〜2秒で興味をつかむ台本に</td></tr>
+        <tr><td><b>お知らせ文書・スライド・チラシ案</b></td><td><b>Claude</b>（Docs・Slides・Design、無料）</td><td>会話の中で完成まで。Geminiでも可</td></tr>
+        <tr><td><b>在庫表・売上の集計、スプシ</b></td><td><b>Gemini</b></td><td>CHAPTER 4の通り。表の作成もチャット内で</td></tr>
+        <tr><td><b>自分用アプリを作る</b></td><td><b>Claude</b>（主役）</td><td>紙に描いた絵から試したいときはGeminiのCanvasも</td></tr>
+        <tr><td><b>調べて、資料にまとめるまで全部代行</b></td><td>GPT-6 Astra（有料・PC）</td><td>いまは「ある」と知っていればOK</td></tr>
+      </table></div>
+      <div class="warn">⚠️ メルカリの説明文の書き方・値付け・リサーチなど<b>物販そのもののコツ</b>は、Re:cheの講師に聞くのがいちばんです。AIには「講師に教わった型」を読み込ませて、自分専用に育てましょう（CHAPTER 8）。</div>
+    </div>
+
+    <div class="card">
+      <h3><span class="em">🗓</span>最新AI 3日間コース 〜読むだけで終わらせない〜</h3>
+      <p>1日15分×3日で、新顔を「自分の道具」にします。目標は「朝、秘書からのメッセージで1日が始まる」状態。終わったら<b>第2回テスト</b>で確かめて、カルテに提出してください。</p>
+      <div class="days"><div class="day"><div class="dt">DAY 1｜Claudeで「資料」を1枚作る（無料）</div><div class="dd">上の「Slides」のお願い文をコピーして、自分の作ったアプリ（まだなら「作りたいもの」）を5枚のスライドに。できたら1枚目のスクショを保存。</div></div><div class="day"><div class="dt">DAY 2｜SNSの投稿を1本、AIで作る</div><div class="dd">ChatGPTで「文字入りの投稿画像」（CHAPTER 3の3点セット）＋投稿文（5点セット）。インスタをしていない人は、家族やお友だちへのお知らせ画像でOK。</div></div><div class="day"><div class="dt">DAY 3｜Museを「秘書」にする</div><div class="dd">Museを入れて、上のSTEP 1（自己紹介）とSTEP 2（毎朝のリマインド）のお願い文を送る。翌朝、本当に届くか確かめる。Museを入れたくない人は、Geminiで「毎朝8時に、今日のやることを3つにしぼって送って」の予定アクションを1つ作る（下のお願い文）。</div></div><div class="day"><div class="dt">提出｜カルテに1〜3行</div><div class="dd">カルテの困りごと欄に<b>【最新AIコース 提出】</b>と書いて、「何を試して・何が楽になったか・つまずいた所」を1〜3行。くみこが読んでお返事します。</div></div></div>
+      <div class="prompt" id="p-gm1">毎朝8時に、私の今日のやることを送ってください。
+やることのメモ：【例：出品3点・保育園の提出物・夕飯の買い物・妹に電話】
+全部ではなく「今日やる3つ」にしぼって、順番と理由を一言ずつ添えてください。</div>
+      <button class="copy" data-c="p-gm1">このお願い文をコピーする</button>
+      <div class="pinkbox"><b>合言葉は「主役はClaude、新顔は用事があるときだけ」。</b>全部を使いこなそうとすると疲れます。3日間で、自分に関係ある1つが見つかれば大成功です☺️</div>
+    </div>
+    <button class="chbtn" data-ch="10">✔ 第10章、ここまで読んだ！</button>
   </section>
 
   <!-- ======================== おわりに ======================== -->

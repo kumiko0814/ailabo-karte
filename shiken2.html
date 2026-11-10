@@ -181,7 +181,7 @@ footer a{color:var(--pink2);}
 <script>
 (function(){
   /* 第2回：くみこ承認までは非公開（?preview=1 で確認可）。公開時に PAUSED=false にする */
-  var PAUSED=true;
+  var PAUSED=false;
   if(PAUSED && new URLSearchParams(location.search).get("preview")!=="1"){
     document.querySelector(".wrap").innerHTML='<div class="hero"><img src="https://kumiko0814.github.io/kumiko-illust/lab-think.png" alt="" onerror="this.style.display=\'none\'"><h1>ただいま準備中です</h1><div class="sub">第2回テストは、いま内容を準備しています</div></div><div class="card"><p class="lead">もう少しだけ、おまちください☺️ 準備ができたら、あらためてカルテでご案内します。</p></div><footer style="margin-top:24px;"><a href="index.html">← カルテにもどる</a></footer>';
     document.getElementById("timer").style.display="none";
