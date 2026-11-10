@@ -290,6 +290,17 @@ footer a{color:var(--pink2);}
     window.scrollTo(0,0);
   };
 
+  /* プレビュー用（?preview=1&show=exam / result）：確認のためだけ。本番では動かない */
+  if(P.get("preview")==="1" && P.get("show")){
+    document.getElementById("nm").value="プレビュー";
+    document.getElementById("startBtn").click();
+    if(P.get("show")==="result"){
+      QA.forEach(function(q,i){ ansA[i]=(i===1)?0:q.correct; });
+      document.getElementById("qb0").value="わたしは勉強会の資料づくりに困っている。ClaudeのSlidesなら、会話の続きで5枚にしてくれるので楽になりそう。";
+      document.getElementById("qb1").value="お客さまへのDMの返信は自分で送る。言葉ひとつで信頼が変わるから。";
+      doSubmit(false);
+    }
+  }
   document.getElementById("submitBtn").onclick=function(){
     var done=Object.keys(ansA).length;
     if(done<7){ if(!confirm("まだ選んでいない問題が "+(7-done)+" 問あります。このまま提出しますか？")) return; }
