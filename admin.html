@@ -89,16 +89,21 @@ footer{text-align:center; font-size:10px; color:#9aa7b4; margin-top:26px; letter
 </div>
 
 <script src="supabase_config.js"></script>
+<script src="https://kumiko0814.github.io/merone-auth/admin-auth.js"></script>
 <script>
 (function(){
 var P=new URLSearchParams(location.search);
 var DEMO=P.get("demo")==="1"||!(typeof SUPABASE_CONFIG!=="undefined"&&SUPABASE_CONFIG.enabled);
 if(DEMO) document.getElementById("demoband").style.display="block";
 
+/* 管理者ログイン（デモ表示ではログイン不要・通信もしない） */
+var AUTH=DEMO?null:MeroneAdminAuth.require({url:SUPABASE_CONFIG.url,anonKey:SUPABASE_CONFIG.anonKey,title:"AIカルテ 管理者ボード（旧）"});
 function sb(path,opts){
-  return fetch(SUPABASE_CONFIG.url+"/rest/v1/"+path,Object.assign({
-    headers:{apikey:SUPABASE_CONFIG.anonKey,Authorization:"Bearer "+SUPABASE_CONFIG.anonKey,
-    "Content-Type":"application/json",Prefer:"return=representation"}},opts||{}));
+  if(!AUTH) return Promise.reject(new Error("demo"));
+  return AUTH.then(function(){
+    return MeroneAdminAuth.fetch(SUPABASE_CONFIG.url+"/rest/v1/"+path,Object.assign({
+      headers:{"Content-Type":"application/json",Prefer:"return=representation"}},opts||{}));
+  });
 }
 function fmt(d){ var x=new Date(d); return (x.getMonth()+1)+"/"+x.getDate()+" "+("0"+x.getHours()).slice(-2)+":"+("0"+x.getMinutes()).slice(-2); }
 function esc(s){ var d=document.createElement("div"); d.textContent=s||""; return d.innerHTML; }
