@@ -154,7 +154,7 @@ textarea:focus{outline:none; border-color:var(--pink);}
     var btn=this; btn.disabled=true; btn.textContent="送信中…";
     var worry=JSON.stringify({q1:picked, q1t:picked.map(function(i){return Q1[i];}), q2:lvl, q2t:(lvl>=0?Q2[lvl]:""), tsumazuki:q4, tsukuritai:q3});
     if(DEMO){ show(); return; }
-    fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+    fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json","x-member-id":UID},
       body:JSON.stringify({member_id:"svy_"+UID, member_name:NAME||UID, mood:"アンケート", want:UID, worry:worry})})
       .then(function(){ show(); }).catch(function(){ btn.disabled=false; btn.textContent="この内容で送る"; alert("うまく送れませんでした。もう一度お試しください。"); });
   });

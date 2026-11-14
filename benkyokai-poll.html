@@ -126,7 +126,10 @@ textarea{min-height:70px;resize:vertical;margin-top:2px;}
   function loadResults(){
     var box=document.getElementById("results"); if(!box) return;
     if(DEMO){ box.innerHTML=bar(OPTS[0][0],8,8)+bar(OPTS[1][0],5,8)+bar(OPTS[2][0],6,8)+bar(OPTS[3][0],3,8); return; }
-    fetch(U+"?member_id=eq.poll_bk&select=worry&order=id.desc&limit=2000",{headers:hdr()}).then(function(r){return r.json();}).then(function(j){
+    /* 集計は rpc/ailab_poll_bk_votes（名前を除いた投票だけ返す）。未設置なら従来の読み方 */
+    fetch(SUPABASE_CONFIG.url+"/rest/v1/rpc/ailab_poll_bk_votes",{method:"POST",headers:hdr(),body:"{}"})
+      .then(function(r){ return r.ok?r:fetch(U+"?member_id=eq.poll_bk&select=worry&order=id.desc&limit=2000",{headers:hdr()}); })
+      .then(function(r){return r.json();}).then(function(j){
       if(!Array.isArray(j)) return;
       var cnt=[0,0,0,0], voices=[];
       j.forEach(function(n){ var d={}; try{d=JSON.parse(n.worry||"{}");}catch(e){} (d.opts||[]).forEach(function(i){ if(cnt[i]!==undefined) cnt[i]++; }); if(d.other) voices.push(d.other); });

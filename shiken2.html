@@ -385,8 +385,12 @@ footer a{color:var(--pink2);}
     if(!DEMO){
       var payload={member_id:"test2", member_name:NAME||UID, mood:"テスト", want:UID,
         worry:JSON.stringify({t:2, score:score, total:7, auto:!!auto, read:false, a:detail.map(function(d){return d.picked;}), b:bTexts})};
-      fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(payload)})
-        .then(function(r){return r.json();}).then(function(rows){ if(rows&&rows[0]) postedId=rows[0].id; }).catch(function(){});
+      fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json",Prefer:"return=representation","x-member-id":UID},body:JSON.stringify(payload)})
+        .then(function(r){
+          /* 行を返してもらえない設定のときは、保存だけやり直す（解説読了の記録は省略される） */
+          if(r.status===401||r.status===403){ fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json","x-member-id":UID},body:JSON.stringify(payload)}).catch(function(){}); return null; }
+          return r.json();
+        }).then(function(rows){ if(rows&&rows[0]) postedId=rows[0].id; }).catch(function(){});
     }
     window._lastResult={score:score,detail:detail,b:bTexts};
   }
@@ -410,7 +414,7 @@ footer a{color:var(--pink2);}
     if(!DEMO && postedId && window._lastResult){
       var r=window._lastResult;
       var body={worry:JSON.stringify({t:2, score:r.score, total:7, read:true, a:r.detail.map(function(d){return d.picked;}), b:r.b})};
-      fetch(U+"?id=eq."+postedId,{method:"PATCH",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},body:JSON.stringify(body)}).catch(function(){});
+      fetch(U+"?id=eq."+postedId,{method:"PATCH",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json","x-member-id":UID},body:JSON.stringify(body)}).catch(function(){});
     }
     th.scrollIntoView({behavior:"smooth"});
   };
@@ -432,7 +436,7 @@ footer a{color:var(--pink2);}
 
   /* 受験ずみチェック：前回の記録があれば「受け直し不要＋結果を見返す」導線を出す */
   if(!DEMO){
-    fetch(U+"?member_id=eq.test2&want=eq."+encodeURIComponent(UID)+"&order=created_at.desc&limit=1",{headers:{apikey:K,Authorization:"Bearer "+K}})
+    fetch(U+"?member_id=eq.test2&want=eq."+encodeURIComponent(UID)+"&order=created_at.desc&limit=1",{headers:{apikey:K,Authorization:"Bearer "+K,"x-member-id":UID}})
       .then(function(r){return r.json();})
       .then(function(rows){
         if(!rows||!rows[0]) return;

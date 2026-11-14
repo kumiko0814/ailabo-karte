@@ -762,7 +762,7 @@ Slidesで5枚のスライドにしてください。構成は「①困りごと 
     var nm=(q.get("name")||"").slice(0,30);
     if(u && Date.now()>=OPEN && !localStorage.getItem("ailab_book_seen_"+u)){
       localStorage.setItem("ailab_book_seen_"+u,"1");
-      fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+      fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json","x-member-id":u},
         body:JSON.stringify({member_id:"read_book",member_name:nm||u,mood:"既読",worry:"教科書を開いた",want:u})});
     }
   }catch(e){}
@@ -790,7 +790,7 @@ Slidesで5枚のスライドにしてください。構成は「①困りごと 
         btn.classList.add("done"); btn.textContent="✔ 第"+n+"章 よんだよ🩷";
         try{ localStorage.setItem(key,"1"); }catch(e){}
         if(typeof u!=="undefined"&&u){
-          fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+          fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json","x-member-id":u},
             body:JSON.stringify({member_id:"read_ch",member_name:((typeof nm!=="undefined"&&nm)?nm:u).slice(0,30),mood:"既読",worry:"CH"+n,want:u})});
         }
       });

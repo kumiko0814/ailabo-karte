@@ -53,12 +53,7 @@ create table if not exists ailab_advice (
 );
 alter table ailab_notes enable row level security;
 alter table ailab_advice enable row level security;
-drop policy if exists ailab_notes_all on ailab_notes;
-create policy ailab_notes_all on ailab_notes
-  for all to anon using (true) with check (true);
-drop policy if exists ailab_advice_all on ailab_advice;
-create policy ailab_advice_all on ailab_advice
-  for all to anon using (true) with check (true);</pre>
+-- 読み書きのルール（誰が読めるか）は、後の手順のSQLで設定します。</pre>
     <button class="btn" id="copysql">SQLをコピー</button>
   </div>
 
@@ -70,25 +65,10 @@ create policy ailab_advice_all on ailab_advice
   </div>
 
   <div class="step">
-    <h3><b>STEP 4</b>　データ保護（削除ブロック・1回だけ／おすすめ）</h3>
-    <p>このSQLを実行すると、サイトで使っている公開キーからは<b>データを消すことが不可能</b>になります（書く・読む・返信はこれまで通り）。消せるのはSupabase管理画面を開けるくみこだけになります。</p>
-    <pre id="sql2">drop policy if exists ailab_notes_all on ailab_notes;
-drop policy if exists ailab_advice_all on ailab_advice;
-drop policy if exists ailab_notes_sel on ailab_notes;
-drop policy if exists ailab_notes_ins on ailab_notes;
-drop policy if exists ailab_notes_upd on ailab_notes;
-drop policy if exists ailab_advice_sel on ailab_advice;
-drop policy if exists ailab_advice_ins on ailab_advice;
-create policy ailab_notes_sel on ailab_notes
-  for select to anon using (true);
-create policy ailab_notes_ins on ailab_notes
-  for insert to anon with check (true);
-create policy ailab_notes_upd on ailab_notes
-  for update to anon using (true) with check (true);
-create policy ailab_advice_sel on ailab_advice
-  for select to anon using (true);
-create policy ailab_advice_ins on ailab_advice
-  for insert to anon with check (true);</pre>
+    <h3><b>STEP 4</b>　データ保護（設定済み）</h3>
+    <p>受講生は自分のカルテだけ、管理画面はログインした運営だけが読めるように、データベース側で設定済みです。この手順で追加の作業はありません。</p>
+    <pre id="sql2">-- このプロジェクトの読み書きのルールは、運営が一括で設定済みです。
+-- このページからポリシーを作り直さないでください（作り直すと誰でも読める状態に戻ります）。</pre>
     <button class="btn" id="copysql2">保護SQLをコピー</button>
   </div>
 

@@ -422,7 +422,7 @@ var NAMEFIX_UIDS=["mtxni7b1s8g","meqieaqda2h","m18trg9chz1m","mfh22v51ahg","mfwp
 if(!DEMO && UID && NAMEFIX_UIDS.indexOf(UID)>=0){
   (function(){
     var SB=SUPABASE_CONFIG.url+"/rest/v1/ailab_notes", KY=SUPABASE_CONFIG.anonKey;
-    function hdr(){ return {apikey:KY,Authorization:"Bearer "+KY,"Content-Type":"application/json"}; }
+    function hdr(){ return {apikey:KY,Authorization:"Bearer "+KY,"Content-Type":"application/json","x-member-id":UID}; }
     function gate(){
       var ov=document.createElement("div");
       ov.id="nameGate";
@@ -492,9 +492,10 @@ if(DEMO) document.getElementById("demoband").style.display="block";
 if(UID&&P.get("demo")!=="1"){ try{ localStorage.setItem("ailab_my",JSON.stringify({id:UID,name:NAME,url:location.href.split("#")[0],t:Date.now()})); }catch(e){} }
 
 function sb(path,opts){
+  /* x-member-id＝このページの持ち主（自分の行だけ読める）。書き込みは返却なし（return=minimal） */
   return fetch(SUPABASE_CONFIG.url+"/rest/v1/"+path,Object.assign({
     headers:{apikey:SUPABASE_CONFIG.anonKey,Authorization:"Bearer "+SUPABASE_CONFIG.anonKey,
-    "Content-Type":"application/json",Prefer:"return=representation"}},opts||{}));
+    "Content-Type":"application/json",Prefer:"return=minimal","x-member-id":UID}},opts||{}));
 }
 function fmt(d){ var x=new Date(d); return (x.getMonth()+1)+"/"+x.getDate()+" "+("0"+x.getHours()).slice(-2)+":"+("0"+x.getMinutes()).slice(-2); }
 function esc(s){ var d=document.createElement("div"); d.textContent=s||""; return d.innerHTML; }
